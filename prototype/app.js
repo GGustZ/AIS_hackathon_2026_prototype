@@ -42,6 +42,7 @@ const state = {
   DB: null, doc: null, plan: null, result: null, profile: null,
   decisions: new Map(), current: null, shownAt: new Map(),
   planId: null, altIndex: new Map(), seen: {},
+  learningEvidence: [], editingPlanId: null,
 }
 
 // ---------------------------------------------------------------- navigation
@@ -81,6 +82,7 @@ function setMode(dev) { document.body.classList.toggle('devmode', dev) }
 
 async function boot() {
   resetDrop()
+  resetEvidenceDrop()
   $('#icoUpload').innerHTML = ico('doc')
   $('#icoNew').innerHTML = ico('filePlus')
   $('#icoProblem').innerHTML = ico('bulb')
@@ -117,9 +119,11 @@ function resetDrop() {
 
 function renderStart() {
   const p = state.profile, m = state.DB
+  const problemReady = m.problem.filter(x => x.methodId).length
+  const miscBound = m.method.filter(x => x.addresses.length).length
   $('#libstat').textContent =
     `คลังชุดนี้ครอบ ${m.curr.length} ตัวชี้วัด ความเข้าใจผิด ${m.misc.length} รายการ ` +
-    `และวิธีสอนที่ผูกกับความเข้าใจผิดแล้ว ${m.method.length} รายการ`
+    `วิธีที่ผูกกับความเข้าใจผิด ${miscBound} รายการ และปัญหาผู้เรียนที่พร้อมจับคู่ ${problemReady}/${m.problem.length} รายการ`
   $('#uploadcount').textContent = p.uploads
     ? `คุณเคยตรวจแผนมาแล้ว ${p.uploads} ครั้ง` +
       (p.uploads < 3 ? ` อีก ${3 - p.uploads} ครั้งระบบจะเริ่มเทียบกับแผนเดิมของคุณได้` : '')
@@ -149,6 +153,87 @@ const MAX_FILE_BYTES = 20 * 1024 * 1024
 function uploadError(message) {
   $('#dropmsg').innerHTML = `${ico('warn')}<b>ใช้ไฟล์นี้ไม่ได้</b>
     <span class="muted">${esc(message)}</span>`
+}
+
+function resetEvidenceDrop() {
+  $('#evidenceDropmsg').innerHTML = `${ico('upload')}
+    <b>เพิ่มหลักฐานการเรียนรู้</b>
+    <span class="muted">เลือกได้หลายไฟล์ หรือวางไฟล์ไว้ตรงนี้</span>`
+  renderEvidenceList()
+}
+
+function evidenceKind(name, text = '') {
+  const n = `${name} ${text.slice(0, 600)}`.toLowerCase()
+  if (/pre[- ]?test|ก่อนเรียน/.test(n)) return 'แบบทดสอบก่อนเรียน'
+  if (/quiz|แบบทดสอบ|ข้อสอบ/.test(n)) return 'แบบทดสอบหรือควิซ'
+  if (/worksheet|ใบงาน/.test(n)) return 'ใบงาน'
+  if (/lab|ทดลอง|ปฏิบัติการ/.test(n)) return 'รายงานทดลอง'
+  if (/observation|สังเกต/.test(n)) return 'บันทึกการสังเกต'
+  if (/\.xlsx?$|\.csv$/.test(name.toLowerCase())) return 'ตารางข้อมูลการเรียนรู้'
+  if (/\.(png|jpe?g|webp)$/.test(name.toLowerCase())) return 'รูปภาพหลักฐาน'
+  return 'หลักฐานการเรียนรู้ทั่วไป'
+}
+
+async function formatEvidenceFile(file) {
+  if (file.size > MAX_FILE_BYTES) throw new Error(`${file.name} มีขนาดเกิน 20 MB`)
+  const bytes = new Uint8Array(await file.arrayBuffer())
+  let preview = '', readStatus = 'จัดประเภทจากชื่อและชนิดไฟล์'
+  try {
+    if (/\.docx$/i.test(file.name)) {
+      const doc = await readDocx(bytes.buffer)
+      preview = (doc.paras || []).map(p => p.text).join(' ').trim().slice(0, 300)
+      readStatus = preview ? 'อ่านเนื้อหาได้เบื้องต้น' : 'อ่านโครงสร้างได้ แต่ไม่พบข้อความ'
+    } else if (/\.pdf$/i.test(file.name)) {
+      const doc = await readPdf(bytes.buffer)
+      preview = (doc.paras || []).map(p => p.text).join(' ').trim().slice(0, 300)
+      readStatus = preview ? 'อ่านเนื้อหาได้เบื้องต้น' : 'อ่านโครงสร้างได้ แต่ไม่พบข้อความ'
+    } else if (/\.(txt|csv)$/i.test(file.name)) {
+      preview = new TextDecoder().decode(bytes).replace(/\s+/g, ' ').trim().slice(0, 300)
+      readStatus = preview ? 'อ่านเนื้อหาได้เบื้องต้น' : 'ไฟล์ไม่มีข้อความ'
+    }
+  } catch {
+    readStatus = 'เก็บไฟล์ไว้แล้ว แต่ยังอ่านเนื้อหาไม่ได้'
+  }
+  return {
+    id: `E${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    name: file.name, mime: file.type, size: file.size, bytes,
+    kind: evidenceKind(file.name, preview), readStatus, preview, addedAt: Date.now(),
+  }
+}
+
+function renderEvidenceList() {
+  const host = $('#evidenceList')
+  if (!host) return
+  host.innerHTML = state.learningEvidence.map(e => `<div class="evidence-item">
+    <div><b>${esc(e.name)}</b>
+      <div class="muted">${esc(e.kind)} · ${esc(e.readStatus)} · ${(e.size / 1024).toFixed(0)} KB</div>
+      ${e.preview ? `<div class="evidence-preview">${esc(e.preview)}</div>` : ''}</div>
+    <button class="btn ghost" data-evidence-remove="${esc(e.id)}" aria-label="ลบ ${esc(e.name)}">ลบ</button>
+  </div>`).join('')
+  document.querySelectorAll('[data-evidence-remove]').forEach(b => b.onclick = () => {
+    state.learningEvidence = state.learningEvidence.filter(e => e.id !== b.dataset.evidenceRemove)
+    renderEvidenceList()
+  })
+}
+
+function wireEvidenceUpload() {
+  const drop = $('#evidenceDrop'), input = $('#evidenceFiles')
+  const take = async files => {
+    const room = Math.max(0, 8 - state.learningEvidence.length)
+    for (const file of [...files].slice(0, room)) {
+      try { state.learningEvidence.push(await formatEvidenceFile(file)) }
+      catch (e) { $('#evidenceDropmsg').innerHTML = `${ico('warn')}<b>${esc(e.message)}</b>` }
+    }
+    renderEvidenceList()
+  }
+  drop.addEventListener('click', () => input.click())
+  drop.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click() }
+  })
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over') })
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'))
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); take(e.dataTransfer.files) })
+  input.addEventListener('change', () => { take(input.files); input.value = '' })
 }
 
 async function handleFile(file) {
@@ -330,16 +415,12 @@ async function startPlan({ grade, std, findings, unit, source = 'blank_template'
   state.plan.teacherNote = teacherNote
   state.plan.grade = grade
   state.plan.subject = 'วิทยาศาสตร์และเทคโนโลยี'
+  state.plan.periods = 1
+  state.plan.minutesPerPeriod = 50
   state.plan.currCodes = mapped.length ? mapped : codes
   state.plan.unit = unit
   state.plan.planId = state.planId = 'P' + Date.now()
   state.plan.createdAt = Date.now()
-  await savePlan({
-    planId: state.planId, unit, subject: state.plan.subject, grade,
-    periods: 1, minutesPerPeriod: 50, currCodes: state.plan.currCodes, kind: 'manual',
-    source, teacherNote, createdAt: state.plan.createdAt,
-  })
-
   // FR-J-03: what students get stuck on goes at the very top, above the
   // method list. Put it below and the teacher reads the plan and closes.
   const miscFindings = misc.map(m => ({
@@ -355,6 +436,7 @@ async function startPlan({ grade, std, findings, unit, source = 'blank_template'
     findings: (findings || []).concat(miscFindings),
     unknownCodes: [], knownCodes: state.plan.currCodes, budget: 50, allocated: 0,
   }
+  await savePlan(planRecord())
   state.decisions.clear()
   state.altIndex.clear()
   state.shownAt.clear()
@@ -376,6 +458,18 @@ async function runPick() {
   })
 }
 
+function planRecord() {
+  const p = state.plan
+  return {
+    planId: state.planId, unit: p.unit, subject: p.subject, grade: p.grade,
+    periods: p.periods, minutesPerPeriod: p.minutesPerPeriod, currCodes: p.currCodes,
+    kind: p.kind, source: p.source, teacherNote: p.teacherNote, fileName: p.fileName,
+    createdAt: p.createdAt, updatedAt: Date.now(), evidenceCount: state.learningEvidence.length,
+    planData: p, docData: state.doc, resultData: state.result,
+    learningEvidence: state.learningEvidence,
+  }
+}
+
 async function runBlank() {
   const grade = $('#bkGrade').value, std = $('#bkStd').value
   await startPlan({ grade, std, unit: `มาตรฐาน ${std} ${grade}`, findings: [] })
@@ -390,6 +484,7 @@ const LEVEL_TAG = {
 
 function renderConfirm() {
   const p = state.plan, c = p.confidence
+  const isManual = p.kind === 'manual' || ['problem_first', 'blank_template'].includes(p.source)
   const row = (key, label, value) => {
     const [cls, txt] = LEVEL_TAG[c[key]?.level || 'none']
     return `<div class="fld"><div class="fk">${label}</div>
@@ -412,7 +507,7 @@ function renderConfirm() {
 
   const dmg = Math.round(p.overallDamage * 100)
   let banner = ''
-  if (p.overallDamage > 0.15) {
+  if (!isManual && p.overallDamage > 0.15) {
     banner = `<div class="notice warn"><b>ไฟล์นี้อ่านตัวอักษรออกมาได้ไม่ครบ ประมาณ ${dmg}%</b><br>
       สาเหตุคือฟอนต์ที่ฝังในไฟล์ไม่ได้บันทึกรหัสตัวอักษรไว้ครบ ซึ่งเป็นข้อจำกัดของตัวไฟล์ ไม่ใช่ของแผน
       โครงสร้างและรหัสตัวชี้วัดยังอ่านได้ ระบบจึงทำงานต่อได้ แต่ช่องที่ขึ้นว่าอ่านไม่ชัด ให้ตรวจก่อนกดยืนยัน</div>`
@@ -427,9 +522,12 @@ function renderConfirm() {
         <button class="btn secondary" id="addCode">เพิ่ม</button></div></div>`
   }
 
-  const needsReview = fields.filter(f => (c[f[0]]?.level || 'none') !== 'high')
-  const clearFields = fields.filter(f => (c[f[0]]?.level || 'none') === 'high')
-  const overview = needsReview.length
+  const needsReview = isManual ? [] : fields.filter(f => (c[f[0]]?.level || 'none') !== 'high')
+  const clearFields = isManual ? [] : fields.filter(f => (c[f[0]]?.level || 'none') === 'high')
+  const overview = isManual
+    ? `<div class="notice info">แผนนี้เริ่มจากบทเรียนหรือปัญหาที่ครูเลือก จึงไม่มีฟิลด์จากเอกสารให้ตรวจซ้ำ
+        แก้ข้อมูลพื้นฐานด้านบนแล้วกดตรวจแผนต่อได้เลย</div>`
+    : needsReview.length
     ? `<div class="confirm-overview warn">${ico('warn')}
         <div><b>มี ${needsReview.length} ช่องที่ควรตรวจ</b><br>
         <span>ตรวจเฉพาะรายการด้านล่างก่อนให้ระบบเปรียบเทียบแผน</span></div></div>`
@@ -446,11 +544,32 @@ function renderConfirm() {
         <div style="margin-top:12px">${clearFields.map(f => row(...f)).join('')}</div></details>`
     : ''
 
-  $('#confirmBody').innerHTML = banner + overview + reviewCard + clearCard + `
+  const editCard = `<div class="card"><h3 style="margin-top:0">ข้อมูลพื้นฐานของแผน</h3>
+    <p class="muted">แก้ข้อมูลที่ระบบอ่านคลาดเคลื่อนได้ ก่อนตรวจแผนต่อ</p>
+    <div class="field-grid">
+      <div><label for="editUnit">หน่วยการเรียนรู้</label><input id="editUnit" value="${esc(p.unit || '')}"></div>
+      <div><label for="editSubject">รายวิชา</label><input id="editSubject" value="${esc(p.subject || '')}"></div>
+      <div><label for="editGrade">ระดับชั้น</label><input id="editGrade" value="${esc(p.grade || '')}"></div>
+      <div><label for="editPeriods">จำนวนคาบ</label><input id="editPeriods" type="number" min="1" value="${p.periods || 1}"></div>
+      <div><label for="editMinutes">นาทีต่อคาบ</label><input id="editMinutes" type="number" min="1" value="${p.minutesPerPeriod || 50}"></div>
+    </div></div>`
+
+  $('#confirmBody').innerHTML = banner + editCard + overview + reviewCard + clearCard + `
     <div class="devline">source=${p.kind} | readMs=${p.readMs} | overallDamage=${p.overallDamage.toFixed(3)}
 | dropped=[${(p.dropped || []).join('')}] | activities=${p.activities.length}
 | confidence=${JSON.stringify(Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.level])))}</div>`
   $('#confirmGo').disabled = !p.currCodes.length
+  $('#confirmBack').textContent = state.editingPlanId ? 'กลับแผนของฉัน' : 'ใช้ไฟล์อื่น'
+
+  const syncBasic = () => {
+    p.unit = $('#editUnit').value.trim()
+    p.subject = $('#editSubject').value.trim()
+    p.grade = $('#editGrade').value.trim()
+    p.periods = Math.max(1, +$('#editPeriods').value || 1)
+    p.minutesPerPeriod = Math.max(1, +$('#editMinutes').value || 50)
+  }
+  ;['editUnit', 'editSubject', 'editGrade', 'editPeriods', 'editMinutes']
+    .forEach(id => $('#' + id).addEventListener('input', syncBasic))
 
   const add = $('#addCode')
   if (add) add.onclick = () => {
@@ -463,20 +582,20 @@ function renderConfirm() {
 
 async function confirmPlan() {
   const p = state.plan
-  p.planId = state.planId = 'P' + Date.now()
-  p.createdAt = Date.now()
-  await savePlan({
-    planId: p.planId, unit: p.unit, subject: p.subject, grade: p.grade,
-    periods: p.periods, minutesPerPeriod: p.minutesPerPeriod, currCodes: p.currCodes,
-    kind: p.kind, createdAt: p.createdAt, fileName: p.fileName,
-  })
+  p.planId = state.planId = state.editingPlanId || 'P' + Date.now()
+  p.createdAt = p.createdAt || Date.now()
   const [plans, events] = await Promise.all([allPlans(), allEvents()])
   state.profile = buildProfile(plans, events)
-  state.result = compare(p, state.DB, state.profile)
+  state.result = p.source === 'problem_first' && state.result?.findings?.length
+    ? state.result
+    : compare(p, state.DB, state.profile)
   state.decisions.clear()
   state.altIndex.clear()
   state.shownAt.clear()
   state.current = null
+  restoreDecisionMap(events, state.planId)
+  state.editingPlanId = null
+  await savePlan(planRecord())
   renderFindings()
   go('s2')
 }
@@ -487,6 +606,17 @@ const SEV_TH = { high: 'ควรแก้ก่อน', medium: 'ควรด�
 const REASON_TH = {
   no_time: 'เวลาไม่พอ', no_materials: 'ไม่มีอุปกรณ์',
   not_suitable: 'ไม่เหมาะกับห้องนี้', disagree: 'ไม่เห็นด้วยกับวิธีนี้', other: 'อื่นๆ',
+}
+const EVIDENCE_REL_TH = {
+  supports: 'สนับสนุน', mixed: 'ผลผสม', 'no-effect': 'ยังไม่พบผล', contraindicates: 'ชี้ว่าไม่ควรใช้ในเงื่อนไขนี้',
+}
+const STUDY_TYPE_TH = {
+  'controlled experiment': 'การทดลองแบบมีกลุ่มเปรียบเทียบ',
+  'randomized controlled trial': 'การทดลองแบบสุ่มมีกลุ่มควบคุม',
+  'systematic review': 'การทบทวนอย่างเป็นระบบ',
+  'systematic review and meta-analysis': 'การทบทวนอย่างเป็นระบบและการวิเคราะห์อภิมาน',
+  'meta-analysis': 'การวิเคราะห์อภิมาน', review: 'บทความทบทวน',
+  'evidence synthesis': 'การสังเคราะห์หลักฐาน',
 }
 
 function renderFindings() {
@@ -500,7 +630,8 @@ function renderFindings() {
   let head = `<div class="card flat"><b>${esc(p.unit || p.fileName || 'แผนของคุณ')}</b>
     <div class="muted">${esc(p.subject || '')} ${esc(p.grade || '')}
       ${p.periods ? `· ${p.periods} คาบ คาบละ ${p.minutesPerPeriod} นาที` : ''}</div>
-    <div class="muted">ผูกกับตัวชี้วัด ${p.currCodes.map(esc).join(', ') || 'ยังไม่ระบุ'}</div></div>`
+    <div class="muted">ผูกกับตัวชี้วัด ${p.currCodes.map(esc).join(', ') || 'ยังไม่ระบุ'}</div>
+    ${state.learningEvidence.length ? `<div class="muted">แนบหลักฐานการเรียนรู้ ${state.learningEvidence.length} ไฟล์ ระบบเก็บและจัดประเภทไว้กับแผนนี้</div>` : ''}</div>`
 
   if (r.unknownCodes.length) {
     head += `<div class="notice info">ตัวชี้วัด ${r.unknownCodes.map(esc).join(', ')}
@@ -540,12 +671,14 @@ function card(f, i) {
     : f.title
   const problemLabel = f.kind === 'problem'
     ? 'ปัญหาที่ครูเลือก'
-    : state.plan.source === 'blank_template'
-      ? 'ปัญหาที่คลังแนะนำให้เตรียมรับมือ'
-      : 'ปัญหาที่ระบบตรวจพบ'
+    : f.kind === 'reinforce'
+      ? 'ข้อความในแผนอาจเสริมปัญหานี้'
+      : f.comparator === 'misconception'
+        ? 'ความเสี่ยงที่คลังแนะนำให้เตรียมรับมือ'
+        : 'จุดที่ระบบตรวจพบในแผน'
 
   let body = `<div class="fhead">
-      <span class="badge rank">ข้อที่ ${(i ?? 0) + 1}</span>
+      <span class="badge rank">คำแนะนำ ${(i ?? 0) + 1}</span>
       <span class="badge ${f.severity}">${SEV_TH[f.severity] || ''}</span>
     </div>
     <span class="problem-label">${problemLabel}</span>
@@ -663,6 +796,7 @@ function renderDetail() {
   const methods = pickMethods(f, state.plan, state.DB, state.profile)
   const rank = (state.altIndex.get(f.id) || 0) % (methods.length || 1)
   const m = methods[rank]
+  const refs = m ? state.DB.evidence.filter(e => e.methodIds.includes(m.id)) : []
   const ind = state.DB.curr.find(c => state.plan.currCodes.includes(c.code) && c.downstream?.length)
   const downstream = mc && ind ? ind.downstream.map(dc => state.DB.curr.find(x => x.code === dc)).filter(Boolean) : []
   const displayTitle = f.kind === 'reinforce' && mc ? `แผนอาจตอกย้ำว่า “${mc.name}”` : f.title
@@ -734,8 +868,18 @@ function renderDetail() {
       </table>
       <div class="notice ${m.evidenceStrength === 'ต่ำ' ? 'warn' : 'info'}" style="margin-top:14px">
         ${esc(m.evidenceNote)}<br>
-        <span class="tiny">รายการนี้ยังเป็นสถานะ ${esc(m.status)} ยังไม่มีการอ้างอิงงานวิจัยรายรายการ
-        และระบบไม่รายงานผลเชิงเหตุและผลกับผลการเรียน</span></div>
+        <span class="tiny">รายการนี้ยังเป็นสถานะ ${esc(m.status)} และระบบไม่รายงานผลเชิงเหตุและผลกับผลการเรียน</span></div>
+      ${refs.length ? `<h4>เอกสารสนับสนุนที่ผูกกับวิธีนี้</h4>
+        ${refs.map(r => `<div class="evidence-ref">
+          <a href="${esc(r.url)}" target="_blank" rel="noopener"><b>${esc(r.title)}</b></a>
+          <div class="muted">${esc(STUDY_TYPE_TH[r.studyType] || r.studyType)} · ${esc(r.population)} · คุณภาพ ${esc(r.quality)}</div>
+          <div>ทิศทางผล: ${esc(r.effectDirection)}${r.effectSize ? ` · ขนาดผล ${esc(r.effectSize)}` : ''}
+            · ความสัมพันธ์ ${esc(EVIDENCE_REL_TH[r.relation] || r.relation)}</div>
+          <div class="tiny">${esc(r.qualityNote)}</div>
+        </div>`).join('')}
+        <div class="notice warn"><b>สถานะหลักฐาน: ร่าง</b><br>
+          ลิงก์เหล่านี้ช่วยให้ตรวจสอบที่มาได้ แต่ยังไม่ใช่การรับรองว่าวิธีนี้เหมาะกับทุกห้องเรียน</div>`
+        : `<div class="notice warn">ยังไม่มีเอกสารสนับสนุนรายรายการที่ผูกกับวิธีนี้ในคลัง</div>`}
       <div class="devline">finding=${esc(f.id)} | rule: ${esc(f.rule || '')}
 ${mc ? `MISC ${mc.id} freq=${mc.freq} persistence=${mc.persistence} status=${mc.status}` : ''}
 METHOD ${m.id} addresses=[${m.addresses.join(',')}] stage=${m.stage} duration=${m.duration}
@@ -899,6 +1043,36 @@ function currentDecisionEvents(events) {
   return [...latest.values()].filter(e => e.action !== 'undone')
 }
 
+function restoreDecisionMap(events, planId) {
+  const latest = new Map()
+  for (const e of events) {
+    if (e.planId !== planId || !['inserted', 'rejected', 'undone'].includes(e.action)) continue
+    latest.set(e.findingId, e)
+  }
+  state.decisions.clear()
+  for (const [findingId, e] of latest) {
+    if (e.action === 'undone' || !state.result?.findings.some(f => f.id === findingId)) continue
+    state.decisions.set(findingId, {
+      action: e.action, methodId: e.methodId, methodName: e.methodName, reason: e.reason,
+    })
+  }
+}
+
+async function restoreHistoricalPlan(pl, events) {
+  if (!pl.planData) return false
+  state.planId = pl.planId
+  state.plan = structuredClone(pl.planData)
+  state.doc = structuredClone(pl.docData || { paras: [], kind: pl.kind || 'manual' })
+  state.learningEvidence = structuredClone(pl.learningEvidence || [])
+  state.result = structuredClone(pl.resultData || compare(state.plan, state.DB, state.profile))
+  state.altIndex.clear()
+  state.shownAt.clear()
+  state.current = null
+  restoreDecisionMap(events, pl.planId)
+  renderEvidenceList()
+  return true
+}
+
 async function renderHistory() {
   const [plans, events] = await Promise.all([allPlans(), allEvents()])
   const prof = buildProfile(plans, events)
@@ -917,19 +1091,21 @@ async function renderHistory() {
     const src = pl.source === 'problem_first' ? 'เริ่มจากปัญหาผู้เรียน'
       : pl.source === 'blank_template' ? 'เริ่มจากบทเรียน'
       : pl.kind === 'docx' ? 'อัปโหลด .docx' : pl.kind === 'pdf' ? 'อัปโหลด .pdf' : 'เลือกจากหลักสูตร'
+    const hasSnapshot = Boolean(pl.planData)
     return `<div class="hist-card">
       <div class="hist-top">
         <div class="hmain">
           <b>${esc(pl.unit || pl.fileName || 'แผนไม่มีชื่อ')}</b>
           <div class="hmeta">${esc(pl.subject || '')} ${esc(pl.grade || '')} ·
             ${esc(src)} · ${fmtDate(pl.createdAt)}</div>
+          ${pl.evidenceCount ? `<div class="hmeta">หลักฐานการเรียนรู้ ${pl.evidenceCount} ไฟล์</div>` : ''}
         </div>
         <div class="hist-stats">
           <div><div class="n">${took.length}</div><div class="l">นำไปใช้</div></div>
           <div><div class="n">${left.length}</div><div class="l">ไม่ใช้</div></div>
           <div><div class="n">${med != null ? med.toFixed(0) + 's' : '-'}</div><div class="l">ตัดสินใจ</div></div>
         </div>
-        <button class="btn ghost" data-hist="${esc(pl.planId)}">ดูรายละเอียด</button>
+        <button class="btn ghost" data-hist="${esc(pl.planId)}">ดูสรุป</button>
       </div>
       <div class="hist-more hide" data-histbody="${esc(pl.planId)}">
         <div class="muted" style="margin-bottom:10px">ตัวชี้วัด ${
@@ -943,6 +1119,12 @@ async function renderHistory() {
               : '<span class="badge medium">ขอแบบอื่น</span>'}</td>
             <td class="muted">${esc(REASON_TH[e.reason] || '')}</td></tr>`).join('')}
         </table>` : '<div class="muted">แผนนี้ยังไม่มีการตัดสินใจที่บันทึกไว้</div>'}
+        ${hasSnapshot ? `<div class="hist-actions">
+          <button class="btn primary" data-open-plan="${esc(pl.planId)}">เปิดผลการตรวจ</button>
+          <button class="btn secondary" data-edit-plan="${esc(pl.planId)}">แก้ข้อมูลพื้นฐาน</button>
+          <button class="btn ghost" data-download-plan="${esc(pl.planId)}" ${took.length ? '' : 'disabled'}>ดาวน์โหลด .docx</button>
+        </div>` : `<div class="notice warn" style="margin-top:14px">รายการนี้สร้างก่อนระบบบันทึกฉบับเต็ม
+          จึงอ่านสรุปได้ แต่ยังเปิดกลับไปแก้หรือดาวน์โหลดไม่ได้</div>`}
       </div>
     </div>`
   }).join('')
@@ -981,13 +1163,30 @@ ${JSON.stringify(prof, null, 1)}</div>
     const body = document.querySelector(`[data-histbody="${b.dataset.hist}"]`)
     const open = !body.classList.contains('hide')
     body.classList.toggle('hide', open)
-    b.textContent = open ? 'ดูรายละเอียด' : 'ซ่อนรายละเอียด'
+    b.textContent = open ? 'ดูสรุป' : 'ซ่อนสรุป'
+  })
+  const byId = id => plans.find(p => p.planId === id)
+  document.querySelectorAll('[data-open-plan]').forEach(b => b.onclick = async () => {
+    const ok = await restoreHistoricalPlan(byId(b.dataset.openPlan), events)
+    if (ok) { renderFindings(); go('s2') }
+  })
+  document.querySelectorAll('[data-edit-plan]').forEach(b => b.onclick = async () => {
+    const pl = byId(b.dataset.editPlan)
+    const ok = await restoreHistoricalPlan(pl, events)
+    if (ok) { state.editingPlanId = pl.planId; renderConfirm(); go('s1') }
+  })
+  document.querySelectorAll('[data-download-plan]').forEach(b => b.onclick = async () => {
+    const ok = await restoreHistoricalPlan(byId(b.dataset.downloadPlan), events)
+    if (ok) download()
   })
   $('#reset').onclick = async () => {
     if (!confirm('ลบแผนและประวัติทั้งหมดในเครื่องนี้ การลบนี้ย้อนกลับไม่ได้')) return
     await clearAll(); await renderHistory(); renderStart()
   }
-  $('#again').onclick = () => { state.decisions.clear(); state.altIndex.clear(); go('s0') }
+  $('#again').onclick = () => {
+    state.decisions.clear(); state.altIndex.clear(); state.learningEvidence = []
+    state.editingPlanId = null; resetEvidenceDrop(); go('s0')
+  }
 }
 
 // ---------------------------------------------------------------- wiring
@@ -1020,7 +1219,12 @@ $('#trySample').onclick = async () => {
   }
 }
 $('#confirmGo').onclick = confirmPlan
-$('#confirmBack').onclick = () => go('s0')
+$('#confirmBack').onclick = async () => {
+  if (state.editingPlanId) {
+    state.editingPlanId = null
+    await renderHistory(); go('s5')
+  } else go('s0')
+}
 $('#useFallback').onclick = () => {
   const code = $('#fallbackCode').value
   const ind = state.DB.curr.find(c => c.code === code)
@@ -1043,6 +1247,7 @@ $('#navPa').onclick = () => {
 }
 
 wireUpload()
+wireEvidenceUpload()
 setMode(location.hash === '#tech')
 addEventListener('hashchange', () => setMode(location.hash === '#tech'))
 boot()

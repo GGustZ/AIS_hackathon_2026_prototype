@@ -46,11 +46,12 @@ export async function loadLibraries(base = '../data/') {
     if (!r.ok) throw new Error(`โหลด ${f} ไม่ได้ (${r.status})`)
     return toObjects(await r.text())
   }
-  const [c, m, mp, me, it, pb, form, tx] = await Promise.all([
+  const [c, m, mp, me, ev, it, pb, form, tx] = await Promise.all([
     get('DB1_curriculum_slice.csv'),
     get('DB2_misconceptions_draft.csv'),
     get('DB3_indicator_map_draft.csv'),
     get('DB4_methods_bound_draft.csv'),
+    get('DB5_support_evidence_draft.csv'),
     get('DB6_assessment_items_draft.csv'),
     get('FORM_problem_method_map.csv'),
     fetch(base + 'FORM_frontend_options.csv').then(r => r.text()),
@@ -78,6 +79,13 @@ export async function loadLibraries(base = '../data/') {
       whenToUse: r.when_to_use, notSuitable: r.not_suitable_when,
       compatible: list(r.compatible_with), incompatible: list(r.incompatible_with),
       evidenceStrength: r.evidence_strength, evidenceNote: r.evidence_note, status: r.status,
+    })),
+    evidence: ev.map(r => ({
+      id: r.evidence_id, methodIds: list(r.method_ids), studyType: r.study_type,
+      population: r.population, topic: r.topic, quality: r.quality,
+      effectDirection: r.effect_direction, effectSize: r.effect_size,
+      relation: r.relation, title: r.source_title, url: r.source_url,
+      qualityNote: r.quality_note, status: r.status,
     })),
     item: it.map(r => ({
       id: r.item_id, code: r.curr_code, stemHint: r.stem_hint, correct: r.option_correct,
@@ -1051,13 +1059,23 @@ export function buildDocx(plan, doc, insertions) {
   const body = []
   body.push(`<w:p>${runXml(plan.unit || 'แผนการจัดการเรียนรู้', true)}</w:p>`)
   body.push(`<w:p>${runXml(`${plan.subject || ''} ${plan.grade || ''} ตัวชี้วัด ${plan.currCodes.join(', ')}`)}</w:p>`)
-  for (const a of plan.activities) {
+  const inserted = new Set()
+  let id = 9000
+  for (let i = 0; i < plan.activities.length; i++) {
+    const a = plan.activities[i]
     body.push(`<w:p>${runXml(a.label, true)}</w:p>`)
     body.push(`<w:p>${runXml(a.text)}</w:p>`)
-    let id = 9000
-    for (const ins of insertions.filter(x => x.stage === a.stage)) {
+    const lastOfStage = !plan.activities.slice(i + 1).some(x => x.stage === a.stage)
+    for (const ins of lastOfStage ? insertions.filter(x => x.stage === a.stage) : []) {
       body.push(insParagraph(`[ตรวจรู้] ${ins.text}`, id++))
+      inserted.add(ins)
     }
+  }
+  // A blank-template/problem-first plan may have no original activities yet.
+  // Keep every accepted recommendation in the exported document anyway.
+  for (const ins of insertions.filter(x => !inserted.has(x))) {
+    body.push(`<w:p>${runXml(ins.stage || 'ข้อเสนอแนะเพิ่มเติม', true)}</w:p>`)
+    body.push(insParagraph(`[ตรวจรู้] ${ins.text}`, id++))
   }
   const docXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body.join('')}</w:body></w:document>`

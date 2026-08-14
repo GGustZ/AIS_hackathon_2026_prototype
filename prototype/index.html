@@ -68,6 +68,21 @@
     </div>
   </div>
 
+  <details class="card evidence-upload" open>
+    <summary>เพิ่มหลักฐานการเรียนรู้ของห้องนี้ <span class="muted">ไม่บังคับ</span></summary>
+    <p class="muted" style="margin-top:10px">แนบแบบทดสอบ คำตอบอัตนัย ใบงาน รายงานทดลอง
+      บันทึกการสังเกต รูปภาพ หรือไฟล์อื่นที่มีอยู่ ระบบจะจัดประเภทเบื้องต้นและเก็บไว้กับแผนนี้</p>
+    <div class="drop compact" id="evidenceDrop" role="button" tabindex="0"
+      aria-label="เลือกไฟล์หลักฐานการเรียนรู้หลายไฟล์">
+      <div id="evidenceDropmsg"></div>
+    </div>
+    <input type="file" id="evidenceFiles" multiple
+      accept=".docx,.pdf,.xlsx,.xls,.csv,.txt,.png,.jpg,.jpeg,.webp" class="hide">
+    <div id="evidenceList" class="evidence-list" aria-live="polite"></div>
+    <div class="tiny" style="margin-top:10px">ต้นแบบอ่านเนื้อหาจาก DOCX PDF TXT และ CSV ได้เบื้องต้น
+      ส่วนรูปภาพและสเปรดชีตจะจัดประเภทจากชื่อกับชนิดไฟล์ก่อน โดยยังไม่ใช้สรุปปัญหาแทนครู</div>
+  </details>
+
   <p class="muted" id="uploadcount" style="margin-top:24px"></p>
 
   <div id="fallback" class="card hide">

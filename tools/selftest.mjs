@@ -31,7 +31,22 @@ if (!fs.existsSync(target)) {
 
 const DB = await lib.loadLibraries('../data/')
 console.log(`libraries: ${DB.curr.length} indicators | ${DB.misc.length} misconceptions | ` +
-  `${DB.map.length} map rows | ${DB.method.length} methods | ${DB.item.length} items\n`)
+  `${DB.map.length} map rows | ${DB.method.length} methods | ${DB.evidence.length} evidence rows | ${DB.item.length} items\n`)
+
+const methodIds = new Set(DB.method.map(m => m.id))
+const unboundProblems = DB.problem.filter(p => !p.methodId || !methodIds.has(p.methodId))
+const evidenceMethods = new Set(DB.evidence.flatMap(e => e.methodIds))
+const problemMethodsWithoutEvidence = [...new Set(DB.problem.map(p => p.methodId).filter(Boolean))]
+  .filter(id => !evidenceMethods.has(id))
+const orphanEvidence = DB.evidence.flatMap(e => e.methodIds).filter(id => !methodIds.has(id))
+const dataOk = DB.problem.length === 26 && !unboundProblems.length &&
+  !problemMethodsWithoutEvidence.length && !orphanEvidence.length
+console.log(`data QA     ${dataOk ? 'ok' : 'FAILED'} | problems ${DB.problem.length - unboundProblems.length}/${DB.problem.length} bound | ` +
+  `problem methods with evidence ${DB.problem.length ? DB.problem.length - problemMethodsWithoutEvidence.length : 0}/${DB.problem.length}`)
+if (!dataOk) {
+  console.error({ unboundProblems: unboundProblems.map(p => p.id), problemMethodsWithoutEvidence, orphanEvidence })
+  process.exitCode = 1
+}
 
 const buf = fs.readFileSync(target)
 const isDocx = /\.docx$/i.test(target)
@@ -85,6 +100,19 @@ if (acc.length) {
     `ข้อ2 ${pa.how ? pa.how.split('\n').length + ' methods' : 'empty'} | ` +
     `covered ${pa.covered.filter(c => c[1]).length}/${pa.covered.length}`)
 }
+
+// Problem-first plans have no original activity paragraphs. Their accepted
+// recommendation still has to appear in the downloadable document exactly once.
+const manualText = 'ตัวอย่างวิธีสอนสำหรับแผนเริ่มจากปัญหา'
+const manualBlob = lib.buildDocx(
+  { ...plan, kind: 'manual', activities: [] }, { kind: 'manual', paras: [] },
+  [{ stage: 'ขั้นสอน', text: manualText, anchorEnd: 0 }])
+const manualBytes = new Uint8Array(await manualBlob.arrayBuffer())
+const manualZip = await lib.unzip(manualBytes.buffer)
+const manualXml = new TextDecoder().decode(manualZip.get('word/document.xml'))
+const manualHits = manualXml.split(manualText).length - 1
+console.log(`manual DOCX ${manualHits === 1 ? 'ok' : 'FAILED'} | accepted method appears ${manualHits} time(s)`)
+if (manualHits !== 1) process.exitCode = 1
 
 // The problem-first path must produce PA wording too. It is intentionally
 // broader than misconception diagnosis and must not claim the system found

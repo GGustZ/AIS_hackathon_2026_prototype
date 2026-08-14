@@ -47,7 +47,7 @@ teacher uploads an existing lesson plan (.docx / .pdf)
 
 Comparator 2 is the one competitors cannot do. Comparators 1 and 3 are nearly free once the plan is parsed.
 
-**This is a pivot.** An earlier version had teachers photograph marked student work for OCR diagnosis. That direction is archived in `docs/archive/` and must not be resumed. Pre/post measurement, class rosters, and result capture are all Phase 2, drawn in the diagrams but labelled as not built.
+**This is a pivot.** An earlier version had teachers photograph marked student work for OCR diagnosis. That diagnostic direction is archived in `docs/archive/` and must not be resumed. Phase 1 may attach arbitrary Learning Evidence to a plan and classify/read supported files locally, but it must not infer learner problems from unread images or spreadsheets. Pre/post measurement, class rosters, automated diagnosis from student work, and result capture are Phase 2.
 
 ## Design constraints that must not be violated
 
@@ -132,8 +132,9 @@ The libraries are the product. Their state is the honest constraint on what can 
 | File | Rows | Status |
 |---|---:|---|
 | `data/DB4_teaching_methods_110.csv` | 110 | source spreadsheet, categorised with Bloom matching. Still has no `addresses_misc`, `when_to_use`, `not_suitable_when`, or `plan_stage`. Treat as the raw catalogue, not the recommender |
-| `data/DB4_methods_bound_draft.csv` | 20 | **the recommender.** Methods drawn from the 110 and bound to the seeded misconceptions, with all four missing fields filled |
-| `data/FORM_frontend_options.csv` | 26 problems | complete, every problem maps to a method |
+| `data/DB4_methods_bound_draft.csv` | 37 | **the recommender.** Twenty methods address the seeded misconceptions and 17 additional methods complete the broad problem-first path. Every row has usable steps, time, stage, fit, and constraints |
+| `data/DB5_support_evidence_draft.csv` | 18 | per-method evidence records with study type, population, topic, quality, effect direction/size, relationship, and source URL. All remain draft |
+| `data/FORM_problem_method_map.csv` | 26 problems | complete, every problem maps to a bound method and every mapped method has at least one draft evidence record |
 | `data/DB2_misconceptions_draft.csv` | 6 | **draft, no per-item citations**, covers ว 1.2 ม.1 only |
 | `data/DB3_indicator_map_draft.csv` | 6 | draft |
 | `data/DB6_assessment_items_draft.csv` | 6 | draft, distractors already bound to misconception ids |
@@ -145,7 +146,7 @@ Every distractor in DB6 carries a `misc_id`. This is what lets Phase 2 close the
 
 ### How the recommender selects
 
-`DB4_methods_bound_draft.csv` is what makes the method library a recommender rather than a list. Every row has `addresses_misc`, `when_to_use`, `not_suitable_when`, and `plan_stage` filled, which is the minimum needed to answer "why this method, and where does it go."
+`DB4_methods_bound_draft.csv` is what makes the method library a recommender rather than a list. Every row has `when_to_use`, `not_suitable_when`, and `plan_stage` filled. The 20 misconception methods also have `addresses_misc`; the 17 broad-problem methods are reached through `FORM_problem_method_map.csv` and must not be presented as misconception diagnosis.
 
 Selection rules, all of which are visible in the data rather than hidden in code:
 
@@ -155,7 +156,7 @@ Selection rules, all of which are visible in the data rather than hidden in code
 4. **`requires_lab` and `materials` are filtered against `constraint_profile`.** A teacher who has rejected three suggestions for having no equipment stops being shown A-EXP-01. This is the whole reason reject reasons are a closed list.
 5. **Models are not insertions.** P-INQ-02 and P-PHEN-02 are `plan_stage = ทั้งแผน` and must never be proposed as an insertion into a finished plan, because accepting one means rewriting the plan, which violates the diff-only constraint.
 
-Coverage is 20 methods across all four categories, every misconception reachable by at least six. Every row is `status = draft` because none has a per-item citation yet, and `evidence_note` carries the honest caveat per row until DB5 EVID exists.
+Coverage is 37 bound methods across all four categories. Every seeded misconception remains reachable by at least six methods, and all 26 broad classroom problems now resolve to a feasible method. Every row and evidence record is still `status = draft`; citations improve traceability but are not certification for Thai classrooms.
 
 ## Known weaknesses to state openly in the proposal
 
@@ -168,6 +169,7 @@ Do not hide these. A judge will find them, and pre-empting them reads as rigor.
 5. No teacher interviews have been conducted. All evidence is secondary.
 6. Freemium-to-premium risk: an AI tool with per-school cost can widen the inequality that other tracks of this hackathon exist to close.
 7. The demo runs on prepared sample files and does not yet handle every plan format.
+8. Learning Evidence content extraction is partial. DOCX, PDF, TXT, and CSV receive a text preview; images and spreadsheets are stored and classified by file metadata only, so they cannot yet drive problem diagnosis.
 
 ## Competitive position
 
