@@ -17,10 +17,10 @@
     <div class="brand">ตรวจรู้</div>
     <span class="tagline">ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์</span>
     <div class="spacer"></div>
-    <nav class="main">
-      <a id="navCheck" class="on">ตรวจแผน</a>
-      <a id="navPlans">แผนของฉัน</a>
-      <a id="navPa" aria-disabled="true">หลักฐาน PA</a>
+    <nav class="main" aria-label="เมนูหลัก">
+      <button type="button" id="navCheck" class="nav-link on">ตรวจแผน</button>
+      <button type="button" id="navPlans" class="nav-link">แผนของฉัน</button>
+      <button type="button" id="navPa" class="nav-link" aria-disabled="true">หลักฐาน PA</button>
     </nav>
   </div>
   <div class="progress"><div class="pbar" id="steps"></div></div>
@@ -31,8 +31,8 @@
 <!-- ============================================= 0. start -->
 <section id="s0">
   <div class="hero">
-    <h1>เริ่มต้นจากแผนการสอนของคุณ</h1>
-    <p>เลือกวิธีเริ่มต้นที่เหมาะกับคุณ</p>
+    <h1>ตรวจแผนเดิม เห็นจุดที่ควรเสริม</h1>
+    <p>เริ่มจากแผนที่มีอยู่ บทเรียนที่จะสอน หรือปัญหาที่ครูพบในห้องเรียน</p>
   </div>
 
   <div class="three-cards">
@@ -42,7 +42,8 @@
       <h3>มีแผนการสอนแล้ว</h3>
       <p class="why">อัปโหลดแผนการสอนที่คุณมีอยู่ แล้วตรวจหาจุดที่ควรเสริม
         ระบบไม่ได้เขียนแผนแทนคุณ</p>
-      <div class="drop" id="drop">
+      <div class="drop" id="drop" role="button" tabindex="0"
+        aria-label="เลือกไฟล์แผนการสอน PDF หรือ DOCX">
         <div id="dropmsg"></div>
       </div>
       <input type="file" id="file" accept=".docx,.pdf" class="hide">
@@ -54,9 +55,9 @@
 
     <div class="entry">
       <div class="ico" id="icoNew"></div>
-      <h3>ยังไม่มีแผนการสอน</h3>
-      <p class="why">เริ่มสร้างแผนการสอนจากชั้น หนังสือเรียน และบทเรียน</p>
-      <div class="row"><button class="btn secondary" id="toBlank">สร้างแผนการสอน</button></div>
+      <h3>กำลังวางแผนการสอน</h3>
+      <p class="why">เลือกบทเรียนเพื่อดูจุดที่นักเรียนมักติด ก่อนลงมือเขียนแผน</p>
+      <div class="row"><button class="btn secondary" id="toBlank">เริ่มจากบทเรียน</button></div>
     </div>
 
     <div class="entry">
@@ -88,11 +89,11 @@
 <!-- ============================================= 0b. problem-first, step 1 -->
 <section id="s0b" class="hide">
   <div class="crumb">
-    <a id="cr1">หน้าแรก</a><span>›</span><span>เครื่องมือสร้างแผน</span><span>›</span><b>ระบุปัญหา</b>
+    <button type="button" class="crumb-link" id="cr1">หน้าแรก</button><span>›</span><b>ระบุปัญหา</b>
   </div>
   <div class="step-title">
-    <h1>ขั้นตอนที่ 1: เลือกเนื้อหาและประเมินระดับปัญหาของนักเรียน</h1>
-    <p>ระบุบริบทของห้องเรียนเพื่อวิเคราะห์และหาแนวทางการสอนที่เหมาะสม</p>
+    <h1>เลือกปัญหาที่พบในห้องเรียน</h1>
+    <p>เลือกจากสิ่งที่ครูสังเกตได้ ระบบจะเชื่อมกับวิธีสอนให้เอง</p>
   </div>
 
   <div class="card">
@@ -105,9 +106,12 @@
     <div id="pkCoverage" class="muted" style="margin-top:16px"></div>
   </div>
 
-  <div class="card">
+  <div class="card dev">
     <div class="card-title" id="ttComp">ระบุระดับพัฒนาการและสมรรถนะที่นักเรียนยังทำไม่ได้
-      <span class="hint">เลือกได้มากกว่า 1 ข้อ</span></div>
+      <span class="hint">มุมมองเทคนิค</span></div>
+
+    <div class="notice info">Bloom, DOK และ PISA เป็นข้อมูลอ้างอิงสำหรับตรวจสอบโครงสร้างฐานข้อมูล
+      ต้นแบบปัจจุบันยังไม่ใช้ตัวเลือกเหล่านี้จัดอันดับคำแนะนำ จึงไม่แสดงในเส้นทางใช้งานของครู</div>
 
     <div class="sub-title" id="ttBloom">Bloom's Taxonomy (ระดับการคิด)</div>
     <div class="chipgrid" id="pkBloom"></div>
@@ -126,34 +130,35 @@
   </div>
 
   <div class="card">
-    <div class="card-title" id="ttProblem">ปัญหาที่พบในห้องเรียน
-      <span class="hint">ตัวที่ผูกกับวิธีสอนโดยตรง</span></div>
+    <div class="card-title" id="ttProblem">สิ่งที่ครูสังเกตเห็น
+      <span class="hint">เลือกได้มากกว่า 1 ข้อ</span></div>
+    <p class="muted">ปัญหาถูกจัดเป็นกลุ่มเพื่อให้หาได้เร็วขึ้น เปิดเฉพาะกลุ่มที่ใกล้กับสิ่งที่เกิดขึ้นในห้อง</p>
     <div id="pkProblems" class="checks"></div>
   </div>
 
   <details class="card">
-    <summary>อธิบายรายละเอียดปัญหาหรือพฤติกรรมที่พบเพิ่มเติม (ไม่บังคับ)</summary>
+    <summary>บันทึกสิ่งที่สังเกตเพิ่มเติม (ไม่บังคับ)</summary>
     <p class="muted" style="margin-top:12px">ช่องนี้ไม่บังคับ และระบบไม่ได้ใช้ข้อความนี้ในการเลือกวิธีสอน
-      เพราะข้อความอิสระนับรวมข้ามครูไม่ได้ ที่เก็บไว้คือให้คุณคัดลอกไปใช้กับ ว.PA ได้</p>
+      ข้อความนี้ไม่ถูกใช้เลือกวิธีสอน แต่จะเก็บไว้ในเครื่องเพื่อช่วยร่างหลักฐาน ว.PA</p>
     <textarea id="pkNote" placeholder="เช่น นักเรียนสับสนระหว่างกระบวนการหายใจระดับเซลล์กับการสังเคราะห์ด้วยแสง"></textarea>
   </details>
 
   <div class="summary-bar" id="pkSummary"></div>
 
   <div class="step-nav">
-    <button class="btn ghost" id="pkBack">← กลับไปเลือกวิธีอัปโหลดไฟล์แผน</button>
-    <button class="btn primary" id="pkGo">ค้นหาวิธีรับมือ และสร้างร่างแผนการสอน →</button>
+    <button class="btn ghost" id="pkBack">← กลับหน้าเริ่มต้น</button>
+    <button class="btn primary" id="pkGo" disabled>ดูคำแนะนำที่เหมาะกับปัญหานี้ →</button>
   </div>
 </section>
 
 <!-- ============================================= 0c. blank template -->
 <section id="s0c" class="hide">
   <div class="crumb">
-    <a id="cr2">หน้าแรก</a><span>›</span><span>เครื่องมือสร้างแผน</span><span>›</span><b>สร้างแผนการสอน</b>
+    <button type="button" class="crumb-link" id="cr2">หน้าแรก</button><span>›</span><b>เริ่มจากบทเรียน</b>
   </div>
   <div class="step-title">
-    <h1>สร้างแผนการสอนจากบทเรียน</h1>
-    <p>เลือกชั้น รายวิชา และบทเรียน ระบบจะแสดงสิ่งที่นักเรียนมักติดในหน่วยนั้นก่อนเป็นอันดับแรก</p>
+    <h1>ดูจุดที่นักเรียนมักติดก่อนวางแผน</h1>
+    <p>เลือกชั้น รายวิชา และบทเรียน ระบบจะแสดงปัญหาที่ควรเตรียมรับมือ โดยไม่เขียนแผนแทนครู</p>
   </div>
   <div class="card">
     <div class="card-title" id="ttContent2">เลือกเนื้อหาและรายวิชา</div>
@@ -166,19 +171,19 @@
   </div>
   <div class="step-nav">
     <button class="btn ghost" id="bkBack">← ย้อนกลับ</button>
-    <button class="btn primary" id="bkGo">สร้างร่างแผนการสอน →</button>
+    <button class="btn primary" id="bkGo">ดูปัญหาและวิธีที่แนะนำ →</button>
   </div>
 </section>
 
 <!-- ============================================= 1. confirm -->
 <section id="s1" class="hide">
   <div class="hero">
-    <h1>ขอเช็กก่อนว่าอ่านถูก</h1>
-    <p>ช่องที่อ่านไม่ชัดอยู่บนสุด ตรวจเฉพาะช่องเหล่านั้นก็พอ</p>
+    <h1>ตรวจสิ่งที่ระบบอ่านจากแผน</h1>
+    <p>ช่องที่ต้องตรวจจะแสดงก่อน ส่วนช่องที่อ่านได้ชัดพับเก็บไว้ให้เปิดดูได้</p>
   </div>
   <div id="confirmBody"></div>
   <div class="row" style="margin-top:24px">
-    <button class="btn primary" id="confirmGo">ถูกแล้ว ตรวจแผนให้เลย</button>
+    <button class="btn primary" id="confirmGo">ตรวจแผนต่อ</button>
     <button class="btn ghost" id="confirmBack">ใช้ไฟล์อื่น</button>
   </div>
 </section>
@@ -186,8 +191,8 @@
 <!-- ============================================= 2. findings -->
 <section id="s2" class="hide">
   <div class="hero">
-    <h1>สิ่งที่ควรเสริม</h1>
-    <p>แสดงไม่เกิน 3 รายการ เรียงตามความสำคัญ ไม่ใช่ตามหมวด</p>
+    <h1>ปัญหาที่พบและวิธีที่แนะนำ</h1>
+    <p>แสดงสูงสุด 3 เรื่องที่สำคัญที่สุด ครูเป็นผู้เลือกว่าจะนำไปใช้หรือไม่</p>
   </div>
   <div id="findings"></div>
 </section>
@@ -198,8 +203,8 @@
 <!-- ============================================= 3. adjusted plan -->
 <section id="s3" class="hide">
   <div class="hero">
-    <h1>แผนการสอนที่ปรับปรุงแล้ว</h1>
-    <p>เปรียบเทียบเนื้อหาเดิมกับข้อเสนอแนะเพื่อเสริมความเข้าใจของผู้เรียน</p>
+    <h1>แผนเดิมพร้อมส่วนที่เลือกเสริม</h1>
+    <p>เปรียบเทียบสิ่งที่ครูเขียนไว้กับข้อเสนอที่ครูเลือก ระบบไม่เขียนแผนใหม่แทน</p>
   </div>
   <div id="planBody"></div>
 </section>

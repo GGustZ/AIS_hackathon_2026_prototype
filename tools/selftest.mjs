@@ -85,3 +85,34 @@ if (acc.length) {
     `ข้อ2 ${pa.how ? pa.how.split('\n').length + ' methods' : 'empty'} | ` +
     `covered ${pa.covered.filter(c => c[1]).length}/${pa.covered.length}`)
 }
+
+// The problem-first path must produce PA wording too. It is intentionally
+// broader than misconception diagnosis and must not claim the system found
+// a teacher-observed problem in the uploaded plan.
+const broad = lib.problemFindings(DB, ['PB-01'])[0]
+const broadMethod = broad && lib.pickMethods(broad, plan, DB, null)[0]
+if (!broad || !broadMethod) {
+  console.error('problem-first regression: PB-01 is not connected to a usable method')
+  process.exitCode = 1
+} else {
+  const broadPa = lib.paDraft(
+    { ...plan, teacherNote: 'นักเรียนต้องรอคำแนะนำจากครูก่อนเริ่มงาน' },
+    [{ methodId: broadMethod.id, problemText: broad.title }], DB)
+  const ok = broadPa.problem.includes('จากการสังเกตของครู') &&
+    broadPa.problem.includes(broad.title) && broadPa.how && !broadPa.how.includes('ขั้นขั้น')
+  console.log(`problem PA  ${ok ? 'ok' : 'FAILED'} | ${broadMethod.id} | no duplicated ขั้น`)
+  if (!ok) process.exitCode = 1
+}
+
+// HIST is append-only, but the profile must use only the latest decision for
+// each finding. Changing one's mind must not count both choices.
+const profileCheck = lib.buildProfile(
+  [{ planId: 'T1', minutesPerPeriod: 50, grade: 'ม.1' }],
+  [
+    { planId: 'T1', findingId: 'F1', action: 'inserted', methodName: 'วิธี ก', shownAt: 1, actedAt: 11 },
+    { planId: 'T1', findingId: 'F1', action: 'undone', shownAt: 1, actedAt: 12 },
+    { planId: 'T1', findingId: 'F1', action: 'rejected', reason: 'no_time', shownAt: 1, actedAt: 13 },
+  ])
+const profileOk = profileCheck.frequentActivities.length === 0 && profileCheck.rejectCounts.no_time === 1
+console.log(`history PA  ${profileOk ? 'ok' : 'FAILED'} | latest decision only`)
+if (!profileOk) process.exitCode = 1

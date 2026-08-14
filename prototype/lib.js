@@ -831,7 +831,7 @@ export function compare(plan, DB, profile = null) {
     if (best.score >= T_REINFORCE) {
       push({
         id: 'C2R-' + mc.id, comparator: 'misconception', severity: 'high', kind: 'reinforce',
-        miscId: mc.id, title: `ข้อความในแผนไปตรงกับความเข้าใจผิดที่พบบ่อยของหน่วยนี้`,
+        miscId: mc.id, title: `แผนอาจตอกย้ำว่า “${mc.name}”`,
         body: mc.name, evidence: best.where?.text?.slice(0, 220), stage: best.where?.stage, matchScore: best.score,
         detail: { misc: mc },
         rule: `ov(MISC.distractor|symptom, ${best.where?.stage || 'plan'}) = ${best.score.toFixed(2)} >= ${T_REINFORCE}`,
@@ -976,25 +976,38 @@ export function problemFindings(DB, problemIds) {
 export function paDraft(plan, accepted, DB) {
   const miscs = accepted.map(a => DB.misc.find(m => m.id === a.miscId)).filter(Boolean)
   const methods = accepted.map(a => DB.method.find(m => m.id === a.methodId)).filter(Boolean)
+  const observedProblems = [...new Set(accepted.map(a => a.problemText).filter(Boolean))]
   const codes = plan.currCodes.join(', ')
-  const problem = miscs.length
-    ? `จากการตรวจสอบแผนการจัดการเรียนรู้ ${plan.unit || ''} รายวิชา${plan.subject || 'วิทยาศาสตร์'} ชั้น${plan.grade || ''} ` +
+  const problemParts = []
+  if (miscs.length) {
+    problemParts.push(`จากการตรวจสอบแผนการจัดการเรียนรู้ ${plan.unit || ''} รายวิชา${plan.subject || 'วิทยาศาสตร์'} ชั้น${plan.grade || ''} ` +
       `ซึ่งจัดการเรียนรู้ตามตัวชี้วัด ${codes} พบว่าผู้เรียนมีแนวคิดคลาดเคลื่อนที่พบบ่อยในหน่วยนี้ ได้แก่ ` +
       miscs.map((m, i) => `(${i + 1}) ${m.name} โดยผู้เรียนมักแสดงออกว่า ${(m.symptom[0] || m.desc)}`).join(' ') +
-      ` แนวคิดคลาดเคลื่อนเหล่านี้ส่งผลต่อการเรียนรู้ในตัวชี้วัดถัดไป จึงจำเป็นต้องออกแบบการจัดการเรียนรู้ที่ทำให้แนวคิดเดิมของผู้เรียนปรากฏออกมาก่อนการสอน`
-    : ''
+      ` แนวคิดคลาดเคลื่อนเหล่านี้อาจส่งผลต่อการเรียนรู้ในตัวชี้วัดถัดไป จึงควรออกแบบการจัดการเรียนรู้ที่ทำให้แนวคิดเดิมของผู้เรียนปรากฏออกมาก่อนการสอน`)
+  }
+  if (observedProblems.length) {
+    problemParts.push(`จากการสังเกตของครู พบปัญหาในห้องเรียน ได้แก่ ${observedProblems
+      .map((p, i) => `(${i + 1}) ${p}`).join(' ')} จึงเลือกแนวทางการสอนที่ตอบโจทย์ปัญหาที่สังเกตพบโดยตรง`)
+  }
+  if (plan.teacherNote) problemParts.push(`รายละเอียดที่ครูบันทึกเพิ่มเติม: ${plan.teacherNote}`)
+  const problem = problemParts.join(' ')
   const how = methods.length
-    ? methods.map((m, i) =>
-        `${i + 1}. ${m.nameTh}${m.nameEn ? ` (${m.nameEn})` : ''} ` +
-        `ในขั้น${m.stage} ใช้เวลาประมาณ ${m.duration} นาที ` +
-        `ดำเนินการโดย ${m.steps.join(' จากนั้น ')}`).join('\n')
+    ? methods.map((m, i) => {
+        const stage = String(m.stage || '').startsWith('ขั้น') ? m.stage : `ขั้น${m.stage}`
+        return `${i + 1}. ${m.nameTh}${m.nameEn ? ` (${m.nameEn})` : ''} ` +
+          `ใน${stage} ใช้เวลาประมาณ ${m.duration} นาที ` +
+          `ดำเนินการโดย ${m.steps.join(' จากนั้น ')}`
+      }).join('\n')
     : ''
+  const problemSource = miscs.length
+    ? 'จาก DB2 MISC ที่ระบบตรวจพบในแผน'
+    : observedProblems.length ? 'จากปัญหาที่ครูเลือกและบันทึกไว้' : 'ยังไม่มีข้อมูลปัญหา'
   return {
     problem, how,
     quantitative: null, // FR-I-03: needs measurement, which is phase 2
     qualitative: null,
     covered: [
-      ['ประเด็นท้าทาย ข้อ 1 สภาพปัญหาของผู้เรียน', !!problem, 'จาก DB2 MISC ที่พบในแผน'],
+      ['ประเด็นท้าทาย ข้อ 1 สภาพปัญหาของผู้เรียน', !!problem, problemSource],
       ['ประเด็นท้าทาย ข้อ 2 วิธีการดำเนินการ', !!how, 'จาก DB4 METHOD ที่ครูรับไป'],
       ['ประเด็นท้าทาย ข้อ 3.1 เชิงปริมาณ (10 คะแนน)', false, 'ต้องมีผลการวัดก่อนและหลัง ซึ่งอยู่ในเฟส 2'],
       ['ประเด็นท้าทาย ข้อ 3.2 เชิงคุณภาพ (10 คะแนน)', false, 'ต้องมีบันทึกสังเกตระหว่างทาง ซึ่งอยู่ในเฟส 2'],
@@ -1101,13 +1114,19 @@ export function buildProfile(plans, events) {
   const mins = plans.map(p => p.minutesPerPeriod).filter(Boolean)
   const mode = mins.sort((a, b) =>
     mins.filter(v => v === a).length - mins.filter(v => v === b).length).pop() || 50
-  const rejected = events.filter(e => e.action === 'rejected')
+  const latest = new Map()
+  for (const e of events) {
+    if (!['inserted', 'rejected', 'undone'].includes(e.action)) continue
+    latest.set(`${e.planId}::${e.findingId}`, e)
+  }
+  const effective = [...latest.values()].filter(e => e.action !== 'undone')
+  const rejected = effective.filter(e => e.action === 'rejected')
   const noMaterials = rejected.filter(e => e.reason === 'no_materials').length >= 3
   const freq = new Map()
-  for (const e of events.filter(x => x.action === 'inserted' && x.methodName)) {
+  for (const e of effective.filter(x => x.action === 'inserted' && x.methodName)) {
     freq.set(e.methodName, (freq.get(e.methodName) || 0) + 1)
   }
-  const decisionTimes = events.filter(e => e.shownAt && e.actedAt).map(e => (e.actedAt - e.shownAt) / 1000)
+  const decisionTimes = effective.filter(e => e.shownAt && e.actedAt).map(e => (e.actedAt - e.shownAt) / 1000)
   return {
     uploads: plans.length,
     typicalPeriodMinutes: mode,

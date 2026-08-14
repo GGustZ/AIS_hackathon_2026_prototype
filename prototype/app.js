@@ -4,7 +4,7 @@
 import {
   loadLibraries, readDocx, readPdf, parsePlan, compare, pickMethods, paDraft,
   buildDocx, savePlan, allPlans, addEvent, allEvents, buildProfile, clearAll,
-  miscForStandard, problemFindings, methodsForBloom,
+  miscForStandard, problemFindings,
 } from './lib.js'
 
 const $ = s => document.querySelector(s)
@@ -55,6 +55,12 @@ function go(id) {
   $('#navPlans').classList.toggle('on', id === 's5')
   $('#navPa').classList.toggle('on', id === 's4')
   window.scrollTo({ top: 0, behavior: 'smooth' })
+  // Move keyboard and screen-reader focus with the visible screen. The heading
+  // is not in the normal tab order after focus leaves it.
+  requestAnimationFrame(() => {
+    const h = $('#' + id).querySelector('h1')
+    if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }) }
+  })
 }
 
 // A labelled bar rather than a spinner, per the design system: the teacher is
@@ -125,6 +131,9 @@ function renderStart() {
 function wireUpload() {
   const drop = $('#drop'), input = $('#file')
   drop.addEventListener('click', () => input.click())
+  drop.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click() }
+  })
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over') })
   drop.addEventListener('dragleave', () => drop.classList.remove('over'))
   drop.addEventListener('drop', e => {
@@ -135,8 +144,22 @@ function wireUpload() {
 }
 
 const READ_TIMEOUT_MS = 25000
+const MAX_FILE_BYTES = 20 * 1024 * 1024
+
+function uploadError(message) {
+  $('#dropmsg').innerHTML = `${ico('warn')}<b>ใช้ไฟล์นี้ไม่ได้</b>
+    <span class="muted">${esc(message)}</span>`
+}
 
 async function handleFile(file) {
+  if (!/\.(docx|pdf)$/i.test(file.name)) {
+    uploadError('รองรับเฉพาะไฟล์ .docx และ .pdf')
+    return
+  }
+  if (file.size > MAX_FILE_BYTES) {
+    uploadError(`ไฟล์มีขนาด ${(file.size / 1024 / 1024).toFixed(1)} MB ซึ่งเกินขีดจำกัด 20 MB`)
+    return
+  }
   const t0 = performance.now()
   const PHASES = ['กำลังอ่านเอกสาร', 'กำลังแยกโครงแผน', 'กำลังตรวจตัวชี้วัด']
   let phase = 0
@@ -215,6 +238,43 @@ const chipHtml = (code, label, sub) =>
   `<label><input type="checkbox" value="${esc(code)}">${esc(label)}${
     sub ? `<span class="sub">${esc(sub)}</span>` : ''}</label>`
 
+const PROBLEM_GROUP_TH = {
+  'Explicit teaching': 'พื้นฐานและการสอนอย่างเป็นขั้นตอน',
+  Scaffolding: 'การช่วยเหลือระหว่างเรียน',
+  Memory: 'ความจำและการเรียกคืนความรู้',
+  Conceptual: 'ความเข้าใจผิดและแนวคิดเดิม',
+  Reasoning: 'การคิดวิเคราะห์และการใช้เหตุผล',
+  Collaboration: 'การมีส่วนร่วมและการเรียนรู้กับเพื่อน',
+  Differentiation: 'ความแตกต่างระหว่างผู้เรียน',
+  Metacognition: 'การวางแผนและกำกับการเรียนรู้ของตนเอง',
+  Engagement: 'แรงจูงใจและความต่อเนื่อง',
+  'Visual / Representation': 'การมองเห็นและเชื่อมโยงรูปแบบข้อมูล',
+}
+
+function problemGroupsHtml(problems) {
+  const groups = new Map()
+  for (const p of problems) {
+    if (!groups.has(p.majorType)) groups.set(p.majorType, [])
+    groups.get(p.majorType).push(p)
+  }
+  const ranked = [...groups.entries()].sort(([, a], [, b]) =>
+    b.filter(p => p.methodId).length - a.filter(p => p.methodId).length)
+  return `<div class="problem-groups">${ranked.map(([type, rows], index) => {
+    const ready = rows.filter(p => p.methodId).length
+    return `<details class="problem-group"${index < 2 ? ' open' : ''}>
+      <summary><span>${esc(PROBLEM_GROUP_TH[type] || type)}</span>
+        <span class="group-count">${rows.length} ปัญหา · พร้อมใช้ ${ready}</span></summary>
+      <div class="checks">${rows.map(p =>
+        `<label class="${p.methodId ? '' : 'unready'}"><input type="checkbox" value="${esc(p.id)}" ${p.methodId ? '' : 'disabled'}>
+          <span>${esc(p.text)}
+          <span class="sub">${p.methodId
+            ? `พร้อมแนะนำ: ${esc(p.strategy)}`
+            : `กำลังเพิ่มข้อมูล: พบวิธีที่เกี่ยวข้องคือ ${esc(p.strategy)} แต่คลังต้นแบบยังไม่มีขั้นตอนและข้อจำกัดเพียงพอสำหรับแนะนำครู`}</span>
+          </span></label>`).join('')}</div>
+    </details>`
+  }).join('')}</div>`
+}
+
 function renderPick() {
   fillContent('pk')
   if (!$('#pkBloom').children.length) {
@@ -227,18 +287,11 @@ function renderPick() {
     // are what the mockup shows and what a teacher can answer quickly.
     $('#pkPisa').innerHTML = T.filter(t => t.kind === 'pisa-domain')
       .map(t => chipHtml(t.code, `${t.code}. ${t.labelEn}`)).join('')
-    $('#pkProblems').innerHTML = state.DB.problem.map(p =>
-      `<label><input type="checkbox" value="${esc(p.id)}">
-        <span>${esc(p.text)}
-        <span class="sub">คลังจับคู่กับ ${esc(p.strategy)}${
-          p.methodId ? '' : ' (ยังไม่มีรายละเอียดในคลังชุดนี้)'}</span>
-        </span></label>`).join('')
-    for (const sel of ['#pkBloom', '#pkDok', '#pkPisa', '#pkProblems']) {
-      $(sel).addEventListener('change', e => {
-        e.target.closest('label')?.classList.toggle('on', e.target.checked)
-        updateSummary()
-      })
-    }
+    $('#pkProblems').innerHTML = problemGroupsHtml(state.DB.problem)
+    $('#pkProblems').addEventListener('change', e => {
+      e.target.closest('label')?.classList.toggle('on', e.target.checked)
+      updateSummary()
+    })
   }
   updateCoverage()
 }
@@ -248,26 +301,24 @@ const checkedIn = sel => [...document.querySelectorAll(sel + ' input:checked')].
 // Live read-out of what the current selection points at, so the teacher sees
 // the mapping before committing rather than after.
 function updateSummary() {
-  const blooms = checkedIn('#pkBloom')
   const probs = checkedIn('#pkProblems')
-  const fromBloom = methodsForBloom(state.DB, blooms)
   const fromProb = probs.map(id => state.DB.problem.find(p => p.id === id)).filter(Boolean)
   const merged = new Map()
   for (const x of fromProb) merged.set(x.strategy, { strategy: x.strategy, methodId: x.methodId })
-  for (const x of fromBloom) if (!merged.has(x.strategy)) merged.set(x.strategy, x)
   const list = [...merged.values()].slice(0, 10)
+  $('#pkGo').disabled = !probs.length
 
   $('#pkSummary').innerHTML = `<div class="sico">${ico('bulb', 20)}</div>
     <div style="flex:1"><b>วิเคราะห์จากสิ่งที่เลือก</b>
       <div class="muted">${list.length
         ? 'คลังจับคู่กับวิธีสอนต่อไปนี้ ตัวที่จางคือยังไม่ได้กรอกรายละเอียดในคลังชุดนี้'
-        : 'ยังไม่ได้เลือกอะไร เลือกปัญหาหรือระดับการคิดเพื่อดูวิธีที่คลังแนะนำ'}</div>
+        : 'เลือกปัญหาอย่างน้อย 1 ข้อ เพื่อดูวิธีที่คลังแนะนำ'}</div>
       <div class="stags">${list.map(x =>
         `<span class="stag ${x.methodId ? '' : 'dim'}">${esc(x.strategy)}</span>`).join('')}</div>
     </div>`
 }
 
-async function startPlan({ grade, std, findings, unit }) {
+async function startPlan({ grade, std, findings, unit, source = 'blank_template', teacherNote = '' }) {
   const { codes, misc } = miscForStandard(state.DB, std, grade)
   // Only claim the indicators the library actually has misconceptions for.
   const mapped = [...new Set(state.DB.map
@@ -275,7 +326,8 @@ async function startPlan({ grade, std, findings, unit }) {
 
   state.doc = { paras: [], kind: 'manual' }
   state.plan = parsePlan({ paras: [], kind: 'manual' })
-  state.plan.source = 'blank_template'
+  state.plan.source = source
+  state.plan.teacherNote = teacherNote
   state.plan.grade = grade
   state.plan.subject = 'วิทยาศาสตร์และเทคโนโลยี'
   state.plan.currCodes = mapped.length ? mapped : codes
@@ -285,7 +337,7 @@ async function startPlan({ grade, std, findings, unit }) {
   await savePlan({
     planId: state.planId, unit, subject: state.plan.subject, grade,
     periods: 1, minutesPerPeriod: 50, currCodes: state.plan.currCodes, kind: 'manual',
-    source: 'blank_template', createdAt: state.plan.createdAt,
+    source, teacherNote, createdAt: state.plan.createdAt,
   })
 
   // FR-J-03: what students get stuck on goes at the very top, above the
@@ -297,11 +349,16 @@ async function startPlan({ grade, std, findings, unit }) {
     rule: `MAP ${std} ${grade} -> ${m.id} frequency=${m.freq}`,
   }))
   state.result = {
-    findings: miscFindings.concat(findings || []),
+    // Evidence supplied by the teacher outranks background library prompts.
+    // The library still adds useful preparation points, but it must not bury
+    // the problem the teacher explicitly selected.
+    findings: (findings || []).concat(miscFindings),
     unknownCodes: [], knownCodes: state.plan.currCodes, budget: 50, allocated: 0,
   }
   state.decisions.clear()
   state.altIndex.clear()
+  state.shownAt.clear()
+  state.current = null
   const [plans, events] = await Promise.all([allPlans(), allEvents()])
   state.profile = buildProfile(plans, events)
   renderFindings()
@@ -311,13 +368,12 @@ async function startPlan({ grade, std, findings, unit }) {
 async function runPick() {
   const grade = $('#pkGrade').value, std = $('#pkStd').value
   const note = $('#pkNote').value.trim()
+  const problems = checkedIn('#pkProblems')
+  if (!problems.length) return
   await startPlan({
     grade, std, unit: `มาตรฐาน ${std} ${grade}`,
-    findings: problemFindings(state.DB, checkedIn('#pkProblems')),
+    findings: problemFindings(state.DB, problems), source: 'problem_first', teacherNote: note,
   })
-  // Free text is kept so the teacher can reuse it, and is never fed into
-  // selection, because free text cannot be counted across teachers later.
-  if (note) state.plan.teacherNote = note
 }
 
 async function runBlank() {
@@ -371,10 +427,30 @@ function renderConfirm() {
         <button class="btn secondary" id="addCode">เพิ่ม</button></div></div>`
   }
 
-  $('#confirmBody').innerHTML = banner + `<div class="card">${fields.map(f => row(...f)).join('')}</div>
+  const needsReview = fields.filter(f => (c[f[0]]?.level || 'none') !== 'high')
+  const clearFields = fields.filter(f => (c[f[0]]?.level || 'none') === 'high')
+  const overview = needsReview.length
+    ? `<div class="confirm-overview warn">${ico('warn')}
+        <div><b>มี ${needsReview.length} ช่องที่ควรตรวจ</b><br>
+        <span>ตรวจเฉพาะรายการด้านล่างก่อนให้ระบบเปรียบเทียบแผน</span></div></div>`
+    : `<div class="confirm-overview ok">${ico('check')}
+        <div><b>ระบบอ่านข้อมูลสำคัญได้ชัดทุกช่อง</b><br>
+        <span>เปิดดูรายละเอียดด้านล่างได้หากต้องการ</span></div></div>`
+  const reviewCard = needsReview.length
+    ? `<div class="card"><h3 style="margin-top:0">ช่องที่ต้องตรวจ</h3>${needsReview.map(f => row(...f)).join('')}</div>`
+    : ''
+  const clearCard = clearFields.length
+    ? `<details class="card confirmed-fields"><summary>
+        <span>ข้อมูลที่อ่านได้ชัด ${clearFields.length} ช่อง</span>
+        <span class="badge ok">ตรวจแล้ว</span></summary>
+        <div style="margin-top:12px">${clearFields.map(f => row(...f)).join('')}</div></details>`
+    : ''
+
+  $('#confirmBody').innerHTML = banner + overview + reviewCard + clearCard + `
     <div class="devline">source=${p.kind} | readMs=${p.readMs} | overallDamage=${p.overallDamage.toFixed(3)}
 | dropped=[${(p.dropped || []).join('')}] | activities=${p.activities.length}
 | confidence=${JSON.stringify(Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.level])))}</div>`
+  $('#confirmGo').disabled = !p.currCodes.length
 
   const add = $('#addCode')
   if (add) add.onclick = () => {
@@ -398,6 +474,9 @@ async function confirmPlan() {
   state.profile = buildProfile(plans, events)
   state.result = compare(p, state.DB, state.profile)
   state.decisions.clear()
+  state.altIndex.clear()
+  state.shownAt.clear()
+  state.current = null
   renderFindings()
   go('s2')
 }
@@ -414,7 +493,9 @@ function renderFindings() {
   const r = state.result, p = state.plan
   const shown = r.findings.slice(0, 3)
   const rest = r.findings.length - shown.length
-  $('#navPa').removeAttribute('aria-disabled')
+  const selectedCount = accepted().length
+  if (selectedCount) $('#navPa').removeAttribute('aria-disabled')
+  else $('#navPa').setAttribute('aria-disabled', 'true')
 
   let head = `<div class="card flat"><b>${esc(p.unit || p.fileName || 'แผนของคุณ')}</b>
     <div class="muted">${esc(p.subject || '')} ${esc(p.grade || '')}
@@ -434,9 +515,15 @@ function renderFindings() {
 
   $('#findings').innerHTML = head + shown.map((f, i) => card(f, i)).join('') +
     (rest > 0 ? `<div class="row"><button class="btn ghost" id="showAll">ดูทั้งหมดอีก ${rest} รายการ</button></div>` : '') +
-    `<div class="row" style="margin-top:32px">
-      <button class="btn primary" id="toPlan">${ico('doc', 18)} ดูแผนที่ปรับปรุงแล้ว</button>
-      <button class="btn secondary" id="toPa">หลักฐาน PA</button></div>`
+    `<div class="decision-summary" aria-live="polite">
+      <div><b>${selectedCount ? `เลือกใช้แล้ว ${selectedCount} รายการ` : 'ยังไม่ได้เลือกข้อเสนอ'}</b>
+        <div class="muted">${selectedCount
+          ? 'ดูตำแหน่งที่เพิ่มในแผนเดิมและหลักฐาน PA ได้แล้ว'
+          : 'เลือก “นำไปใช้” อย่างน้อย 1 รายการก่อนดูผลลัพธ์'}</div></div>
+      <div class="row">
+        <button class="btn primary" id="toPlan" ${selectedCount ? '' : 'disabled'}>${ico('doc', 18)} ดูส่วนที่เลือกเสริม</button>
+        <button class="btn secondary" id="toPa" ${selectedCount ? '' : 'disabled'}>หลักฐาน PA</button>
+      </div></div>`
 
   shown.forEach(f => { if (!state.shownAt.has(f.id)) state.shownAt.set(f.id, Date.now()) })
   wireFindings()
@@ -448,12 +535,21 @@ function card(f, i) {
   const methods = pickMethods(f, state.plan, state.DB, state.profile)
   const idx = state.altIndex.get(f.id) || 0
   const m = methods[idx % (methods.length || 1)]
+  const displayTitle = f.kind === 'reinforce' && mc
+    ? `แผนอาจตอกย้ำว่า “${mc.name}”`
+    : f.title
+  const problemLabel = f.kind === 'problem'
+    ? 'ปัญหาที่ครูเลือก'
+    : state.plan.source === 'blank_template'
+      ? 'ปัญหาที่คลังแนะนำให้เตรียมรับมือ'
+      : 'ปัญหาที่ระบบตรวจพบ'
 
   let body = `<div class="fhead">
       <span class="badge rank">ข้อที่ ${(i ?? 0) + 1}</span>
       <span class="badge ${f.severity}">${SEV_TH[f.severity] || ''}</span>
     </div>
-    <h3>${esc(f.title)}</h3>`
+    <span class="problem-label">${problemLabel}</span>
+    <h3>${esc(displayTitle)}</h3>`
 
   if (f.kind === 'reinforce' && f.evidence) {
     body += `<div class="muted">ข้อความในแผนที่ตรงกับความเข้าใจผิดนี้</div>
@@ -473,6 +569,9 @@ function card(f, i) {
     body += `<div class="propose"><b>วิธีที่แนะนำ</b> ${esc(m.nameTh)}
       ${m.duration ? `· ${m.duration} นาที` : ''} · แทรกที่${esc(m.stage)}
       <div class="muted" style="margin-top:6px">${esc(m.whenToUse)}</div></div>
+      <div class="evidence-line"><span class="badge ${m.status === 'draft' ? 'warn' : 'ok'}">
+        ระดับหลักฐานที่ระบุในคลัง: ${esc(m.evidenceStrength || 'ยังไม่ระบุ')}</span>
+        <span>${m.status === 'draft' ? 'สถานะร่าง ดูข้อจำกัดและที่มาในรายละเอียด' : 'ผ่านการตรวจรับรองในคลัง'}</span></div>
       <div class="row end">
         <button class="btn ghost" data-rej="${f.id}">ไม่ใช้วิธีนี้</button>
         <button class="btn ghost" data-detail="${f.id}">ดูรายละเอียด</button>
@@ -523,13 +622,15 @@ function wireFindings() {
     if (!sel) return
     decide(id, 'rejected', null, sel.value)
   })
-  document.querySelectorAll('[data-undo]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('[data-undo]').forEach(b => b.onclick = async () => {
+    await logEvent(b.dataset.undo, 'undone')
     state.decisions.delete(b.dataset.undo); renderFindings()
   })
   const sa = $('#showAll')
   if (sa) sa.onclick = () => {
-    sa.closest('.row').insertAdjacentHTML('beforebegin',
-      state.result.findings.slice(3).map((f, i) => card(f, i + 3)).join(''))
+    const more = state.result.findings.slice(3)
+    more.forEach(f => { if (!state.shownAt.has(f.id)) state.shownAt.set(f.id, Date.now()) })
+    sa.closest('.row').insertAdjacentHTML('beforebegin', more.map((f, i) => card(f, i + 3)).join(''))
     sa.remove(); wireFindings()
   }
   $('#toPlan').onclick = () => { renderPlan(); go('s3') }
@@ -564,6 +665,7 @@ function renderDetail() {
   const m = methods[rank]
   const ind = state.DB.curr.find(c => state.plan.currCodes.includes(c.code) && c.downstream?.length)
   const downstream = mc && ind ? ind.downstream.map(dc => state.DB.curr.find(x => x.code === dc)).filter(Boolean) : []
+  const displayTitle = f.kind === 'reinforce' && mc ? `แผนอาจตอกย้ำว่า “${mc.name}”` : f.title
 
   if (!m) {
     $('#detailBody').innerHTML = `<div class="hero"><h1>${esc(f.title)}</h1></div>
@@ -576,7 +678,7 @@ function renderDetail() {
   $('#detailBody').innerHTML = `
     <div class="hero">
       <h1>วิธีที่เหมาะกับปัญหานี้</h1>
-      <p>${esc(f.title)}</p>
+      <p>${esc(displayTitle)}</p>
     </div>
 
     <div class="card">
@@ -742,7 +844,11 @@ function download() {
 
 function renderPa() {
   const acc = accepted()
-  const d = paDraft(state.plan, acc.map(a => ({ miscId: a.miscId, methodId: a.methodId })), state.DB)
+  const d = paDraft(state.plan, acc.map(a => ({
+    miscId: a.miscId,
+    methodId: a.methodId,
+    problemText: a.finding?.kind === 'problem' ? a.finding.title : null,
+  })), state.DB)
   $('#paBody').innerHTML = `
     <div class="notice info"><b>ระบบไม่ได้ทำ ว.PA ให้ครบ</b><br>
       ส่วนที่ได้คือหลักฐานของ <b>ประเมิน PA รายปี ส่วนที่ 2 ประเด็นท้าทาย</b> ข้อ 1 และข้อ 2
@@ -781,21 +887,35 @@ const fmtDate = ts => {
     String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
+// HIST is append-only. For counts and plan summaries, only the latest
+// decision for each finding is effective. Variant requests are interaction
+// events, not accept/reject decisions.
+function currentDecisionEvents(events) {
+  const latest = new Map()
+  for (const e of events) {
+    if (!['inserted', 'rejected', 'undone'].includes(e.action)) continue
+    latest.set(`${e.planId}::${e.findingId}`, e)
+  }
+  return [...latest.values()].filter(e => e.action !== 'undone')
+}
+
 async function renderHistory() {
   const [plans, events] = await Promise.all([allPlans(), allEvents()])
   const prof = buildProfile(plans, events)
   state.profile = prof
-  const ins = events.filter(e => e.action === 'inserted')
-  const rej = events.filter(e => e.action === 'rejected')
+  const decisions = currentDecisionEvents(events)
+  const ins = decisions.filter(e => e.action === 'inserted')
+  const rej = decisions.filter(e => e.action === 'rejected')
 
   // One card per plan, newest first, details behind a toggle.
   const cards = [...plans].sort((a, b) => b.createdAt - a.createdAt).map(pl => {
-    const ev = events.filter(e => e.planId === pl.planId)
+    const ev = decisions.filter(e => e.planId === pl.planId)
     const took = ev.filter(e => e.action === 'inserted')
     const left = ev.filter(e => e.action === 'rejected')
     const times = ev.filter(e => e.shownAt && e.actedAt).map(e => (e.actedAt - e.shownAt) / 1000)
     const med = times.length ? times.sort((a, b) => a - b)[Math.floor(times.length / 2)] : null
-    const src = pl.source === 'blank_template' ? 'สร้างจากบทเรียน'
+    const src = pl.source === 'problem_first' ? 'เริ่มจากปัญหาผู้เรียน'
+      : pl.source === 'blank_template' ? 'เริ่มจากบทเรียน'
       : pl.kind === 'docx' ? 'อัปโหลด .docx' : pl.kind === 'pdf' ? 'อัปโหลด .pdf' : 'เลือกจากหลักสูตร'
     return `<div class="hist-card">
       <div class="hist-top">
