@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ตรวจรู้ — ผู้ช่วยตรวจแผนการสอน</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai',sans-serif;background:#f4f5f7;color:#16191d;line-height:1.7;font-size:16px}
+.top{background:#fff;border-bottom:1px solid #e2e5ea;position:sticky;top:0;z-index:20}
+.topin{max-width:880px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px}
+.brand{font-weight:600;font-size:17px;white-space:nowrap}
+.toggle{margin-left:auto;display:flex;background:#f1f3f5;border-radius:8px;padding:3px;gap:2px}
+.toggle button{background:none;border:0;font-family:inherit;font-size:12.5px;padding:5px 12px;border-radius:6px;cursor:pointer;color:#69707a}
+.toggle button.on{background:#fff;color:#16191d;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.steps{max-width:880px;margin:0 auto;padding:0 18px 10px;display:flex;gap:4px;flex-wrap:wrap}
+.sdot{font-size:12px;padding:4px 11px;border-radius:20px;color:#8b929c;background:#f1f3f5;cursor:pointer;white-space:nowrap}
+.sdot.on{background:#0f766e;color:#fff}.sdot.done{background:#e6f5f2;color:#0f766e}
+.wrap{max-width:880px;margin:0 auto;padding:24px 18px 90px}
+h2{font-size:21px;font-weight:600;letter-spacing:-.2px}
+.lead{color:#69707a;font-size:14.5px;margin-top:4px}
+.card{background:#fff;border:1px solid #e2e5ea;border-radius:12px;padding:22px;margin-top:16px}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.path{border:1.5px solid #e2e5ea;border-radius:10px;padding:16px;cursor:pointer}
+.path:hover{border-color:#0f766e}.path.on{border-color:#0f766e;background:#f0faf8}
+.path b{display:block;font-size:15px;margin-bottom:3px}.path span{font-size:13px;color:#69707a}
+.drop{border:1.5px dashed #cbd1d9;border-radius:10px;padding:30px;text-align:center;margin-top:16px;cursor:pointer;background:#fafbfc}
+.drop:hover{border-color:#0f766e;background:#f0faf8}
+.drop b{display:block;font-size:15px}.drop span{font-size:13px;color:#8b929c}
+button{background:#0f766e;color:#fff;border:0;padding:12px 22px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer}
+button.ghost{background:#fff;color:#3b424b;border:1px solid #d3d8de}
+button.ghost:hover{border-color:#0f766e;color:#0f766e}
+button.sm{padding:8px 16px;font-size:14px}
+button.link{background:none;border:0;color:#0f766e;padding:8px 4px;font-size:14px;text-decoration:underline}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.spacer{flex:1}
+.fld{border-top:1px solid #eef0f3;padding:12px 0;display:grid;grid-template-columns:140px 1fr auto;gap:14px;align-items:start}
+.fld:first-of-type{border-top:0}
+.fk{font-size:13.5px;color:#69707a}
+.chk{font-size:12.5px;white-space:nowrap;padding:2px 9px;border-radius:5px;height:fit-content}
+.ok{background:#e6f5f2;color:#0f6e56}.ask{background:#fdf1e0;color:#8a5308}
+/* ---- findings, teacher-first ---- */
+.f{background:#fff;border:1px solid #e2e5ea;border-radius:12px;padding:0;margin-top:14px;overflow:hidden}
+.fbar{height:3px}
+.fbar.a{background:#d1584f}.fbar.b{background:#d99329}.fbar.c{background:#b4b2a9}
+.fin{padding:20px 22px}
+.flab{font-size:12.5px;font-weight:500;color:#8b929c}
+.fh{font-size:17px;font-weight:600;margin:6px 0 10px;line-height:1.45}
+.fp{font-size:15px;color:#3b424b}
+.fp+.fp{margin-top:7px}
+.sug{background:#f4f8f7;border-radius:9px;padding:14px 16px;margin-top:14px}
+.sug .lb{font-size:12.5px;color:#0f766e;font-weight:500}
+.sug .tx{font-size:15px;margin-top:3px}
+.sug .tm{font-size:13px;color:#69707a;margin-top:5px}
+.dev{background:#fbfbfc;border-top:1px dashed #e2e5ea;padding:11px 22px;font-size:12.5px;color:#69707a;font-family:ui-monospace,monospace}
+.dev b{color:#3b424b;font-weight:500}
+.done-in{background:#f0faf8;color:#0f6e56;padding:11px 22px;font-size:14px;border-top:1px solid #e2e5ea}
+.done-out{background:#f7f8f9;color:#69707a;padding:11px 22px;font-size:14px;border-top:1px solid #e2e5ea}
+.f.off{opacity:.5}
+.act{border-left:2px solid #e2e5ea;padding:9px 0 9px 14px;margin-top:10px}
+.act .st{font-size:13px;color:#0f766e;font-weight:500}
+.act .tx{font-size:14.5px;color:#3b424b}
+.act.ins{border-left-color:#1d9e75;background:#f4faf8;border-radius:0 8px 8px 0;padding-right:14px}
+.act.warn{border-left-color:#d99329}
+.newtag{font-size:11.5px;background:#1d9e75;color:#fff;padding:1px 8px;border-radius:4px;margin-left:7px}
+.item{border:1px solid #e2e5ea;border-radius:9px;padding:14px 16px;margin-top:11px}
+.opt{padding:4px 0;font-size:14.5px;color:#3b424b}
+.opt .m{font-size:12.5px;color:#8b929c}
+.opt.good{color:#0f6e56}
+.note{font-size:14px;color:#69707a;background:#f8f9fb;border-radius:9px;padding:14px 16px;margin-top:16px}
+.note.w{background:#fdf6ec;color:#7a4c08}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eef0f3;vertical-align:top}
+th{font-size:13px;color:#69707a;font-weight:500}
+.y{color:#0f6e56;font-weight:500}.n{color:#8f1d1d}.p{color:#8a5308}
+.modal{position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(20,24,28,.45);display:flex;align-items:center;justify-content:center;z-index:40}
+.mbox{background:#fff;border-radius:12px;padding:24px;max-width:420px;width:92%}
+.mbox label{display:block;padding:11px 13px;border:1px solid #e2e5ea;border-radius:8px;margin-top:9px;font-size:15px;cursor:pointer}
+.mbox label:hover{border-color:#0f766e;background:#f0faf8}
+.fld2{margin-top:14px}.fld2:first-child{margin-top:0}
+.fld2 label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+.fld2 select{width:100%;padding:11px 13px;border:1px solid #d5d9df;border-radius:8px;font-family:inherit;font-size:15px;background:#fff}
+.fld2 select:disabled{background:#f3f4f6;color:#9ca3af}
+.hint{font-size:13px;color:#8b929c;margin-top:5px}
+.hide{display:none}
+.hist{border:1px solid #e2e5ea;border-radius:9px;padding:13px 15px;margin-top:10px;font-size:14.5px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.mem{background:#fdf6ec;border:1px solid #f0d9b0;border-radius:10px;padding:15px 17px;margin-top:14px;font-size:14.5px;color:#7a4c08}
+.devonly{display:none}
+body.devmode .devonly{display:block}
+body.devmode .dev{display:block}
+.dev{display:none}
+@media(max-width:700px){.paths{grid-template-columns:1fr}.fld{grid-template-columns:1fr;gap:4px}}
+</style></head><body>
+
+<div class="top">
+ <div class="topin">
+  <div class="brand">ตรวจรู้</div>
+  <div class="toggle">
+   <button id="tv" class="on" onclick="mode(0)">มุมมองครู</button>
+   <button id="dv" onclick="mode(1)">มุมมองเทคนิค</button>
+  </div>
+ </div>
+ <div class="steps" id="steps"></div>
+</div>
+
+<div class="wrap">
+
+<div id="s0">
+ <h2>เริ่มจากแผนที่คุณมีอยู่</h2>
+ <div class="lead">ระบบไม่ได้เขียนแผนแทนคุณ แค่ช่วยดูว่ายังขาดอะไร แล้วเสนอสิ่งที่เติมได้</div>
+ <div class="card">
+  <div class="paths">
+   <div class="path on" data-p="have"><b>มีแผนอยู่แล้ว</b><span>เอาไฟล์มาให้ดูได้เลย</span></div>
+   <div class="path" data-p="none"><b>ยังไม่มีแผน</b><span>บอกว่าจะสอนเรื่องอะไร แล้วเริ่มจากตรงนั้น</span></div>
+  </div>
+  <div id="dropbox"><div class="drop" onclick="go('s1')"><b>เลือกไฟล์ หรือลากมาวาง</b><span>ไฟล์ Word หรือ PDF</span></div>
+  <div class="note">ตัวอย่างนี้เตรียมไฟล์ไว้ให้แล้ว 1 ไฟล์ กดที่กล่องเพื่อดูการทำงาน</div></div>
+  <div id="gonew" class="hide"><div class="row"><button onclick="go('s0b')">บอกว่าจะสอนเรื่องอะไร</button></div>
+  <div class="note">ไม่ต้องมีไฟล์ ตอบ 3 ถึง 5 ข้อ แล้วระบบเสนอองค์ประกอบให้</div></div>
+ </div>
+</div>
+
+
+<div id="s0b" class="hide">
+ <h2>จะสอนเรื่องอะไร</h2>
+ <div class="lead">บอกแค่นี้ก็พอ ระบบจะเสนอองค์ประกอบที่ควรมีให้ ไม่ต้องมีแผนมาก่อน</div>
+ <div class="card">
+  <div class="fld2"><label>ระดับชั้น</label><select id="q_grade"></select></div>
+  <div class="fld2"><label>สาระการเรียนรู้</label><select id="q_strand"></select></div>
+  <div class="fld2"><label>มาตรฐาน</label><select id="q_std" disabled></select></div>
+  <div class="fld2"><label>เรื่องที่จะสอน</label><select id="q_ind" disabled></select></div>
+ </div>
+ <div class="card">
+  <div class="fld2"><label>เจอปัญหาอะไรในห้อง</label>
+   <select id="q_prob"></select>
+   <div class="hint">เลือกข้อที่ใกล้เคียงที่สุด ระบบใช้ข้อนี้เลือกวิธีสอนให้</div></div>
+ </div>
+ <div class="card">
+  <div style="font-size:14px;color:#69707a;margin-bottom:4px">สองข้อนี้ข้ามได้ ถ้ายังไม่แน่ใจ</div>
+  <div class="fld2"><label>อยากให้เด็กทำได้ถึงระดับไหน</label><select id="q_bloom"></select></div>
+  <div class="fld2"><label>ทักษะที่อยากเน้น</label><select id="q_skill"></select></div>
+ </div>
+ <div class="row"><button onclick="build()">ดูข้อเสนอ</button>
+  <button class="ghost" onclick="go('s0')">กลับ</button></div>
+</div>
+
+<div id="s1" class="hide">
+ <h2>ขอเช็กก่อนว่าอ่านถูก</h2>
+ <div class="lead">ถ้าตรงไหนไม่ตรง แก้ได้เลย ระบบจะไม่เดาเอาเองในส่วนที่อ่านไม่ชัด</div>
+ <div class="card" id="pv"></div>
+ <div class="note w" id="parsewarn">ไฟล์นี้ฝังฟอนต์แบบที่ทำให้ตัวอักษรบางตัวหายไปตอนอ่าน ระบบจึงถามยืนยันในส่วนที่ไม่มั่นใจ แทนที่จะเดา</div>
+ <div class="row"><button onclick="go('s2')">ถูกแล้ว ดูต่อ</button><button class="ghost" onclick="go('s0')">เปลี่ยนไฟล์</button></div>
+</div>
+
+<div id="s2" class="hide">
+ <div class="card"><div class="hd" id="fh"></div></div>
+ <div id="mem" class="mem hide">ระบบเคยอ่านแผนของคุณมาแล้ว 5 แผน เลยเทียบกับสิ่งที่คุณเคยทำได้ด้วย ข้อสุดท้ายมาจากตรงนั้น</div>
+ <div id="fl"></div>
+ <div class="row">
+  <button onclick="go('s3')">ดูแผนที่เติมแล้ว</button>
+  <button class="ghost" onclick="go('s4')">คำถามท้ายคาบ</button>
+  <button class="ghost" onclick="go('s5')">เอกสาร PA</button>
+  <div class="spacer"></div>
+  <button class="link" onclick="sim()">ลองดูตอนใช้ครั้งที่ 6</button>
+ </div>
+</div>
+
+<div id="s2d" class="hide"></div>
+
+<div id="s3" class="hide">
+ <h2>แผนของคุณ ที่เติมส่วนที่ขาดแล้ว</h2>
+ <div class="lead">สีเขียวคือส่วนที่เพิ่มเข้าไป ที่เหลือเป็นของเดิมทุกตัวอักษร</div>
+ <div class="card"><div class="hd" id="tm" style="font-size:14px;color:#69707a"></div><div id="pl" style="margin-top:12px"></div></div>
+ <div class="note">ระบบไม่เขียนแผนใหม่ให้ เพราะคุณต้องเอาแผนนี้ไปอธิบายต่อหน้าคณะกรรมการ มันควรเป็นภาษาของคุณ</div>
+ <div class="row"><button>ดาวน์โหลดไฟล์ Word</button><button class="ghost" onclick="go('s4')">ดูคำถามท้ายคาบ</button></div>
+</div>
+
+<div id="s4" class="hide">
+ <h2>คำถามท้ายคาบ</h2>
+ <div class="lead">ใช้เช็กว่าที่สอนไปวันนี้ติดหรือไม่ติด ก่อนจะขึ้นเรื่องใหม่</div>
+ <div class="card" id="it"></div>
+ <div class="note">ตัวเลือกที่ผิดในแต่ละข้อไม่ได้สุ่มมา แต่ละตัวตรงกับความเข้าใจผิดคนละแบบ ถ้าเด็กเลือกข้อไหนเยอะ คุณจะรู้ทันทีว่าต้องย้อนตรงไหน</div>
+ <div class="row"><button>พิมพ์</button><button class="ghost" onclick="go('s5')">ดูเอกสาร PA</button></div>
+</div>
+
+<div id="s5" class="hide">
+ <h2>เอกสารที่เอาไปใช้กับ ว.PA ได้</h2>
+ <div class="lead">จากสิ่งที่ทำในรอบนี้ ใช้ได้กับส่วนไหนบ้าง</div>
+ <div class="card"><table id="pa"></table></div>
+ <div class="note w">ระบบช่วยได้ 6 จาก 9 ส่วน ไม่ได้ทำ PA ให้ทั้งหมด ส่วนที่ต้องมีผลการวัดจริงยังต้องรอ</div>
+ <div class="row"><button>ส่งออก PDF</button><button class="ghost" onclick="go('s6')">ดูสิ่งที่เคยเลือกไว้</button></div>
+</div>
+
+<div id="s6" class="hide">
+ <h2>สิ่งที่คุณเคยเลือกไว้</h2>
+ <div class="lead">ระบบจำไว้ว่าคุณรับอะไรและไม่รับอะไร ครั้งหน้าจะได้ไม่เสนอซ้ำในสิ่งที่คุณบอกว่าใช้ไม่ได้</div>
+ <div class="card" id="hl"></div>
+ <div class="note">ตอนกดไม่เอา ระบบให้เลือกเหตุผลจากรายการแทนที่จะให้พิมพ์ เพราะถ้าคุณบอกว่าไม่มีอุปกรณ์บ่อยๆ มันจะเลิกเสนอวิธีที่ต้องใช้อุปกรณ์ไปเอง โดยคุณไม่ต้องมาตั้งค่าอะไร</div>
+ <div class="card devonly" style="border-style:dashed;opacity:.75">
+  <div style="font-weight:600">ยังไม่ได้สร้าง · วัดผลก่อนและหลัง</div>
+  <div style="font-size:14px;margin-top:6px;color:#3b424b">เก็บผลคำถามท้ายคาบเข้าระบบ แล้วเทียบกับตัวชี้วัดเดิม เพื่อบันทึกว่าวิธีที่เลือกได้ผลกับห้องนี้จริงหรือไม่ ส่วนนี้คือที่มาของหลักฐานเชิงปริมาณในประเด็นท้าทาย และเป็นสิ่งที่ทำให้ระบบไม่เสนอวิธีที่เคยล้มเหลวซ้ำ</div>
+ </div>
+</div>
+
+</div>
+
+<div id="modal" class="modal hide"><div class="mbox">
+ <div style="font-weight:600;font-size:17px">ไม่เอาเพราะอะไร</div>
+ <div style="font-size:14px;color:#69707a">เลือกได้เลย ไม่ต้องพิมพ์</div>
+ <label onclick="rej('เวลาไม่พอ')">เวลาไม่พอ</label>
+ <label onclick="rej('ไม่มีอุปกรณ์')">ไม่มีอุปกรณ์</label>
+ <label onclick="rej('ไม่เหมาะกับห้องนี้')">ไม่เหมาะกับห้องนี้</label>
+ <label onclick="rej('ไม่เห็นด้วยกับวิธีนี้')">ไม่เห็นด้วยกับวิธีนี้</label>
+ <div class="row"><button class="ghost" onclick="document.getElementById('modal').classList.add('hide')">ปิด</button></div>
+</div></div>
+
+<script>
+const P={unit:"หน่วยที่ 4 การดำรงชีวิตของพืช",name:"การสังเคราะห์ด้วยแสง",
+ grade:"ม.1",periods:1,min:50,
+ curr:["ว 1.2 ม.1/6","ว 1.2 ม.1/7","ว 1.2 ม.1/8"],
+ obj:["อธิบายปัจจัยที่จำเป็นในการสังเคราะห์ด้วยแสงและผลผลิตที่ได้ (K)",
+      "สังเกตและแยกได้ว่าบริเวณใดเกิดและไม่เกิดการสังเคราะห์ด้วยแสง (P)",
+      "เห็นความสำคัญของการสังเคราะห์ด้วยแสงต่อสิ่งมีชีวิตและสิ่งแวดล้อม (A)"],
+ acts:[{s:"1 สร้างความสนใจ",m:5,x:"ถามคำถามนำ 4 ข้อ เช่น หลังจากพืชงอกแล้ว พืชใช้อาหารจากแหล่งใดในการเจริญเติบโต"},
+       {s:"2 สำรวจและค้นหา",m:20,x:"ดูวีดิทัศน์ 2 เรื่อง แล้วแจกใบความรู้และอธิบายเพิ่มเติม"},
+       {s:"3 อธิบายและลงข้อสรุป",m:0,x:"แบ่งกลุ่ม 3 กลุ่ม เล่นเกม Kahoot! แบบทีม 10 ข้อ"},
+       {s:"4 ขยายความรู้",m:0,x:"ดูคลิปปัญหาสิ่งแวดล้อม แล้วเชื่อมโยงกับภาวะโลกร้อน"},
+       {s:"5 ประเมิน",m:0,x:"ใช้คะแนนจากเกม Kahoot! ในขั้นที่ 3"}],
+ mat:["ใบความรู้","สไลด์","เกม Kahoot!"]};
+
+const F=[
+{id:"F1",lv:"a",lab:"ควรเติมมากที่สุด",
+ h:"เฉลยในขั้นสร้างความสนใจ อาจทำให้เด็กเข้าใจผิดมากขึ้น",
+ p:["คำถามข้อ 2 ถามว่าพืชใช้อาหารจากแหล่งใด เฉลยที่เขียนไว้คือ <b>รากดูดซึมน้ำและสารอาหารจากดิน</b>",
+    "คำว่าสารอาหารตรงนี้ทำให้เด็กเชื่อมไปหาความเข้าใจผิดที่พบบ่อยที่สุดของเรื่องนี้ คือคิดว่าพืชได้อาหารจากดิน ทั้งที่รากดูดแร่ธาตุ ส่วนอาหารพืชสร้างเอง"],
+ sug:"แก้เฉลยเป็น รากดูดน้ำและแร่ธาตุ ส่วนอาหารคือน้ำตาลที่พืชสร้างขึ้นเอง แล้วถามต่อว่าถ้าอย่างนั้นน้ำหนักที่เพิ่มขึ้นของต้นไม้มาจากไหน",
+ tm:"อยู่ในขั้นที่ 1 เดิม ไม่ต้องเพิ่มเวลา",
+ dev:"comparator 2 · DB2 M-PHOTO-01 · frequency สูงมาก · persistence สูง · evidence สูง · DB4 T-CC-01 Cognitive Conflict"},
+{id:"F2",lv:"b",lab:"ควรเติม",
+ h:"เฉลยข้อ 10 ของเกม อาจทำให้เด็กคิดว่าพืชไม่หายใจตอนกลางวัน",
+ p:["เฉลยเขียนว่า กลางคืนต้นไม้จะไม่สังเคราะห์แสง <b>แต่จะมีแต่การหายใจเท่านั้น</b>",
+    "ประโยคนี้ถูกในบริบทของมัน แต่เด็กมักอ่านต่อเองว่ากลางวันพืชไม่หายใจ ซึ่งเป็นความเข้าใจผิดที่ติดยาวไปถึงเรื่องการหายใจระดับเซลล์"],
+ sug:"เติมหนึ่งประโยคในเฉลยว่า พืชหายใจตลอดเวลาทั้งกลางวันและกลางคืน ต่างกันที่กลางวันมีการสังเคราะห์ด้วยแสงเกิดขึ้นพร้อมกันด้วย",
+ tm:"แก้ในเอกสารเฉลย ไม่กระทบเวลาสอน",
+ dev:"comparator 2 · DB2 M-PHOTO-03 · frequency สูงมาก · persistence ปานกลาง · DB4 T-CC-02 Conceptual Change"},
+{id:"F3",lv:"c",lab:"ลองดู",
+ h:"สามขั้นสุดท้ายยังไม่ได้ระบุเวลา ในคาบ 50 นาที",
+ p:["ขั้นที่ 1 กับ 2 ระบุไว้ 5 และ 20 นาที รวม 25 นาที ส่วนขั้นที่ 3 4 5 ยังไม่มีตัวเลข",
+    "เกม Kahoot! 10 ข้อแบบทีม กับการดูคลิปอีกหนึ่งเรื่อง มักใช้เวลารวมเกิน 25 นาทีที่เหลืออยู่"],
+ sug:"ลองกำหนดเป็น ขั้นที่ 3 อธิบายและลงข้อสรุป 15 นาที ขั้นที่ 4 ขยายความรู้ 7 นาที ขั้นที่ 5 ประเมิน 3 นาที",
+ tm:"รวมทั้งคาบพอดี 50 นาที",
+ dev:"constraint validation · PLAN.minutes_per_period=50 · sum(activities.duration)=25 · 3 stages null"}];
+
+const F4={id:"F4",lv:"b",lab:"ควรเติม",
+ h:"คุณมักให้เด็กทำนายก่อนดูคลิป แต่แผนนี้ยังไม่มี",
+ p:["จากแผน 5 แผนที่ผ่านมา คุณใส่ช่วงให้เด็กทายผลก่อนดูวีดิทัศน์ไว้ 4 ครั้ง",
+    "แผนนี้ให้ดูคลิปเลย ซึ่งเด็กมักดูผ่านตาโดยไม่ได้คิดตาม"],
+ sug:"เพิ่ม 3 นาทีก่อนเปิดคลิป ให้เด็กเขียนคำตอบของตัวเองก่อน แล้วค่อยดูว่าตรงกันไหม",
+ tm:"เพิ่ม 3 นาที ในขั้นที่ 2",
+ dev:"comparator 3 · DB8 teacher history · pattern freq 4/5 plans"};
+
+const $=q=>document.querySelector(q);
+let cur='s0',seen={s0:1},dec={},rejd=[],run=1;
+const SC=['s0','s0b','s1','s2','s2d','s3','s4','s5','s6'];
+const NM={s0:'เริ่มต้น',s0b:'เรื่องที่จะสอน',s1:'ตรวจข้อมูล',s2:'สิ่งที่ควรเสริม',s2d:'ที่มา',s3:'แผนของคุณ',s4:'คำถามท้ายคาบ',s5:'เอกสาร PA',s6:'สิ่งที่เคยเลือก'};
+
+function mode(d){document.body.classList.toggle('devmode',!!d);$('#tv').classList.toggle('on',!d);$('#dv').classList.toggle('on',!!d);}
+function nav(){const n=$('#steps');n.innerHTML='';SC.forEach(s=>{if(s==='s2d'&&!seen.s2d)return;
+ const d=document.createElement('div');d.className='sdot'+(cur===s?' on':(seen[s]?' done':''));
+ d.textContent=NM[s];d.onclick=()=>{if(seen[s])go(s)};n.appendChild(d)})}
+function go(s){cur=s;seen[s]=1;SC.forEach(x=>$('#'+x).classList.toggle('hide',x!==s));nav();scrollTo({top:0,behavior:'smooth'});R[s]&&R[s]()}
+
+const R={};
+R.s1=()=>{
+ const f=(k,v,ok)=>`<div class="fld"><div class="fk">${k}</div><div>${v}</div>
+   <div><span class="chk ${ok?'ok':'ask'}">${ok?'อ่านได้ชัด':'ช่วยดูให้หน่อย'}</span></div></div>`;
+ $('#pv').innerHTML=
+  f('หน่วย / เรื่อง',P.unit+'<br>'+P.name,1)+
+  f('ชั้น / เวลา',P.grade+' · '+P.periods+' คาบ '+P.min+' นาที',1)+
+  f('ตัวชี้วัด','<b>'+P.curr.join(' · ')+'</b>',1)+
+  f('จุดประสงค์',P.obj.join('<br>'),0)+
+  f('กิจกรรม',P.acts.map(a=>'<b>'+a.s+'</b> '+(a.m?a.m+' นาที':'<span style="color:#8a5308">ยังไม่ระบุเวลา</span>')+'<br>'+a.x).join('<br><br>'),0)+
+  f('สื่อที่ใช้',P.mat.join(' · '),1)+
+  f('บันทึกหลังสอน','<span style="color:#8b929c">ไม่พบในเอกสาร</span>',1);
+};
+
+R.s2=()=>{
+ const list=MODE==='new'?NEWF:(run>1?F.concat([F4]):F);
+ const n=list.filter(x=>dec[x.id]!=='r').length;
+ $('#fh').innerHTML = MODE==='new'
+  ? `<div><div style="font-size:18px;font-weight:600">องค์ประกอบที่ควรมีในแผนนี้</div>
+     <div style="font-size:14px;color:#69707a">${$('#q_ind').selectedOptions[0]?.text||'ตามเรื่องที่เลือก'}</div></div>
+     <div style="font-size:15px;font-weight:500;color:#0f766e">เสนอ ${n} อย่าง</div>`
+  : `<div><div style="font-size:18px;font-weight:600">อ่านแผนเสร็จแล้ว</div>
+     <div style="font-size:14px;color:#69707a">${P.name} · ${P.grade} · เนื้อหาตรงกับตัวชี้วัดที่ระบุไว้ครบ</div></div>
+     <div style="font-size:15px;font-weight:500;color:#8f1d1d">มี ${n} จุดที่น่าจะเติมได้</div>`;
+ $('#fl').innerHTML=list.map(x=>{
+  const d=dec[x.id];
+  let foot='';
+  if(d==='i')foot=`<div class="done-in">เติมเข้าแผนแล้ว</div>`;
+  else if(d==='r')foot=`<div class="done-out">ไม่เอา · ${(rejd.find(r=>r.id===x.id)||{}).w||''}</div>`;
+  else foot=`<div class="fin" style="padding-top:0"><div class="row" style="margin-top:14px">
+    <button class="sm" onclick="ins('${x.id}')">ใช้เลย</button>
+    <button class="ghost sm" onclick="alt()">ขอแบบอื่น</button>
+    <button class="ghost sm" onclick="ropen('${x.id}')">ไม่เอา</button>
+    <button class="link" onclick="det('${x.id}')">ทำไมถึงแนะนำแบบนี้</button></div></div>`;
+  return `<div class="f ${d==='r'?'off':''}"><div class="fbar ${x.lv}"></div>
+   <div class="fin"><div class="flab">${x.lab}</div><div class="fh">${x.h}</div>
+    ${x.p.map(t=>'<div class="fp">'+t+'</div>').join('')}
+    <div class="sug"><div class="lb">เติมแบบนี้ได้</div><div class="tx">${x.sug}</div><div class="tm">${x.tm}</div></div>
+   </div>${foot}<div class="dev">${x.dev}</div></div>`}).join('');
+};
+
+let cf=null;
+function det(id){cf=(MODE==='new'?NEWF:(run>1?F.concat([F4]):F)).find(x=>x.id===id);go('s2d')}
+R.s2d=()=>{const x=cf||F[0];
+ $('#s2d').innerHTML=`<h2>${x.h}</h2><div class="lead">ที่มาของคำแนะนำนี้</div>
+ <div class="card"><div class="fh" style="font-size:16px">เรื่องนี้เด็กมักติดตรงไหน</div>
+  ${x.p.map(t=>'<div class="fp">'+t+'</div>').join('')}
+  <div class="note">ความเข้าใจผิดแบบนี้ไม่หายไปด้วยการอธิบายซ้ำ เพราะเด็กมีคำอธิบายของตัวเองอยู่แล้วและมันใช้ได้ในชีวิตประจำวัน วิธีที่ได้ผลกว่าคือให้เขาเจอกับหลักฐานที่ขัดกับสิ่งที่เขาเชื่อด้วยตัวเอง</div></div>
+ <div class="card"><div class="fh" style="font-size:16px">ความน่าเชื่อถือของคำแนะนำ</div>
+  <div class="fp">มาจากงานวิจัยด้านการสอนวิทยาศาสตร์ที่ศึกษาเรื่องนี้ไว้ค่อนข้างมาก</div>
+  <div class="note w"><b>ข้อจำกัดที่ควรรู้</b> งานวิจัยส่วนใหญ่ทำกับนักเรียนในอเมริกาและยุโรป ยังไม่มีการทดสอบซ้ำในห้องเรียนไทย และผลจะดีที่สุดเมื่อเด็กได้ลงมือทดลองเอง ถ้าใช้วิธีสาธิตหน้าชั้นแทน ผลจะอ่อนลง</div>
+  <div class="note">ระบบบอกข้อจำกัดทุกครั้ง แม้จะทำให้คำแนะนำดูอ่อนลง เพราะคุณควรรู้ว่ากำลังตัดสินใจบนอะไร</div></div>
+ <div class="card devonly"><div class="fh" style="font-size:16px">มุมมองเทคนิค</div>
+  <div style="font-family:ui-monospace,monospace;font-size:13px;color:#3b424b">${x.dev}</div></div>
+ <div class="row"><button onclick="ins('${x.id}');go('s3')">ใช้เลย</button>
+  <button class="ghost" onclick="go('s2')">กลับไปดูรายการ</button></div>`;
+};
+
+function ins(id){dec[id]='i';if(cur==='s2')R.s2();else go('s2')}
+function alt(){alert('เสนอวิธีอื่นที่แก้เรื่องเดียวกัน')}
+function ropen(id){$('#modal').classList.remove('hide');$('#modal').dataset.id=id}
+function rej(w){const id=$('#modal').dataset.id;dec[id]='r';rejd.push({id,w});$('#modal').classList.add('hide');go('s2')}
+function sim(){run=6;$('#mem').classList.remove('hide');go('s2')}
+
+R.s3=()=>{
+ let a=P.acts.map(x=>({...x}));
+ if(dec.F3==='i'){a[2].m=15;a[3].m=7;a[4].m=3;a[2].fix=a[3].fix=a[4].fix=1}
+ if(dec.F1==='i')a[0].add='แก้เฉลยข้อ 2 เป็น รากดูดน้ำและแร่ธาตุ อาหารพืชสร้างเอง แล้วถามต่อว่าน้ำหนักต้นไม้ที่เพิ่มขึ้นมาจากไหน';
+ if(dec.F2==='i')a[2].add='เติมในเฉลยข้อ 10 ว่าพืชหายใจตลอดเวลา ทั้งกลางวันและกลางคืน';
+ if(dec.F4==='i'){a[1].add='ก่อนเปิดคลิป ให้เด็กเขียนคำตอบของตัวเองก่อน 3 นาที';a[1].m=23}
+ const tot=a.reduce((s,x)=>s+x.m,0);
+ $('#tm').innerHTML=`รวมเวลาที่ระบุไว้ ${tot} นาที จากคาบละ ${P.min} นาที ` +
+  (tot===P.min?'<span style="color:#0f6e56">พอดี</span>':tot>P.min?'<span style="color:#8f1d1d">เกินไป '+(tot-P.min)+' นาที</span>':'<span style="color:#8a5308">ยังเหลือ '+(P.min-tot)+' นาทีที่ยังไม่ได้ระบุ</span>');
+ $('#pl').innerHTML=a.map(x=>`<div class="act ${x.add?'ins':(x.fix?'warn':'')}">
+  <div class="st">ขั้นที่ ${x.s} · ${x.m?x.m+' นาที':'ยังไม่ระบุเวลา'}${x.fix?'<span class="newtag">กำหนดเวลาแล้ว</span>':''}</div>
+  <div class="tx">${x.x}</div>
+  ${x.add?'<div class="tx" style="margin-top:6px;color:#0f6e56"><b>เพิ่ม</b> '+x.add+'</div>':''}</div>`).join('');
+};
+
+R.s4=()=>{
+ const q=[{q:"ต้นไม้ในกระถางโตขึ้นจนหนักกว่าเดิมมาก น้ำหนักที่เพิ่มขึ้นส่วนใหญ่มาจากอะไร",
+  o:[["อากาศ ผ่านแก๊สคาร์บอนไดออกไซด์",1,""],["ดินในกระถางที่พร่องลงไป",0,"คิดว่าอาหารและมวลมาจากดิน"],["น้ำที่รดทุกวันเท่านั้น",0,"ยังไม่แยกน้ำกับคาร์บอน"],["ปุ๋ยที่ใส่ลงไป",0,"คิดว่าปุ๋ยคืออาหารของพืช"]]},
+  {q:"ตอนกลางวันที่แดดจัด พืชกำลังทำอะไรอยู่",
+  o:[["สังเคราะห์ด้วยแสงและหายใจไปพร้อมกัน",1,""],["สังเคราะห์ด้วยแสงอย่างเดียว ไม่หายใจ",0,"คิดว่าสองอย่างสลับกัน ไม่เกิดพร้อมกัน"],["หายใจอย่างเดียว",0,"สลับสองกระบวนการ"],["พักผ่อน ไม่ทำอะไร",0,"ยังไม่เข้าใจกระบวนการ"]]},
+  {q:"อาหารของพืชคืออะไร",
+  o:[["น้ำตาลที่พืชสร้างขึ้นเอง",1,""],["แสงแดด",0,"สับสนพลังงานกับสาร"],["แร่ธาตุในดิน",0,"คิดว่าอาหารมาจากดิน"],["น้ำ",0,"สับสนวัตถุดิบกับผลผลิต"]]}];
+ $('#it').innerHTML=q.map((x,i)=>`<div class="item"><div style="font-weight:500">ข้อ ${i+1} ${x.q}</div>
+  ${x.o.map((o,j)=>`<div class="opt ${o[1]?'good':''}">${'กขคง'[j]}. ${o[0]}
+   ${o[1]?' <span class="m">ถูก</span>':'<div class="m devonly" style="padding-left:18px">'+o[2]+'</div>'}</div>`).join('')}
+  </div>`).join('')+`<div class="note">ถ้ามีเด็กเกิน 30% ตอบข้อเดียวกันผิด ให้ย้อนกลับไปสอนตรงนั้นก่อนขึ้นเรื่องใหม่</div>`;
+};
+
+R.s5=()=>{
+ const r=[["แผนการจัดการเรียนรู้ สำหรับ ว.PA ด้านที่ 1","y","แผนที่เติมแล้ว โหลดเป็นไฟล์ Word ได้"],
+  ["ตัวชี้วัด 1.2 ออกแบบการจัดการเรียนรู้","y","แผนพร้อมเหตุผลว่าทำไมออกแบบแบบนี้"],
+  ["ตัวชี้วัด 1.5 วัดและประเมินผล","p","ได้เครื่องมือวัด แต่ยังไม่มีผลการวัดจริง"],
+  ["ตัวชี้วัด 1.6 ศึกษาวิเคราะห์เพื่อแก้ปัญหา","y","บันทึกว่าเจอปัญหาอะไรและเลือกวิธีไหน"],
+  ["ประเด็นท้าทาย ข้อ 1 สภาพปัญหาของผู้เรียน","y","ระบุปัญหาพร้อมที่มา"],
+  ["ประเด็นท้าทาย ข้อ 2 วิธีการดำเนินการ","y","จากวิธีที่คุณเลือกใช้"],
+  ["ประเด็นท้าทาย ข้อ 3.1 ผลเชิงปริมาณ","n","ต้องมีผลการวัดจริงก่อน"],
+  ["ประเด็นท้าทาย ข้อ 3.2 ผลเชิงคุณภาพ","n","ต้องมีผลการวัดจริงก่อน"],
+  ["ตารางภาระงานใน PA1","y","ถ้ากรอกจำนวนคาบต่อสัปดาห์ไว้"]];
+ $('#pa').innerHTML='<tr><th>ส่วนของ PA</th><th style="width:90px">ได้ไหม</th><th>ระบบให้อะไร</th></tr>'+
+  r.map(x=>`<tr><td>${x[0]}</td><td class="${x[1]}">${x[1]==='y'?'ได้':x[1]==='p'?'บางส่วน':'ยังไม่ได้'}</td>
+   <td style="color:#69707a">${x[2]}</td></tr>`).join('');
+};
+
+R.s6=()=>{
+ const all=MODE==='new'?NEWF:(run>1?F.concat([F4]):F);
+ const h=all.filter(x=>dec[x.id]).map(x=>{const d=dec[x.id];
+  return `<div class="hist"><b>${d==='i'?'ใช้':'ไม่เอา'}</b> ${x.h}
+   <div style="font-size:13px;color:#69707a">${d==='r'?'เหตุผล '+(rejd.find(r=>r.id===x.id)||{}).w:'เติมเข้าแผนแล้ว'}</div></div>`}).join('');
+ $('#hl').innerHTML=h||'<div class="note">ยังไม่ได้เลือกอะไรในรอบนี้ ลองกลับไปหน้าสิ่งที่ควรเสริมแล้วกดใช้หรือไม่เอาดู</div>';
+};
+
+const D={"MODEL": [{"s": "Inquiry-Based Learning", "r": "Structured Inquiry", "d": "ครูกำหนดปัญหา ขั้นตอน และวิธีดำเนินการค่อนข้างชัดเจน นักเรียนปฏิบัติตามเพื่อหาคำตอบ", "b": "3. ประยุกต์ใช้"}, {"s": "Inquiry-Based Learning", "r": "Guided Inquiry", "d": "ครูกำหนดคำถามหรือปัญหา แต่ให้นักเรียนคิดวิธีศึกษา/ทดลองและหาหลักฐานด้วยตนเองบางส่วน", "b": "4. วิเคราะห์"}, {"s": "Inquiry-Based Learning", "r": "Open Inquiry", "d": "นักเรียนกำหนดคำถาม วิธีศึกษา และดำเนินการสืบเสาะด้วยตนเอง", "b": "5. ประเมิน"}, {"s": "Problem-Based Learning", "r": "Structured PBL", "d": "ใช้ปัญหาเป็นตัวขับเคลื่อนการเรียนรู้ แต่ครูกำหนดกรอบหรือขั้นตอนค่อนข้างชัด", "b": "3. ประยุกต์ใช้"}, {"s": "Problem-Based Learning", "r": "Open-ended PBL", "d": "ปัญหามีความซับซ้อนและมีคำตอบ/วิธีแก้ได้หลายแบบ นักเรียนเลือกแนวทางเอง", "b": "6. สร้างสรรค์"}, {"s": "Scenario-Based Learning", "r": "Decision scenario", "d": "ให้นักเรียนตัดสินใจจากข้อมูล หลักฐาน ทางเลือก หรือผลกระทบ", "b": "5. ประเมิน"}, {"s": "Scenario-Based Learning", "r": "Case scenario", "d": "วิเคราะห์กรณีหรือสถานการณ์เพื่อหาสาเหตุ อธิบายปัญหา หรือเสนอแนวทางแก้", "b": "4. วิเคราะห์"}, {"s": "Scenario-Based Learning", "r": "Simulation scenario", "d": "จำลองสถานการณ์หรือระบบเพื่อให้ทดลอง ปรับตัวแปร และสังเกตผล", "b": "3. ประยุกต์ใช้"}, {"s": "Phenomenon-Based Learning", "r": "Observation", "d": "เรียนรู้จากการสังเกตวัตถุ ปรากฏการณ์ หรือการเปลี่ยนแปลง", "b": "2. เข้าใจ"}, {"s": "Phenomenon-Based Learning", "r": "Explanation", "d": "สร้างคำอธิบายทางวิทยาศาสตร์โดยใช้หลักฐานและเหตุผล", "b": "2. เข้าใจ"}, {"s": "Phenomenon-Based Learning", "r": "Investigation", "d": "สืบค้นหาคำตอบอย่างเป็นระบบ ตั้งคำถาม วางแผน เก็บและวิเคราะห์ข้อมูล", "b": "4. วิเคราะห์"}, {"s": "Context-Based Learning", "r": "Real-life context", "d": "เชื่อมเนื้อหากับชีวิตประจำวันและสถานการณ์ที่นักเรียนพบจริง", "b": "3. ประยุกต์ใช้"}, {"s": "Context-Based Learning", "r": "Societal context", "d": "เชื่อมวิทยาศาสตร์กับปัญหาและการตัดสินใจในระดับสังคม", "b": "5. ประเมิน"}, {"s": "Context-Based Learning", "r": "Local context", "d": "ใช้บริบท ปัญหา ทรัพยากร หรือปรากฏการณ์ในท้องถิ่น/ชุมชน", "b": "3. ประยุกต์ใช้"}, {"s": "STS / STSE", "r": "Science–Technology–Society", "d": "เชื่อมโยงวิทยาศาสตร์ เทคโนโลยี และผลกระทบต่อสังคม", "b": "5. ประเมิน"}, {"s": "STS / STSE", "r": "Environment", "d": "ใช้สิ่งแวดล้อมหรือปัญหาสิ่งแวดล้อมเป็นบริบทในการเรียนรู้", "b": "4. วิเคราะห์"}, {"s": "Project-Based Learning", "r": "Investigation project", "d": "โครงงานที่มุ่งศึกษาหาคำตอบหรือสร้างองค์ความรู้จากการสืบค้น/ทดลอง", "b": "5. ประเมิน"}, {"s": "Project-Based Learning", "r": "Product project", "d": "โครงงานที่มีเป้าหมายสร้างชิ้นงานหรือผลิตภัณฑ์", "b": "6. สร้างสรรค์"}, {"s": "Project-Based Learning", "r": "Community project", "d": "โครงงานที่มุ่งแก้ปัญหาหรือสร้างประโยชน์ให้ชุมชน", "b": "6. สร้างสรรค์"}, {"s": "Engineering Design", "r": "Define → Design → Build → Test → Improve", "d": "กระบวนการออกแบบเชิงวิศวกรรมอย่างเป็นขั้นตอน", "b": "6. สร้างสรรค์"}, {"s": "Collaborative Learning", "r": "Pair", "d": "นักเรียนทำงานร่วมกัน 2 คน", "b": "2. เข้าใจ"}, {"s": "Collaborative Learning", "r": "Small group", "d": "นักเรียนทำงานร่วมกันเป็นกลุ่มขนาดเล็ก", "b": "4. วิเคราะห์"}, {"s": "Collaborative Learning", "r": "Team-based", "d": "ทำงานเป็นทีม มีการแบ่งบทบาทและความรับผิดชอบ", "b": "4. วิเคราะห์"}, {"s": "Cooperative Learning", "r": "Jigsaw", "d": "สมาชิกแต่ละคน/กลุ่มเชี่ยวชาญเนื้อหาส่วนหนึ่ง แล้วกลับมาถ่ายทอดให้กลุ่ม", "b": "2. เข้าใจ"}, {"s": "Cooperative Learning", "r": "STAD", "d": "เรียนเป็นทีม ฝึกฝนร่วมกัน แล้วประเมินรายบุคคลและนำผลมาคิดเป็นคะแนนทีม", "b": "2. เข้าใจ"}, {"s": "Cooperative Learning", "r": "Think-Pair-Share", "d": "คิดด้วยตนเอง → แลกเปลี่ยนกับคู่ → แชร์ต่อกลุ่ม/ชั้นเรียน", "b": "4. วิเคราะห์"}, {"s": "Explicit Instruction", "r": "Explain–Model–Guided Practice–Independent", "d": "ครูอธิบาย/สาธิต → ฝึกโดยมีครูช่วย → ฝึกด้วยตนเอง", "b": "3. ประยุกต์ใช้"}, {"s": "Direct Instruction", "r": "Teacher-led systematic instruction", "d": "ครูเป็นผู้นำการสอนอย่างเป็นระบบและเป็นลำดับ", "b": "2. เข้าใจ"}, {"s": "Experiential Learning", "r": "Experience → Reflection → Application", "d": "เรียนจากประสบการณ์ → สะท้อนคิด → นำความรู้ไปประยุกต์ใช้", "b": "3. ประยุกต์ใช้"}, {"s": "Field-Based Learning", "r": "Field observation", "d": "ออกนอกห้องเรียนเพื่อสังเกตหรือสำรวจปรากฏการณ์จริง", "b": "3. ประยุกต์ใช้"}, {"s": "Field-Based Learning", "r": "Data collection", "d": "เก็บข้อมูลจากการสังเกต ทดลอง วัด สำรวจ หรือเก็บตัวอย่าง", "b": "3. ประยุกต์ใช้"}, {"s": "Integrated STEM", "r": "STEM integration", "d": "บูรณาการวิทยาศาสตร์ เทคโนโลยี วิศวกรรม และคณิตศาสตร์เพื่อแก้ปัญหา", "b": "6. สร้างสรรค์"}, {"s": "Integrated STEM", "r": "Design challenge", "d": "บูรณาการวิทยาศาสตร์ เทคโนโลยี วิศวกรรม และคณิตศาสตร์เพื่อแก้ปัญหา", "b": "6. สร้างสรรค์"}, {"s": "Maker-Based Learning", "r": "Make → Test → Improve", "d": "สร้าง → ทดสอบ → วิเคราะห์ → ปรับปรุง → ทดสอบซ้ำ", "b": "6. สร้างสรรค์"}], "STRAT": [{"s": "Explicit Instruction", "r": "Modelling / Guided practice / Independent practice", "p": "นักเรียนไม่เข้าใจเนื้อหาพื้นฐาน, ทำงานเองไม่ได้, มีความรู้เดิมไม่เพียงพอ", "b": "2. เข้าใจ", "w": "เน้นการสร้างความรู้/ความเข้าใจอย่างเป็นระบบ ก่อนนำไปฝึกใช้"}, {"s": "Worked Examples", "r": "Full → Partial → Independent", "p": "นักเรียนไม่รู้ว่าจะเริ่มแก้โจทย์อย่างไร, ไม่เข้าใจขั้นตอนการแก้ปัญหา", "b": "3. ประยุกต์ใช้", "w": "นักเรียนศึกษาวิธีแก้จากตัวอย่างแล้วนำขั้นตอนไปใช้กับโจทย์ใหม่"}, {"s": "Instructional Scaffolding", "r": "Prompt / Hint / Cue / Model", "p": "นักเรียนยังทำงานที่ซับซ้อนด้วยตนเองไม่ได้, ต้องการความช่วยเหลือระหว่างเรียน", "b": "3. ประยุกต์ใช้", "w": "ช่วยให้ผู้เรียนสามารถใช้ความรู้ทำงานที่เดิมยังทำเองไม่ได้"}, {"s": "Gradual Release", "r": "I do → We do → You do", "p": "นักเรียนพึ่งพาครูมากเกินไป, ยังเปลี่ยนจากการเรียนแบบมีผู้ช่วยไปสู่การทำงานอิสระไม่ได้", "b": "3. ประยุกต์ใช้", "w": "ค่อย ๆ เปลี่ยนจากครูทำ → ทำร่วมกัน → นักเรียนทำเอง"}, {"s": "Fading", "r": "High → Low support", "p": "นักเรียนยังพึ่งพา Scaffolding หรือคำแนะนำมากเกินไป", "b": "3. ประยุกต์ใช้", "w": "ลดตัวช่วยจนผู้เรียนสามารถนำความรู้ไปใช้ได้อย่างอิสระ"}, {"s": "Retrieval Practice", "r": "Free recall / Quiz / Flashcard", "p": "จำเนื้อหาไม่ได้, เรียนแล้วลืม, เรียกคืนความรู้เดิมไม่ได้", "b": "1. จำ", "w": "เน้นการดึงข้อมูล/ความรู้จากความจำกลับมาใช้"}, {"s": "Spaced Practice", "r": "Distributed review", "p": "ลืมเนื้อหาเร็ว, จำได้เฉพาะช่วงใกล้สอบ, การเรียนไม่คงทน", "b": "1. จำ", "w": "การทบทวนแบบเว้นระยะช่วยให้ความรู้คงอยู่และเรียกคืนได้ดีขึ้น"}, {"s": "Interleaving", "r": "Mixed problem types", "p": "นักเรียนแยกแยะวิธีแก้ปัญหาหรือเลือกวิธีที่เหมาะสมไม่ได้", "b": "4. วิเคราะห์", "w": "ต้องจำแนกประเภทโจทย์/สถานการณ์และเลือกวิธีแก้ที่เหมาะสม"}, {"s": "Conceptual Change", "r": "Elicit → Conflict → Reconstruct", "p": "มีความเข้าใจผิดทางวิทยาศาสตร์, ความรู้เดิมขัดกับหลักวิทยาศาสตร์", "b": "4. วิเคราะห์", "w": "เปรียบเทียบความเข้าใจเดิมกับหลักฐาน วิเคราะห์ความขัดแย้ง และปรับโครงสร้างความรู้"}, {"s": "Cognitive Conflict", "r": "Prediction → Evidence → Revision", "p": "นักเรียนมีความเชื่อเดิมที่ไม่สอดคล้องกับหลักฐาน/ปรากฏการณ์จริง", "b": "4. วิเคราะห์", "w": "กระตุ้นให้เปรียบเทียบความเชื่อเดิมกับผล/หลักฐานที่ขัดแย้งกัน"}, {"s": "Concept Mapping", "r": "Hierarchy / Relationship map", "p": "นักเรียนเห็นความสัมพันธ์ระหว่างแนวคิดไม่ชัด, ความรู้กระจัดกระจาย", "b": "4. วิเคราะห์", "w": "วิเคราะห์และจัดความสัมพันธ์ระหว่างแนวคิด และสร้างโครงสร้างความรู้"}, {"s": "Scientific Argumentation", "r": "Claim–Evidence–Reasoning", "p": "นักเรียนตอบได้แต่ไม่สามารถใช้หลักฐานสนับสนุนคำตอบหรือให้เหตุผลทางวิทยาศาสตร์", "b": "5. ประเมิน", "w": "ประเมินหลักฐานและข้อกล่าวอ้าง แล้วสร้างข้อโต้แย้งที่มีเหตุผล"}, {"s": "Socratic Questioning", "r": "Probe / Why / Evidence / Counterexample", "p": "นักเรียนคิดวิเคราะห์ไม่ลึก, ตอบตามความจำ, ไม่ตรวจสอบเหตุผลของตนเอง", "b": "4. วิเคราะห์", "w": "คำถามต่อเนื่องบังคับให้ตรวจสอบสมมติฐาน เหตุผล และหลักฐาน"}, {"s": "Dialogic Teaching", "r": "Question → Response → Discussion", "p": "นักเรียนมีส่วนร่วมในการอภิปรายต่ำ, ไม่แลกเปลี่ยนเหตุผล/มุมมอง", "b": "4. วิเคราะห์", "w": "การอภิปรายทำให้ผู้เรียนเปรียบเทียบมุมมอง วิเคราะห์เหตุผล และตรวจสอบข้อเสนอ"}, {"s": "Peer Instruction", "r": "Individual → Peer discussion → Re-answer", "p": "นักเรียนเข้าใจแนวคิดไม่ตรงกัน, ไม่สามารถอธิบายเหตุผลของคำตอบ", "b": "2. เข้าใจ", "w": "ต้องอธิบายแนวคิดและเปรียบเทียบเหตุผลกับเพื่อนเพื่อปรับความเข้าใจ"}, {"s": "Peer Tutoring", "r": "Tutor–Tutee", "p": "นักเรียนบางคนต้องการความช่วยเหลือเพิ่มเติม, ต้องการเรียนรู้ผ่านเพื่อน", "b": "2. เข้าใจ", "w": "การสอนเพื่อนต้องเข้าใจเนื้อหาและนำความรู้มาอธิบาย/ประยุกต์"}, {"s": "Think-Pair-Share", "r": "Think → Pair → Share", "p": "นักเรียนไม่กล้าแสดงความคิดเห็น, มีส่วนร่วมต่ำ, คิดก่อนอภิปรายไม่เพียงพอ", "b": "4. วิเคราะห์", "w": "คิดคำตอบ → แลกเปลี่ยน → เปรียบเทียบเหตุผล → ปรับคำตอบ"}, {"s": "Differentiated Instruction", "r": "Content / Process / Product / Support", "p": "นักเรียนมีความสามารถ/ความพร้อม/ความต้องการแตกต่างกันในห้องเดียวกัน", "b": "3. ประยุกต์ใช้", "w": "ตัว strategy เน้นการปรับ learning task ให้ผู้เรียนสามารถนำความรู้ไปใช้ตามระดับของตน"}, {"s": "Tiered Tasks", "r": "Basic / Intermediate / Advanced", "p": "นักเรียนมีระดับความสามารถแตกต่างกันและงานระดับเดียวไม่เหมาะกับทุกคน", "b": "3. ประยุกต์ใช้", "w": "ปรับความซับซ้อนของงานเพื่อให้ผู้เรียนใช้ความรู้ในระดับที่เหมาะกับตน"}, {"s": "Flexible Grouping", "r": "regroup ตาม need", "p": "การจัดกลุ่มแบบเดิมไม่ตอบสนองความแตกต่างของนักเรียน", "b": "4. วิเคราะห์", "w": "การทำงานกลุ่มเพื่อแก้ปัญหา/อภิปรายมักต้องวิเคราะห์และแลกเปลี่ยนความคิด"}, {"s": "Metacognitive Strategy", "r": "Plan / Monitor / Evaluate", "p": "นักเรียนไม่รู้ว่าตนเองเรียนรู้หรือคิดอย่างไร, ไม่ตรวจสอบความเข้าใจของตนเอง", "b": "5. ประเมิน", "w": "ผู้เรียนวางแผน ตรวจสอบ และประเมินกระบวนการคิด/การเรียนรู้ของตนเอง"}, {"s": "Self-Regulated Learning", "r": "Goal → Plan → Monitor → Reflect", "p": "นักเรียนบริหารการเรียนของตนเองไม่ได้, ขาดการวางแผน/ติดตาม/ปรับกลยุทธ์", "b": "5. ประเมิน", "w": "วางเป้าหมาย ติดตามผล ประเมินตนเอง และปรับกลยุทธ์"}, {"s": "Gamification", "r": "Points / Challenge / Progress", "p": "แรงจูงใจต่ำ, การมีส่วนร่วมต่ำ, นักเรียนไม่ต่อเนื่องกับกิจกรรม", "b": "3. ประยุกต์ใช้", "w": "ตัวเกมไม่ได้กำหนด cognitive level โดยตรง แต่กิจกรรมเกมมักให้ผู้เรียนฝึกใช้ความรู้"}, {"s": "Choice-based Learning", "r": "Choice of task/process/product", "p": "นักเรียนขาดแรงจูงใจหรือ ownership, ความสนใจแตกต่างกัน", "b": "5. ประเมิน", "w": "เมื่อมีการเลือกวิธี/แนวทาง ผู้เรียนต้องประเมินทางเลือก และบางกรณีสร้างผลงานเอง"}, {"s": "Dual Coding", "r": "Verbal + Visual", "p": "นักเรียนเข้าใจเนื้อหาที่เป็นนามธรรมหรือข้อความจำนวนมากได้ยาก", "b": "2. เข้าใจ", "w": "เชื่อมข้อมูล verbal + visual เพื่อสร้างความเข้าใจและช่วยการเรียกคืน"}, {"s": "Multiple Representations", "r": "Text / Graph / Model / Diagram", "p": "นักเรียนเข้าใจแนวคิดจากรูปแบบเดียวไม่ได้, เชื่อมโยง representation ต่าง ๆ ไม่ได้", "b": "4. วิเคราะห์", "w": "ต้องเชื่อมโยงและเปรียบเทียบ representation หลายรูปแบบ เช่น กราฟ สมการ แบบจำลอง"}], "ACT": [{"s": "Experiment", "r": "Controlled / Comparative / Exploratory", "k": "การออกแบบการสืบเสาะ, การควบคุมตัวแปร, การเปรียบเทียบ", "a": "Practical Assessment", "w": "ทักษะการทดลอง การใช้เครื่องมือ การควบคุมตัวแปร และการปฏิบัติ"}, {"s": "Investigation", "r": "Question → Test → Evidence", "k": "การตั้งคำถามและตรวจสอบด้วยหลักฐาน", "a": "Performance Assessment", "w": "ความสามารถในการสืบเสาะ ตั้งคำถาม วางแผน เก็บ/วิเคราะห์ข้อมูล และสรุป"}, {"s": "Field Investigation", "r": "Observe → Collect → Analyze", "k": "การสังเกตและวิเคราะห์ข้อมูล", "a": "Performance Assessment", "w": "การสืบค้นในสถานการณ์จริง การเก็บข้อมูลภาคสนาม และการประยุกต์ใช้"}, {"s": "Data Analysis", "r": "Table / Graph / Diagram", "k": "การนำเสนอข้อมูลและการแปลความหมายข้อมูล", "a": "Data Interpretation Task", "w": "การวิเคราะห์ ตีความ หารูปแบบ แนวโน้ม และสรุปจากข้อมูล"}, {"s": "Data Collection", "r": "Measure / Record / Sample", "k": "การวัดและการเก็บข้อมูลอย่างเป็นระบบ", "a": "Practical Assessment", "w": "ความสามารถในการเก็บ วัด บันทึก และจัดการข้อมูล"}, {"s": "Data Representation", "r": "Graph / Table / Model", "k": "การแทนข้อมูลและการใช้ตัวแทนทางวิทยาศาสตร์", "a": "Data Interpretation Task", "w": "การนำเสนอข้อมูลด้วยกราฟ ตาราง แผนภาพ และการตีความ"}, {"s": "Scientific Argument", "r": "CER", "k": "การให้เหตุผลจากหลักฐาน / การสร้างข้อโต้แย้งทางวิทยาศาสตร์", "a": "CER Assessment", "w": "Claim–Evidence–Reasoning และการให้เหตุผลจากหลักฐาน"}, {"s": "Debate", "r": "Structured / Evidence-based", "k": "การให้เหตุผลโดยใช้หลักฐานตามกรอบ", "a": "Argumentation Assessment", "w": "การใช้หลักฐาน การโต้แย้ง การประเมินข้อกล่าวอ้าง และการให้เหตุผล"}, {"s": "Evidence Evaluation", "r": "Compare evidence / claims", "k": "การประเมินหลักฐานและเปรียบเทียบข้อกล่าวอ้าง", "a": "Argumentation Assessment", "w": "การประเมินความน่าเชื่อถือ/ความเพียงพอของหลักฐานและข้อกล่าวอ้าง"}, {"s": "Prediction", "r": "Predict → Test → Revise", "k": "การคาดการณ์ การทดสอบ และปรับปรุงแนวคิด", "a": "Concept Check", "w": "ความเข้าใจเดิม การคาดการณ์ และความเข้าใจเกี่ยวกับเหตุ–ผล"}, {"s": "Student Explanation", "r": "Oral / Written / Diagram", "k": "การสื่อสารทางวิทยาศาสตร์", "a": "CER Assessment", "w": "ความสามารถในการอธิบายโดยใช้หลักฐานและเหตุผล"}, {"s": "Peer Explanation", "r": "Explain to partner/group", "k": "การอธิบายและสื่อสารเหตุผล", "a": "Peer Assessment", "w": "ความเข้าใจผ่านการอธิบาย การสื่อสาร และการตรวจสอบความเข้าใจ"}, {"s": "Concept Mapping", "r": "Hierarchy / Causal / Relationship", "k": "การจัดระบบและเชื่อมโยงแนวคิด", "a": "Performance Assessment", "w": "ความเข้าใจและความสัมพันธ์ระหว่างแนวคิด"}, {"s": "Model Construction", "r": "Physical / Conceptual / Mathematical", "k": "การใช้และสร้างแบบจำลองหลายรูปแบบ", "a": "Performance Assessment", "w": "ความสามารถในการสร้างแบบจำลองและแทนปรากฏการณ์"}, {"s": "Model Revision", "r": "Initial → Evidence → Revised", "k": "การปรับปรุงคำอธิบายตามหลักฐาน", "a": "Performance Assessment", "w": "การปรับแบบจำลองตามหลักฐานและการประเมินความถูกต้อง"}, {"s": "Real-world Problem", "r": "Local / Environmental / Social", "k": "การประยุกต์ใช้วิทยาศาสตร์กับบริบทจริงและประเด็นสังคม", "a": "Performance Assessment", "w": "การประยุกต์ใช้ความรู้เพื่อแก้ปัญหาในบริบทจริง"}, {"s": "Case Analysis", "r": "Case → Evidence → Decision", "k": "การใช้หลักฐานเพื่อการตัดสินใจ", "a": "Data Interpretation Task", "w": "การวิเคราะห์ข้อมูล หลักฐาน สาเหตุ และแนวทางแก้ปัญหา"}, {"s": "Scenario Decision", "r": "Scenario → Options → Consequences", "k": "การประเมินทางเลือกและผลกระทบ", "a": "Performance Assessment", "w": "การตัดสินใจโดยใช้หลักฐาน เปรียบเทียบทางเลือก และประเมินผลกระทบ"}, {"s": "Demonstration", "r": "Teacher demonstration", "k": "การสังเกตและทำความเข้าใจกระบวนการ/ปรากฏการณ์", "a": "Formative Assessment", "w": "ตรวจความเข้าใจระหว่างการสาธิตและความเข้าใจขั้นตอน/ปรากฏการณ์"}, {"s": "Hands-on Exploration", "r": "Manipulate / Observe", "k": "การทดลองและการสังเกตเชิงปฏิบัติ", "a": "Practical Assessment", "w": "ทักษะการลงมือปฏิบัติ การสังเกต การทดลอง และการใช้เครื่องมือ"}, {"s": "Design Challenge", "r": "Define → Design → Test", "k": "การแก้ปัญหาและการออกแบบเชิงวิศวกรรม", "a": "Performance Assessment", "w": "การออกแบบ วิธีแก้ปัญหา การประยุกต์ใช้ความรู้ และการประเมินทางเลือก"}, {"s": "Prototype", "r": "Build → Test → Improve", "k": "การออกแบบ ทดลอง และปรับปรุง", "a": "Performance Assessment", "w": "การสร้างต้นแบบ การทำงานของชิ้นงาน การทดสอบ และการปรับปรุง"}, {"s": "Group Investigation", "r": "Roles / Shared product", "k": "การทำงานร่วมกันและการแบ่งความรับผิดชอบ", "a": "Performance Assessment", "w": "การสืบเสาะ การทำงานร่วมกัน และผลงาน/กระบวนการของกลุ่ม"}, {"s": "Jigsaw", "r": "Expert group → Teaching group", "k": "การเรียนรู้ร่วมกันและการสื่อสารความรู้", "a": "Concept Check", "w": "ความเข้าใจเนื้อหาและความสามารถในการถ่ายทอดความรู้"}, {"s": "Peer Teaching", "r": "Student teaches student", "k": "การอธิบายความรู้และการสื่อสารกับเพื่อน", "a": "Peer Assessment", "w": "ความเข้าใจเชิงลึกผ่านการอธิบายและการสื่อสาร"}, {"s": "Reflection", "r": "Journal / Exit ticket", "k": "การสะท้อนคิดและการประเมินตนเอง", "a": "Self-Assessment", "w": "การสะท้อนความเข้าใจ จุดแข็ง จุดอ่อน และสิ่งที่ต้องพัฒนาต่อ"}, {"s": "Learning Log", "r": "Before / During / After", "k": "การกำกับและติดตามกระบวนการเรียนรู้ของตนเอง", "a": "Self-Assessment", "w": "ติดตามความก้าวหน้า ความเข้าใจ และกระบวนการเรียนรู้ต่อเนื่อง"}, {"s": "Self-explanation", "r": "Explain thinking/process", "k": "การอธิบายกระบวนการคิดและการให้เหตุผล", "a": "Concept Check", "w": "ความเข้าใจ เหตุผล และกระบวนการคิดของผู้เรียน"}], "ASS": [{"s": "Diagnostic Assessment", "r": "Pre-test / Concept inventory / Misconception probe", "c": "ตรวจหาจุดแข็ง จุดอ่อน ช่องว่าง หรือปัญหาการเรียนรู้ก่อน/ระหว่างการจัดการเรียนรู้"}, {"s": "Prior Knowledge Assessment", "r": "Recall / prerequisite test", "c": "ตรวจความรู้และความเข้าใจเดิมที่นักเรียนมีอยู่ก่อนเรียนเรื่องใหม่"}, {"s": "Formative Assessment", "r": "Questioning / Observation / Mini-task", "c": "ตรวจความก้าวหน้าและความเข้าใจระหว่างเรียน เพื่อปรับการสอน"}, {"s": "Exit Ticket", "r": "Short response", "c": "ตรวจความเข้าใจหลังจบบทเรียน/กิจกรรมอย่างรวดเร็ว และดูสิ่งที่ยังไม่เข้าใจ"}, {"s": "Hinge Question", "r": "Key conceptual question", "c": "ตรวจความเข้าใจ ณ จุดสำคัญของบทเรียนเพื่อใช้ตัดสินใจว่าจะสอนต่อหรือย้อนกลับ"}, {"s": "Concept Check", "r": "MCQ / confidence / explanation", "c": "ตรวจว่านักเรียนเข้าใจแนวคิดหลักจริงหรือไม่ โดยเฉพาะแนวคิดที่มักเข้าใจผิด"}, {"s": "Teacher Feedback", "r": "Strength / Gap / Next step", "c": "ให้ข้อมูลแก่นักเรียนเกี่ยวกับคุณภาพ/ความถูกต้องของผลงานและสิ่งที่ควรพัฒนา"}, {"s": "Corrective Feedback", "r": "Error → Correction", "c": "ตรวจข้อผิดพลาดและช่วยให้นักเรียนแก้ไขความเข้าใจหรือวิธีทำที่ผิด"}, {"s": "Feed Forward", "r": "Next action", "c": "ชี้สิ่งที่นักเรียนควรทำต่อไปเพื่อพัฒนาผลงาน/การเรียนรู้ในอนาคต"}, {"s": "Self-Assessment", "r": "Checklist / Rubric / Reflection", "c": "ตรวจความสามารถของนักเรียนในการประเมินความรู้/ผลงานและความก้าวหน้าของตนเอง"}, {"s": "Peer Assessment", "r": "Peer rubric / feedback", "c": "ตรวจคุณภาพผลงาน/ความเข้าใจผ่านการประเมินโดยเพื่อน และพัฒนาการให้เหตุผล/feedback"}, {"s": "Performance Assessment", "r": "Task / Experiment / Investigation", "c": "ตรวจความสามารถในการนำความรู้และทักษะไปปฏิบัติจริงหรือทำภารกิจที่ซับซ้อน"}, {"s": "Practical Assessment", "r": "Experiment / Lab", "c": "ตรวจทักษะการปฏิบัติทางวิทยาศาสตร์และการใช้เครื่องมือ/กระบวนการจริง"}, {"s": "Project Assessment", "r": "Product / Process / Presentation", "c": "ตรวจความสามารถในการทำโครงงานตั้งแต่การวางแผน กระบวนการ ไปจนถึงผลงาน/ผลลัพธ์"}, {"s": "CER Assessment", "r": "Claim / Evidence / Reasoning", "c": "ตรวจความสามารถในการสร้างข้อกล่าวอ้าง ใช้หลักฐาน และให้เหตุผลเชื่อมหลักฐานกับข้อกล่าวอ้าง"}, {"s": "Data Interpretation Task", "r": "Graph / Table / Dataset", "c": "ตรวจความสามารถในการอ่าน วิเคราะห์ ตีความ และสรุปข้อมูล"}, {"s": "Argumentation Assessment", "r": "Claim / Evidence / Reasoning / Counterargument", "c": "ตรวจความสามารถในการสร้าง ประเมิน หรือโต้แย้งข้อกล่าวอ้างโดยใช้หลักฐานและเหตุผล"}, {"s": "Pre–Post Assessment", "r": "Pre / Post", "c": "ตรวจการเปลี่ยนแปลง/พัฒนาการของความรู้หรือทักษะก่อนและหลังการเรียน"}, {"s": "Repeated Assessment", "r": "Multiple time points", "c": "ตรวจความก้าวหน้าอย่างต่อเนื่องและดูแนวโน้มการเรียนรู้หลายช่วงเวลา"}, {"s": "Mastery Assessment", "r": "Criterion/mastery threshold", "c": "ตรวจว่านักเรียนบรรลุเกณฑ์หรือความสามารถที่กำหนดจนถึงระดับที่ยอมรับได้หรือไม่"}, {"s": "Achievement Test", "r": "Knowledge / Application", "c": "ตรวจระดับผลสัมฤทธิ์ทางการเรียนหลังการเรียนรู้เนื้อหาหรือหน่วยการเรียน"}, {"s": "Standardized Assessment", "r": "Standard / Benchmark", "c": "ตรวจผลการเรียนรู้ด้วยเครื่องมือและเกณฑ์มาตรฐานที่ใช้เหมือนกันเพื่อเปรียบเทียบระหว่างผู้เรียน/กลุ่ม"}], "GRADES": ["ป.1", "ป.2", "ป.3", "ป.4", "ป.5", "ป.6", "ม.1", "ม.2", "ม.3", "ม.4", "ม.5", "ม.6"], "PROBLEMS": ["นักเรียนไม่เข้าใจเนื้อหาพื้นฐาน, ทำงานเองไม่ได้, มีความรู้เดิมไม่เพียงพอ", "นักเรียนไม่รู้ว่าจะเริ่มแก้โจทย์อย่างไร, ไม่เข้าใจขั้นตอนการแก้ปัญหา", "นักเรียนยังทำงานที่ซับซ้อนด้วยตนเองไม่ได้, ต้องการความช่วยเหลือระหว่างเรียน", "นักเรียนพึ่งพาครูมากเกินไป, ยังเปลี่ยนจากการเรียนแบบมีผู้ช่วยไปสู่การทำงานอิสระไม่ได้", "นักเรียนยังพึ่งพา Scaffolding หรือคำแนะนำมากเกินไป", "จำเนื้อหาไม่ได้, เรียนแล้วลืม, เรียกคืนความรู้เดิมไม่ได้", "ลืมเนื้อหาเร็ว, จำได้เฉพาะช่วงใกล้สอบ, การเรียนไม่คงทน", "นักเรียนแยกแยะวิธีแก้ปัญหาหรือเลือกวิธีที่เหมาะสมไม่ได้", "มีความเข้าใจผิดทางวิทยาศาสตร์, ความรู้เดิมขัดกับหลักวิทยาศาสตร์", "นักเรียนมีความเชื่อเดิมที่ไม่สอดคล้องกับหลักฐาน/ปรากฏการณ์จริง", "นักเรียนเห็นความสัมพันธ์ระหว่างแนวคิดไม่ชัด, ความรู้กระจัดกระจาย", "นักเรียนตอบได้แต่ไม่สามารถใช้หลักฐานสนับสนุนคำตอบหรือให้เหตุผลทางวิทยาศาสตร์", "นักเรียนคิดวิเคราะห์ไม่ลึก, ตอบตามความจำ, ไม่ตรวจสอบเหตุผลของตนเอง", "นักเรียนมีส่วนร่วมในการอภิปรายต่ำ, ไม่แลกเปลี่ยนเหตุผล/มุมมอง", "นักเรียนเข้าใจแนวคิดไม่ตรงกัน, ไม่สามารถอธิบายเหตุผลของคำตอบ", "นักเรียนบางคนต้องการความช่วยเหลือเพิ่มเติม, ต้องการเรียนรู้ผ่านเพื่อน", "นักเรียนไม่กล้าแสดงความคิดเห็น, มีส่วนร่วมต่ำ, คิดก่อนอภิปรายไม่เพียงพอ", "นักเรียนมีความสามารถ/ความพร้อม/ความต้องการแตกต่างกันในห้องเดียวกัน", "นักเรียนมีระดับความสามารถแตกต่างกันและงานระดับเดียวไม่เหมาะกับทุกคน", "การจัดกลุ่มแบบเดิมไม่ตอบสนองความแตกต่างของนักเรียน", "นักเรียนไม่รู้ว่าตนเองเรียนรู้หรือคิดอย่างไร, ไม่ตรวจสอบความเข้าใจของตนเอง", "นักเรียนบริหารการเรียนของตนเองไม่ได้, ขาดการวางแผน/ติดตาม/ปรับกลยุทธ์", "แรงจูงใจต่ำ, การมีส่วนร่วมต่ำ, นักเรียนไม่ต่อเนื่องกับกิจกรรม", "นักเรียนขาดแรงจูงใจหรือ ownership, ความสนใจแตกต่างกัน", "นักเรียนเข้าใจเนื้อหาที่เป็นนามธรรมหรือข้อความจำนวนมากได้ยาก", "นักเรียนเข้าใจแนวคิดจากรูปแบบเดียวไม่ได้, เชื่อมโยง representation ต่าง ๆ ไม่ได้"], "BLOOM": ["1. จำ", "2. เข้าใจ", "3. ประยุกต์ใช้", "4. วิเคราะห์", "5. ประเมิน", "6. การสร้างสรรค์"], "SKILLS": ["1.Identify / recall scientific knowledge", "2.Apply scientific knowledge", "3.Explain scientifically", "4.Generate / evaluate hypotheses & predictions", "5.Use / construct / evaluate models & representations", "1.Identify scientific questions", "2.Identify variables", "3.Design scientific investigation", "4.Evaluate investigation design", "5.Evaluate reliability / validity of investigation", "1.Read data representations", "2.Transform / translate representations", "3.Interpret data", "4.Identify patterns / relationships", "5.Draw scientific conclusions", "6.Evaluate evidence & conclusions", "1.Identify relevant information", "2.Compare sources / claims", "3.Evaluate credibility / evidence", "4.Evaluate scientific arguments", "5.Make evidence-based decisions"], "STRANDS": {"สาระที่ 1 วิทยาศาสตร์ชีวภาพ": ["ว 1.1", "ว 1.2", "ว 1.3"], "สาระที่ 2 วิทยาศาสตร์กายภาพ": ["ว 2.1", "ว 2.2", "ว 2.3"], "สาระที่ 3 วิทยาศาสตร์โลกและอวกาศ": ["ว 3.1", "ว 3.2"], "สาระที่ 4 เทคโนโลยี": ["ว 4.1", "ว 4.2"]}, "IND": {"ว 1.2": [{"c": "ว 1.2 ม.1/6", "g": "ม.1", "t": "ปัจจัยและผลผลิตของการสังเคราะห์ด้วยแสง"}, {"c": "ว 1.2 ม.1/7", "g": "ม.1", "t": "ความสำคัญของการสังเคราะห์ด้วยแสงต่อสิ่งมีชีวิต"}, {"c": "ว 1.2 ม.1/8", "g": "ม.1", "t": "ตระหนักในคุณค่าของพืชต่อสิ่งแวดล้อม"}]}, "MISC": [{"n": "พืชได้อาหารจากดินผ่านทางราก", "f": "พบบ่อยที่สุด", "c": "รากดูดน้ำและแร่ธาตุ ส่วนอาหารคือน้ำตาลที่พืชสร้างเอง", "x": "M-PHOTO-01"}, {"n": "พืชหายใจเฉพาะตอนกลางคืน", "f": "พบบ่อยมาก", "c": "พืชหายใจตลอดเวลา กลางวันมีการสังเคราะห์ด้วยแสงเกิดพร้อมกันด้วย", "x": "M-PHOTO-03"}, {"n": "น้ำหนักที่เพิ่มของต้นไม้มาจากดิน", "f": "พบบ่อย", "c": "มวลส่วนใหญ่มาจากคาร์บอนไดออกไซด์ในอากาศ", "x": "M-PHOTO-02"}]};
+let MODE='have';
+const fill=(el,arr,ph)=>{el.innerHTML='';if(ph)el.appendChild(new Option(ph,''));arr.forEach(v=>el.appendChild(new Option(v,v)))};
+
+function initForm(){
+ fill($('#q_grade'),D.GRADES,'เลือก');
+ fill($('#q_strand'),Object.keys(D.STRANDS),'เลือก');
+ fill($('#q_prob'),D.PROBLEMS,'เลือกข้อที่ใกล้เคียงที่สุด');
+ fill($('#q_bloom'),D.BLOOM,'ยังไม่ระบุ');
+ fill($('#q_skill'),D.SKILLS,'ยังไม่ระบุ');
+ $('#q_strand').onchange=()=>{const v=$('#q_strand').value;
+  if(!v){$('#q_std').disabled=true;$('#q_ind').disabled=true;return}
+  fill($('#q_std'),D.STRANDS[v],'เลือก');$('#q_std').disabled=false;
+  $('#q_ind').disabled=true;$('#q_ind').innerHTML='';};
+ $('#q_std').onchange=()=>{const v=$('#q_std').value,g=$('#q_grade').value;
+  const L=(D.IND[v]||[]).filter(i=>!g||i.g===g);
+  $('#q_ind').innerHTML='';
+  if(!L.length){$('#q_ind').appendChild(new Option('ตัวอย่างนี้มีข้อมูลเฉพาะ ว 1.2 ระดับ ม.1',''));$('#q_ind').disabled=true;return}
+  $('#q_ind').appendChild(new Option('เลือก',''));
+  L.forEach(i=>$('#q_ind').appendChild(new Option(i.t,i.c)));$('#q_ind').disabled=false;};
+}
+
+function pickStrat(p){return D.STRAT.find(s=>s.p===p)||D.STRAT[0]}
+function pickModel(b){return D.MODEL.find(m=>m.b===b)||D.MODEL[0]}
+function pickAct(sk){if(!sk)return D.ACT[0];
+ const w=sk.toLowerCase().replace(/^\d+\./,'').split(/[\s\/]+/).filter(x=>x.length>3);
+ return D.ACT.map(a=>({a,n:w.filter(x=>(a.k+a.s+a.r).toLowerCase().includes(x)).length}))
+   .sort((x,y)=>y.n-x.n)[0].a}
+function pickAss(n){return D.ASS.find(a=>a.s===n)||D.ASS.find(a=>a.s.includes((n||'').split(' ')[0]))||D.ASS[0]}
+
+let NEWF=[];
+function build(){
+ const ind=$('#q_ind').value,prob=$('#q_prob').value,bl=$('#q_bloom').value,sk=$('#q_skill').value;
+ if(!prob){alert('เลือกปัญหาที่เจอในห้องก่อน');return}
+ const st=pickStrat(prob),bloom=bl||st.b,md=pickModel(bloom),ac=pickAct(sk),as=pickAss(ac.a);
+ NEWF=[];
+ if(ind==='ว 1.2 ม.1/6'){
+  NEWF.push({id:'N0',lv:'a',lab:'เริ่มจากตรงนี้',
+   h:'เรื่องนี้เด็กมักติด 3 อย่าง วางแผนดักไว้ตั้งแต่ต้นได้',
+   p:D.MISC.map(m=>'<b>'+m.n+'</b> ('+m.f+')<br><span style="color:#69707a">ที่ถูกคือ '+m.c+'</span>'),
+   sug:'ใส่ช่วงให้เด็กทายผลก่อนสอน แล้วให้เจอหลักฐานที่ขัดกับสิ่งที่เขาเชื่อ จากนั้นให้กลับไปแก้คำตอบเดิมของตัวเอง',
+   tm:'ประมาณ 10 นาที ในช่วงต้นคาบ',
+   dev:'comparator 2 · DB3 map ว 1.2 ม.1/6 → DB2 M-PHOTO-01/02/03'});
+ }
+ NEWF.push({id:'N1',lv:'b',lab:'วิธีสอนที่ตรงกับปัญหา',h:st.s,
+  p:[st.w,'<span style="color:#69707a">ทำแบบนี้ '+st.r+'</span>'],
+  sug:'ใช้เป็นแกนของขั้นสอน แล้วค่อยเลือกกิจกรรมให้เข้ากัน',
+  tm:'ระดับที่เด็กจะไปถึง '+bloom,
+  dev:'DB4 strategy · problem match · bloom '+st.b});
+ NEWF.push({id:'N2',lv:'c',lab:'องค์ประกอบที่เหลือ',h:'โครงคาบ กิจกรรม และวิธีวัด',
+  p:['<b>โครงการจัดการเรียนรู้</b> '+md.s+' แบบ '+md.r+'<br><span style="color:#69707a">'+md.d+'</span>',
+     '<b>กิจกรรมที่เด็กลงมือทำ</b> '+ac.s+' แบบ '+ac.r+'<br><span style="color:#69707a">'+(ac.w||ac.k)+'</span>',
+     '<b>วิธีดูว่าเข้าใจหรือยัง</b> '+as.s+' แบบ '+as.r+'<br><span style="color:#69707a">'+as.c+'</span>'],
+  sug:'สามอย่างนี้เข้ากันได้ ปรับได้ตามอุปกรณ์ที่มี',
+  tm:'',dev:'DB4 model/activity/assessment chain'});
+ MODE='new';go('s2');
+}
+
+document.querySelectorAll('.path').forEach(p=>p.onclick=()=>{
+ document.querySelectorAll('.path').forEach(x=>x.classList.remove('on'));p.classList.add('on');
+ MODE=p.dataset.p;
+ $('#dropbox').classList.toggle('hide',MODE!=='have');
+ $('#gonew').classList.toggle('hide',MODE==='have');});
+initForm();
+nav();
+</script></body></html>
