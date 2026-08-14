@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ตรวจรู้ — ผู้ช่วยตรวจแผนการสอน</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans Thai',sans-serif;background:#f4f5f7;color:#16191d;line-height:1.7;font-size:16px}
+.top{background:#fff;border-bottom:1px solid #e2e5ea;position:sticky;top:0;z-index:20}
+.topin{max-width:880px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px}
+.brand{font-weight:600;font-size:17px;white-space:nowrap}
+.toggle{margin-left:auto;display:flex;background:#f1f3f5;border-radius:8px;padding:3px;gap:2px}
+.toggle button{background:none;border:0;font-family:inherit;font-size:12.5px;padding:5px 12px;border-radius:6px;cursor:pointer;color:#69707a}
+.toggle button.on{background:#fff;color:#16191d;font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.steps{max-width:880px;margin:0 auto;padding:0 18px 10px;display:flex;gap:4px;flex-wrap:wrap}
+.sdot{font-size:12px;padding:4px 11px;border-radius:20px;color:#8b929c;background:#f1f3f5;cursor:pointer;white-space:nowrap}
+.sdot.on{background:#0f766e;color:#fff}.sdot.done{background:#e6f5f2;color:#0f766e}
+.wrap{max-width:880px;margin:0 auto;padding:24px 18px 90px}
+h2{font-size:21px;font-weight:600;letter-spacing:-.2px}
+.lead{color:#69707a;font-size:14.5px;margin-top:4px}
+.card{background:#fff;border:1px solid #e2e5ea;border-radius:12px;padding:22px;margin-top:16px}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.path{border:1.5px solid #e2e5ea;border-radius:10px;padding:16px;cursor:pointer}
+.path:hover{border-color:#0f766e}.path.on{border-color:#0f766e;background:#f0faf8}
+.path b{display:block;font-size:15px;margin-bottom:3px}.path span{font-size:13px;color:#69707a}
+.drop{border:1.5px dashed #cbd1d9;border-radius:10px;padding:30px;text-align:center;margin-top:16px;cursor:pointer;background:#fafbfc}
+.drop:hover{border-color:#0f766e;background:#f0faf8}
+.drop b{display:block;font-size:15px}.drop span{font-size:13px;color:#8b929c}
+button{background:#0f766e;color:#fff;border:0;padding:12px 22px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer}
+button.ghost{background:#fff;color:#3b424b;border:1px solid #d3d8de}
+button.ghost:hover{border-color:#0f766e;color:#0f766e}
+button.sm{padding:8px 16px;font-size:14px}
+button.link{background:none;border:0;color:#0f766e;padding:8px 4px;font-size:14px;text-decoration:underline}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.spacer{flex:1}
+.fld{border-top:1px solid #eef0f3;padding:12px 0;display:grid;grid-template-columns:140px 1fr auto;gap:14px;align-items:start}
+.fld:first-of-type{border-top:0}
+.fk{font-size:13.5px;color:#69707a}
+.chk{font-size:12.5px;white-space:nowrap;padding:2px 9px;border-radius:5px;height:fit-content}
+.ok{background:#e6f5f2;color:#0f6e56}.ask{background:#fdf1e0;color:#8a5308}
+/* ---- findings, teacher-first ---- */
+.f{background:#fff;border:1px solid #e2e5ea;border-radius:12px;padding:0;margin-top:14px;overflow:hidden}
+.fbar{height:3px}
+.fbar.a{background:#d1584f}.fbar.b{background:#d99329}.fbar.c{background:#b4b2a9}
+.fin{padding:20px 22px}
+.flab{font-size:12.5px;font-weight:500;color:#8b929c}
+.fh{font-size:17px;font-weight:600;margin:6px 0 10px;line-height:1.45}
+.fp{font-size:15px;color:#3b424b}
+.fp+.fp{margin-top:7px}
+.sug{background:#f4f8f7;border-radius:9px;padding:14px 16px;margin-top:14px}
+.sug .lb{font-size:12.5px;color:#0f766e;font-weight:500}
+.sug .tx{font-size:15px;margin-top:3px}
+.sug .tm{font-size:13px;color:#69707a;margin-top:5px}
+.dev{background:#fbfbfc;border-top:1px dashed #e2e5ea;padding:11px 22px;font-size:12.5px;color:#69707a;font-family:ui-monospace,monospace}
+.dev b{color:#3b424b;font-weight:500}
+.done-in{background:#f0faf8;color:#0f6e56;padding:11px 22px;font-size:14px;border-top:1px solid #e2e5ea}
+.done-out{background:#f7f8f9;color:#69707a;padding:11px 22px;font-size:14px;border-top:1px solid #e2e5ea}
+.f.off{opacity:.5}
+.act{border-left:2px solid #e2e5ea;padding:9px 0 9px 14px;margin-top:10px}
+.act .st{font-size:13px;color:#0f766e;font-weight:500}
+.act .tx{font-size:14.5px;color:#3b424b}
+.act.ins{border-left-color:#1d9e75;background:#f4faf8;border-radius:0 8px 8px 0;padding-right:14px}
+.act.warn{border-left-color:#d99329}
+.newtag{font-size:11.5px;background:#1d9e75;color:#fff;padding:1px 8px;border-radius:4px;margin-left:7px}
+.item{border:1px solid #e2e5ea;border-radius:9px;padding:14px 16px;margin-top:11px}
+.opt{padding:4px 0;font-size:14.5px;color:#3b424b}
+.opt .m{font-size:12.5px;color:#8b929c}
+.opt.good{color:#0f6e56}
+.note{font-size:14px;color:#69707a;background:#f8f9fb;border-radius:9px;padding:14px 16px;margin-top:16px}
+.note.w{background:#fdf6ec;color:#7a4c08}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #eef0f3;vertical-align:top}
+th{font-size:13px;color:#69707a;font-weight:500}
+.y{color:#0f6e56;font-weight:500}.n{color:#8f1d1d}.p{color:#8a5308}
+.modal{position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(20,24,28,.45);display:flex;align-items:center;justify-content:center;z-index:40}
+.mbox{background:#fff;border-radius:12px;padding:24px;max-width:420px;width:92%}
+.mbox label{display:block;padding:11px 13px;border:1px solid #e2e5ea;border-radius:8px;margin-top:9px;font-size:15px;cursor:pointer}
+.mbox label:hover{border-color:#0f766e;background:#f0faf8}
+.hide{display:none}
+.hist{border:1px solid #e2e5ea;border-radius:9px;padding:13px 15px;margin-top:10px;font-size:14.5px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.mem{background:#fdf6ec;border:1px solid #f0d9b0;border-radius:10px;padding:15px 17px;margin-top:14px;font-size:14.5px;color:#7a4c08}
+.devonly{display:none}
+body.devmode .devonly{display:block}
+body.devmode .dev{display:block}
+.dev{display:none}
+@media(max-width:700px){.paths{grid-template-columns:1fr}.fld{grid-template-columns:1fr;gap:4px}}
+</style></head><body>
+
+<div class="top">
+ <div class="topin">
+  <div class="brand">ตรวจรู้</div>
+  <div class="toggle">
+   <button id="tv" class="on" onclick="mode(0)">มุมมองครู</button>
+   <button id="dv" onclick="mode(1)">มุมมองเทคนิค</button>
+  </div>
+ </div>
+ <div class="steps" id="steps"></div>
+</div>
+
+<div class="wrap">
+
+<div id="s0">
+ <h2>เริ่มจากแผนที่คุณมีอยู่</h2>
+ <div class="lead">ระบบไม่ได้เขียนแผนแทนคุณ แค่ช่วยดูว่ายังขาดอะไร แล้วเสนอสิ่งที่เติมได้</div>
+ <div class="card">
+  <div class="paths">
+   <div class="path on" data-p="have"><b>มีแผนอยู่แล้ว</b><span>เอาไฟล์มาให้ดูได้เลย</span></div>
+   <div class="path" data-p="none"><b>ยังไม่มีแผน</b><span>บอกว่าจะสอนเรื่องอะไร แล้วเริ่มจากตรงนั้น</span></div>
+  </div>
+  <div class="drop" onclick="go('s1')"><b>เลือกไฟล์ หรือลากมาวาง</b><span>ไฟล์ Word หรือ PDF</span></div>
+  <div class="note">ตัวอย่างนี้เตรียมไฟล์ไว้ให้แล้ว 1 ไฟล์ กดที่กล่องเพื่อดูการทำงาน</div>
+ </div>
+</div>
+
+<div id="s1" class="hide">
+ <h2>ขอเช็กก่อนว่าอ่านถูก</h2>
+ <div class="lead">ถ้าตรงไหนไม่ตรง แก้ได้เลย ระบบจะไม่เดาเอาเองในส่วนที่อ่านไม่ชัด</div>
+ <div class="card" id="pv"></div>
+ <div class="note w" id="parsewarn">ไฟล์นี้ฝังฟอนต์แบบที่ทำให้ตัวอักษรบางตัวหายไปตอนอ่าน ระบบจึงถามยืนยันในส่วนที่ไม่มั่นใจ แทนที่จะเดา</div>
+ <div class="row"><button onclick="go('s2')">ถูกแล้ว ดูต่อ</button><button class="ghost" onclick="go('s0')">เปลี่ยนไฟล์</button></div>
+</div>
+
+<div id="s2" class="hide">
+ <div class="card"><div class="hd" id="fh"></div></div>
+ <div id="mem" class="mem hide">ระบบเคยอ่านแผนของคุณมาแล้ว 5 แผน เลยเทียบกับสิ่งที่คุณเคยทำได้ด้วย ข้อสุดท้ายมาจากตรงนั้น</div>
+ <div id="fl"></div>
+ <div class="row">
+  <button onclick="go('s3')">ดูแผนที่เติมแล้ว</button>
+  <button class="ghost" onclick="go('s4')">คำถามท้ายคาบ</button>
+  <button class="ghost" onclick="go('s5')">เอกสาร PA</button>
+  <div class="spacer"></div>
+  <button class="link" onclick="sim()">ลองดูตอนใช้ครั้งที่ 6</button>
+ </div>
+</div>
+
+<div id="s2d" class="hide"></div>
+
+<div id="s3" class="hide">
+ <h2>แผนของคุณ ที่เติมส่วนที่ขาดแล้ว</h2>
+ <div class="lead">สีเขียวคือส่วนที่เพิ่มเข้าไป ที่เหลือเป็นของเดิมทุกตัวอักษร</div>
+ <div class="card"><div class="hd" id="tm" style="font-size:14px;color:#69707a"></div><div id="pl" style="margin-top:12px"></div></div>
+ <div class="note">ระบบไม่เขียนแผนใหม่ให้ เพราะคุณต้องเอาแผนนี้ไปอธิบายต่อหน้าคณะกรรมการ มันควรเป็นภาษาของคุณ</div>
+ <div class="row"><button>ดาวน์โหลดไฟล์ Word</button><button class="ghost" onclick="go('s4')">ดูคำถามท้ายคาบ</button></div>
+</div>
+
+<div id="s4" class="hide">
+ <h2>คำถามท้ายคาบ</h2>
+ <div class="lead">ใช้เช็กว่าที่สอนไปวันนี้ติดหรือไม่ติด ก่อนจะขึ้นเรื่องใหม่</div>
+ <div class="card" id="it"></div>
+ <div class="note">ตัวเลือกที่ผิดในแต่ละข้อไม่ได้สุ่มมา แต่ละตัวตรงกับความเข้าใจผิดคนละแบบ ถ้าเด็กเลือกข้อไหนเยอะ คุณจะรู้ทันทีว่าต้องย้อนตรงไหน</div>
+ <div class="row"><button>พิมพ์</button><button class="ghost" onclick="go('s5')">ดูเอกสาร PA</button></div>
+</div>
+
+<div id="s5" class="hide">
+ <h2>เอกสารที่เอาไปใช้กับ ว.PA ได้</h2>
+ <div class="lead">จากสิ่งที่ทำในรอบนี้ ใช้ได้กับส่วนไหนบ้าง</div>
+ <div class="card"><table id="pa"></table></div>
+ <div class="note w">ระบบช่วยได้ 6 จาก 9 ส่วน ไม่ได้ทำ PA ให้ทั้งหมด ส่วนที่ต้องมีผลการวัดจริงยังต้องรอ</div>
+ <div class="row"><button>ส่งออก PDF</button><button class="ghost" onclick="go('s6')">ดูสิ่งที่เคยเลือกไว้</button></div>
+</div>
+
+<div id="s6" class="hide">
+ <h2>สิ่งที่คุณเคยเลือกไว้</h2>
+ <div class="lead">ระบบจำไว้ว่าคุณรับอะไรและไม่รับอะไร ครั้งหน้าจะได้ไม่เสนอซ้ำในสิ่งที่คุณบอกว่าใช้ไม่ได้</div>
+ <div class="card" id="hl"></div>
+ <div class="note">ตอนกดไม่เอา ระบบให้เลือกเหตุผลจากรายการแทนที่จะให้พิมพ์ เพราะถ้าคุณบอกว่าไม่มีอุปกรณ์บ่อยๆ มันจะเลิกเสนอวิธีที่ต้องใช้อุปกรณ์ไปเอง โดยคุณไม่ต้องมาตั้งค่าอะไร</div>
+ <div class="card devonly" style="border-style:dashed;opacity:.75">
+  <div style="font-weight:600">ยังไม่ได้สร้าง · วัดผลก่อนและหลัง</div>
+  <div style="font-size:14px;margin-top:6px;color:#3b424b">เก็บผลคำถามท้ายคาบเข้าระบบ แล้วเทียบกับตัวชี้วัดเดิม เพื่อบันทึกว่าวิธีที่เลือกได้ผลกับห้องนี้จริงหรือไม่ ส่วนนี้คือที่มาของหลักฐานเชิงปริมาณในประเด็นท้าทาย และเป็นสิ่งที่ทำให้ระบบไม่เสนอวิธีที่เคยล้มเหลวซ้ำ</div>
+ </div>
+</div>
+
+</div>
+
+<div id="modal" class="modal hide"><div class="mbox">
+ <div style="font-weight:600;font-size:17px">ไม่เอาเพราะอะไร</div>
+ <div style="font-size:14px;color:#69707a">เลือกได้เลย ไม่ต้องพิมพ์</div>
+ <label onclick="rej('เวลาไม่พอ')">เวลาไม่พอ</label>
+ <label onclick="rej('ไม่มีอุปกรณ์')">ไม่มีอุปกรณ์</label>
+ <label onclick="rej('ไม่เหมาะกับห้องนี้')">ไม่เหมาะกับห้องนี้</label>
+ <label onclick="rej('ไม่เห็นด้วยกับวิธีนี้')">ไม่เห็นด้วยกับวิธีนี้</label>
+ <div class="row"><button class="ghost" onclick="document.getElementById('modal').classList.add('hide')">ปิด</button></div>
+</div></div>
+
+<script>
+const P={unit:"หน่วยที่ 4 การดำรงชีวิตของพืช",name:"การสังเคราะห์ด้วยแสง",
+ grade:"ม.1",periods:1,min:50,
+ curr:["ว 1.2 ม.1/6","ว 1.2 ม.1/7","ว 1.2 ม.1/8"],
+ obj:["อธิบายปัจจัยที่จำเป็นในการสังเคราะห์ด้วยแสงและผลผลิตที่ได้ (K)",
+      "สังเกตและแยกได้ว่าบริเวณใดเกิดและไม่เกิดการสังเคราะห์ด้วยแสง (P)",
+      "เห็นความสำคัญของการสังเคราะห์ด้วยแสงต่อสิ่งมีชีวิตและสิ่งแวดล้อม (A)"],
+ acts:[{s:"1 สร้างความสนใจ",m:5,x:"ถามคำถามนำ 4 ข้อ เช่น หลังจากพืชงอกแล้ว พืชใช้อาหารจากแหล่งใดในการเจริญเติบโต"},
+       {s:"2 สำรวจและค้นหา",m:20,x:"ดูวีดิทัศน์ 2 เรื่อง แล้วแจกใบความรู้และอธิบายเพิ่มเติม"},
+       {s:"3 อธิบายและลงข้อสรุป",m:0,x:"แบ่งกลุ่ม 3 กลุ่ม เล่นเกม Kahoot! แบบทีม 10 ข้อ"},
+       {s:"4 ขยายความรู้",m:0,x:"ดูคลิปปัญหาสิ่งแวดล้อม แล้วเชื่อมโยงกับภาวะโลกร้อน"},
+       {s:"5 ประเมิน",m:0,x:"ใช้คะแนนจากเกม Kahoot! ในขั้นที่ 3"}],
+ mat:["ใบความรู้","สไลด์","เกม Kahoot!"]};
+
+const F=[
+{id:"F1",lv:"a",lab:"ควรเติมมากที่สุด",
+ h:"เฉลยในขั้นสร้างความสนใจ อาจทำให้เด็กเข้าใจผิดมากขึ้น",
+ p:["คำถามข้อ 2 ถามว่าพืชใช้อาหารจากแหล่งใด เฉลยที่เขียนไว้คือ <b>รากดูดซึมน้ำและสารอาหารจากดิน</b>",
+    "คำว่าสารอาหารตรงนี้ทำให้เด็กเชื่อมไปหาความเข้าใจผิดที่พบบ่อยที่สุดของเรื่องนี้ คือคิดว่าพืชได้อาหารจากดิน ทั้งที่รากดูดแร่ธาตุ ส่วนอาหารพืชสร้างเอง"],
+ sug:"แก้เฉลยเป็น รากดูดน้ำและแร่ธาตุ ส่วนอาหารคือน้ำตาลที่พืชสร้างขึ้นเอง แล้วถามต่อว่าถ้าอย่างนั้นน้ำหนักที่เพิ่มขึ้นของต้นไม้มาจากไหน",
+ tm:"อยู่ในขั้นที่ 1 เดิม ไม่ต้องเพิ่มเวลา",
+ dev:"comparator 2 · DB2 M-PHOTO-01 · frequency สูงมาก · persistence สูง · evidence สูง · DB4 T-CC-01 Cognitive Conflict"},
+{id:"F2",lv:"b",lab:"ควรเติม",
+ h:"เฉลยข้อ 10 ของเกม อาจทำให้เด็กคิดว่าพืชไม่หายใจตอนกลางวัน",
+ p:["เฉลยเขียนว่า กลางคืนต้นไม้จะไม่สังเคราะห์แสง <b>แต่จะมีแต่การหายใจเท่านั้น</b>",
+    "ประโยคนี้ถูกในบริบทของมัน แต่เด็กมักอ่านต่อเองว่ากลางวันพืชไม่หายใจ ซึ่งเป็นความเข้าใจผิดที่ติดยาวไปถึงเรื่องการหายใจระดับเซลล์"],
+ sug:"เติมหนึ่งประโยคในเฉลยว่า พืชหายใจตลอดเวลาทั้งกลางวันและกลางคืน ต่างกันที่กลางวันมีการสังเคราะห์ด้วยแสงเกิดขึ้นพร้อมกันด้วย",
+ tm:"แก้ในเอกสารเฉลย ไม่กระทบเวลาสอน",
+ dev:"comparator 2 · DB2 M-PHOTO-03 · frequency สูงมาก · persistence ปานกลาง · DB4 T-CC-02 Conceptual Change"},
+{id:"F3",lv:"c",lab:"ลองดู",
+ h:"สามขั้นสุดท้ายยังไม่ได้ระบุเวลา ในคาบ 50 นาที",
+ p:["ขั้นที่ 1 กับ 2 ระบุไว้ 5 และ 20 นาที รวม 25 นาที ส่วนขั้นที่ 3 4 5 ยังไม่มีตัวเลข",
+    "เกม Kahoot! 10 ข้อแบบทีม กับการดูคลิปอีกหนึ่งเรื่อง มักใช้เวลารวมเกิน 25 นาทีที่เหลืออยู่"],
+ sug:"ลองกำหนดเป็น ขั้นที่ 3 อธิบายและลงข้อสรุป 15 นาที ขั้นที่ 4 ขยายความรู้ 7 นาที ขั้นที่ 5 ประเมิน 3 นาที",
+ tm:"รวมทั้งคาบพอดี 50 นาที",
+ dev:"constraint validation · PLAN.minutes_per_period=50 · sum(activities.duration)=25 · 3 stages null"}];
+
+const F4={id:"F4",lv:"b",lab:"ควรเติม",
+ h:"คุณมักให้เด็กทำนายก่อนดูคลิป แต่แผนนี้ยังไม่มี",
+ p:["จากแผน 5 แผนที่ผ่านมา คุณใส่ช่วงให้เด็กทายผลก่อนดูวีดิทัศน์ไว้ 4 ครั้ง",
+    "แผนนี้ให้ดูคลิปเลย ซึ่งเด็กมักดูผ่านตาโดยไม่ได้คิดตาม"],
+ sug:"เพิ่ม 3 นาทีก่อนเปิดคลิป ให้เด็กเขียนคำตอบของตัวเองก่อน แล้วค่อยดูว่าตรงกันไหม",
+ tm:"เพิ่ม 3 นาที ในขั้นที่ 2",
+ dev:"comparator 3 · DB8 teacher history · pattern freq 4/5 plans"};
+
+const $=q=>document.querySelector(q);
+let cur='s0',seen={s0:1},dec={},rejd=[],run=1;
+const SC=['s0','s1','s2','s2d','s3','s4','s5','s6'];
+const NM={s0:'ไฟล์ของคุณ',s1:'ตรวจข้อมูล',s2:'สิ่งที่ควรเสริม',s2d:'ที่มา',s3:'แผนของคุณ',s4:'คำถามท้ายคาบ',s5:'เอกสาร PA',s6:'สิ่งที่เคยเลือก'};
+
+function mode(d){document.body.classList.toggle('devmode',!!d);$('#tv').classList.toggle('on',!d);$('#dv').classList.toggle('on',!!d);}
+function nav(){const n=$('#steps');n.innerHTML='';SC.forEach(s=>{if(s==='s2d'&&!seen.s2d)return;
+ const d=document.createElement('div');d.className='sdot'+(cur===s?' on':(seen[s]?' done':''));
+ d.textContent=NM[s];d.onclick=()=>{if(seen[s])go(s)};n.appendChild(d)})}
+function go(s){cur=s;seen[s]=1;SC.forEach(x=>$('#'+x).classList.toggle('hide',x!==s));nav();scrollTo({top:0,behavior:'smooth'});R[s]&&R[s]()}
+
+const R={};
+R.s1=()=>{
+ const f=(k,v,ok)=>`<div class="fld"><div class="fk">${k}</div><div>${v}</div>
+   <div><span class="chk ${ok?'ok':'ask'}">${ok?'อ่านได้ชัด':'ช่วยดูให้หน่อย'}</span></div></div>`;
+ $('#pv').innerHTML=
+  f('หน่วย / เรื่อง',P.unit+'<br>'+P.name,1)+
+  f('ชั้น / เวลา',P.grade+' · '+P.periods+' คาบ '+P.min+' นาที',1)+
+  f('ตัวชี้วัด','<b>'+P.curr.join(' · ')+'</b>',1)+
+  f('จุดประสงค์',P.obj.join('<br>'),0)+
+  f('กิจกรรม',P.acts.map(a=>'<b>'+a.s+'</b> '+(a.m?a.m+' นาที':'<span style="color:#8a5308">ยังไม่ระบุเวลา</span>')+'<br>'+a.x).join('<br><br>'),0)+
+  f('สื่อที่ใช้',P.mat.join(' · '),1)+
+  f('บันทึกหลังสอน','<span style="color:#8b929c">ไม่พบในเอกสาร</span>',1);
+};
+
+R.s2=()=>{
+ const list=run>1?F.concat([F4]):F;
+ const n=list.filter(x=>dec[x.id]!=='r').length;
+ $('#fh').innerHTML=`<div><div style="font-size:18px;font-weight:600">อ่านแผนเสร็จแล้ว</div>
+  <div style="font-size:14px;color:#69707a">${P.name} · ${P.grade} · เนื้อหาตรงกับตัวชี้วัดที่ระบุไว้ครบ</div></div>
+  <div style="font-size:15px;font-weight:500;color:#8f1d1d">มี ${n} จุดที่น่าจะเติมได้</div>`;
+ $('#fl').innerHTML=list.map(x=>{
+  const d=dec[x.id];
+  let foot='';
+  if(d==='i')foot=`<div class="done-in">เติมเข้าแผนแล้ว</div>`;
+  else if(d==='r')foot=`<div class="done-out">ไม่เอา · ${(rejd.find(r=>r.id===x.id)||{}).w||''}</div>`;
+  else foot=`<div class="fin" style="padding-top:0"><div class="row" style="margin-top:14px">
+    <button class="sm" onclick="ins('${x.id}')">ใช้เลย</button>
+    <button class="ghost sm" onclick="alt()">ขอแบบอื่น</button>
+    <button class="ghost sm" onclick="ropen('${x.id}')">ไม่เอา</button>
+    <button class="link" onclick="det('${x.id}')">ทำไมถึงแนะนำแบบนี้</button></div></div>`;
+  return `<div class="f ${d==='r'?'off':''}"><div class="fbar ${x.lv}"></div>
+   <div class="fin"><div class="flab">${x.lab}</div><div class="fh">${x.h}</div>
+    ${x.p.map(t=>'<div class="fp">'+t+'</div>').join('')}
+    <div class="sug"><div class="lb">เติมแบบนี้ได้</div><div class="tx">${x.sug}</div><div class="tm">${x.tm}</div></div>
+   </div>${foot}<div class="dev">${x.dev}</div></div>`}).join('');
+};
+
+let cf=null;
+function det(id){cf=(run>1?F.concat([F4]):F).find(x=>x.id===id);go('s2d')}
+R.s2d=()=>{const x=cf||F[0];
+ $('#s2d').innerHTML=`<h2>${x.h}</h2><div class="lead">ที่มาของคำแนะนำนี้</div>
+ <div class="card"><div class="fh" style="font-size:16px">เรื่องนี้เด็กมักติดตรงไหน</div>
+  ${x.p.map(t=>'<div class="fp">'+t+'</div>').join('')}
+  <div class="note">ความเข้าใจผิดแบบนี้ไม่หายไปด้วยการอธิบายซ้ำ เพราะเด็กมีคำอธิบายของตัวเองอยู่แล้วและมันใช้ได้ในชีวิตประจำวัน วิธีที่ได้ผลกว่าคือให้เขาเจอกับหลักฐานที่ขัดกับสิ่งที่เขาเชื่อด้วยตัวเอง</div></div>
+ <div class="card"><div class="fh" style="font-size:16px">ความน่าเชื่อถือของคำแนะนำ</div>
+  <div class="fp">มาจากงานวิจัยด้านการสอนวิทยาศาสตร์ที่ศึกษาเรื่องนี้ไว้ค่อนข้างมาก</div>
+  <div class="note w"><b>ข้อจำกัดที่ควรรู้</b> งานวิจัยส่วนใหญ่ทำกับนักเรียนในอเมริกาและยุโรป ยังไม่มีการทดสอบซ้ำในห้องเรียนไทย และผลจะดีที่สุดเมื่อเด็กได้ลงมือทดลองเอง ถ้าใช้วิธีสาธิตหน้าชั้นแทน ผลจะอ่อนลง</div>
+  <div class="note">ระบบบอกข้อจำกัดทุกครั้ง แม้จะทำให้คำแนะนำดูอ่อนลง เพราะคุณควรรู้ว่ากำลังตัดสินใจบนอะไร</div></div>
+ <div class="card devonly"><div class="fh" style="font-size:16px">มุมมองเทคนิค</div>
+  <div style="font-family:ui-monospace,monospace;font-size:13px;color:#3b424b">${x.dev}</div></div>
+ <div class="row"><button onclick="ins('${x.id}');go('s3')">ใช้เลย</button>
+  <button class="ghost" onclick="go('s2')">กลับไปดูรายการ</button></div>`;
+};
+
+function ins(id){dec[id]='i';if(cur==='s2')R.s2();else go('s2')}
+function alt(){alert('เสนอวิธีอื่นที่แก้เรื่องเดียวกัน')}
+function ropen(id){$('#modal').classList.remove('hide');$('#modal').dataset.id=id}
+function rej(w){const id=$('#modal').dataset.id;dec[id]='r';rejd.push({id,w});$('#modal').classList.add('hide');go('s2')}
+function sim(){run=6;$('#mem').classList.remove('hide');go('s2')}
+
+R.s3=()=>{
+ let a=P.acts.map(x=>({...x}));
+ if(dec.F3==='i'){a[2].m=15;a[3].m=7;a[4].m=3;a[2].fix=a[3].fix=a[4].fix=1}
+ if(dec.F1==='i')a[0].add='แก้เฉลยข้อ 2 เป็น รากดูดน้ำและแร่ธาตุ อาหารพืชสร้างเอง แล้วถามต่อว่าน้ำหนักต้นไม้ที่เพิ่มขึ้นมาจากไหน';
+ if(dec.F2==='i')a[2].add='เติมในเฉลยข้อ 10 ว่าพืชหายใจตลอดเวลา ทั้งกลางวันและกลางคืน';
+ if(dec.F4==='i'){a[1].add='ก่อนเปิดคลิป ให้เด็กเขียนคำตอบของตัวเองก่อน 3 นาที';a[1].m=23}
+ const tot=a.reduce((s,x)=>s+x.m,0);
+ $('#tm').innerHTML=`รวมเวลาที่ระบุไว้ ${tot} นาที จากคาบละ ${P.min} นาที ` +
+  (tot===P.min?'<span style="color:#0f6e56">พอดี</span>':tot>P.min?'<span style="color:#8f1d1d">เกินไป '+(tot-P.min)+' นาที</span>':'<span style="color:#8a5308">ยังเหลือ '+(P.min-tot)+' นาทีที่ยังไม่ได้ระบุ</span>');
+ $('#pl').innerHTML=a.map(x=>`<div class="act ${x.add?'ins':(x.fix?'warn':'')}">
+  <div class="st">ขั้นที่ ${x.s} · ${x.m?x.m+' นาที':'ยังไม่ระบุเวลา'}${x.fix?'<span class="newtag">กำหนดเวลาแล้ว</span>':''}</div>
+  <div class="tx">${x.x}</div>
+  ${x.add?'<div class="tx" style="margin-top:6px;color:#0f6e56"><b>เพิ่ม</b> '+x.add+'</div>':''}</div>`).join('');
+};
+
+R.s4=()=>{
+ const q=[{q:"ต้นไม้ในกระถางโตขึ้นจนหนักกว่าเดิมมาก น้ำหนักที่เพิ่มขึ้นส่วนใหญ่มาจากอะไร",
+  o:[["อากาศ ผ่านแก๊สคาร์บอนไดออกไซด์",1,""],["ดินในกระถางที่พร่องลงไป",0,"คิดว่าอาหารและมวลมาจากดิน"],["น้ำที่รดทุกวันเท่านั้น",0,"ยังไม่แยกน้ำกับคาร์บอน"],["ปุ๋ยที่ใส่ลงไป",0,"คิดว่าปุ๋ยคืออาหารของพืช"]]},
+  {q:"ตอนกลางวันที่แดดจัด พืชกำลังทำอะไรอยู่",
+  o:[["สังเคราะห์ด้วยแสงและหายใจไปพร้อมกัน",1,""],["สังเคราะห์ด้วยแสงอย่างเดียว ไม่หายใจ",0,"คิดว่าสองอย่างสลับกัน ไม่เกิดพร้อมกัน"],["หายใจอย่างเดียว",0,"สลับสองกระบวนการ"],["พักผ่อน ไม่ทำอะไร",0,"ยังไม่เข้าใจกระบวนการ"]]},
+  {q:"อาหารของพืชคืออะไร",
+  o:[["น้ำตาลที่พืชสร้างขึ้นเอง",1,""],["แสงแดด",0,"สับสนพลังงานกับสาร"],["แร่ธาตุในดิน",0,"คิดว่าอาหารมาจากดิน"],["น้ำ",0,"สับสนวัตถุดิบกับผลผลิต"]]}];
+ $('#it').innerHTML=q.map((x,i)=>`<div class="item"><div style="font-weight:500">ข้อ ${i+1} ${x.q}</div>
+  ${x.o.map((o,j)=>`<div class="opt ${o[1]?'good':''}">${'กขคง'[j]}. ${o[0]}
+   ${o[1]?' <span class="m">ถูก</span>':'<div class="m devonly" style="padding-left:18px">'+o[2]+'</div>'}</div>`).join('')}
+  </div>`).join('')+`<div class="note">ถ้ามีเด็กเกิน 30% ตอบข้อเดียวกันผิด ให้ย้อนกลับไปสอนตรงนั้นก่อนขึ้นเรื่องใหม่</div>`;
+};
+
+R.s5=()=>{
+ const r=[["แผนการจัดการเรียนรู้ สำหรับ ว.PA ด้านที่ 1","y","แผนที่เติมแล้ว โหลดเป็นไฟล์ Word ได้"],
+  ["ตัวชี้วัด 1.2 ออกแบบการจัดการเรียนรู้","y","แผนพร้อมเหตุผลว่าทำไมออกแบบแบบนี้"],
+  ["ตัวชี้วัด 1.5 วัดและประเมินผล","p","ได้เครื่องมือวัด แต่ยังไม่มีผลการวัดจริง"],
+  ["ตัวชี้วัด 1.6 ศึกษาวิเคราะห์เพื่อแก้ปัญหา","y","บันทึกว่าเจอปัญหาอะไรและเลือกวิธีไหน"],
+  ["ประเด็นท้าทาย ข้อ 1 สภาพปัญหาของผู้เรียน","y","ระบุปัญหาพร้อมที่มา"],
+  ["ประเด็นท้าทาย ข้อ 2 วิธีการดำเนินการ","y","จากวิธีที่คุณเลือกใช้"],
+  ["ประเด็นท้าทาย ข้อ 3.1 ผลเชิงปริมาณ","n","ต้องมีผลการวัดจริงก่อน"],
+  ["ประเด็นท้าทาย ข้อ 3.2 ผลเชิงคุณภาพ","n","ต้องมีผลการวัดจริงก่อน"],
+  ["ตารางภาระงานใน PA1","y","ถ้ากรอกจำนวนคาบต่อสัปดาห์ไว้"]];
+ $('#pa').innerHTML='<tr><th>ส่วนของ PA</th><th style="width:90px">ได้ไหม</th><th>ระบบให้อะไร</th></tr>'+
+  r.map(x=>`<tr><td>${x[0]}</td><td class="${x[1]}">${x[1]==='y'?'ได้':x[1]==='p'?'บางส่วน':'ยังไม่ได้'}</td>
+   <td style="color:#69707a">${x[2]}</td></tr>`).join('');
+};
+
+R.s6=()=>{
+ const all=run>1?F.concat([F4]):F;
+ const h=all.filter(x=>dec[x.id]).map(x=>{const d=dec[x.id];
+  return `<div class="hist"><b>${d==='i'?'ใช้':'ไม่เอา'}</b> ${x.h}
+   <div style="font-size:13px;color:#69707a">${d==='r'?'เหตุผล '+(rejd.find(r=>r.id===x.id)||{}).w:'เติมเข้าแผนแล้ว'}</div></div>`}).join('');
+ $('#hl').innerHTML=h||'<div class="note">ยังไม่ได้เลือกอะไรในรอบนี้ ลองกลับไปหน้าสิ่งที่ควรเสริมแล้วกดใช้หรือไม่เอาดู</div>';
+};
+
+document.querySelectorAll('.path').forEach(p=>p.onclick=()=>{
+ document.querySelectorAll('.path').forEach(x=>x.classList.remove('on'));p.classList.add('on')});
+nav();
+</script></body></html>

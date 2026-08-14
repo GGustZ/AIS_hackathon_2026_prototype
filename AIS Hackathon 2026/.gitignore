@@ -1,0 +1,21 @@
+# Claude Code / Cowork
+.claude/settings.local.json
+.claude/projects/
+.claude/todos/
+
+# ข้อมูลบุคคล ห้าม commit
+data/samples/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Temp
+~$*
+*.tmp
