@@ -1,0 +1,273 @@
+<!DOCTYPE html><html class="light" lang="th"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TruatRoo - ตรวจพบจุดที่ควรเสริม</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb954",
+                        "surface-tint": "#006970",
+                        "on-tertiary-fixed": "#291800",
+                        "primary": "#006168",
+                        "on-secondary-fixed": "#0e1e1e",
+                        "inverse-on-surface": "#dff4ff",
+                        "surface-muted": "#F8FAFB",
+                        "secondary-fixed": "#d4e6e5",
+                        "surface-variant": "#cfe6f2",
+                        "surface-container-lowest": "#ffffff",
+                        "success-green": "#2E7D32",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#d4e6e5",
+                        "tertiary": "#7a4f00",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#004f54",
+                        "secondary-fixed-dim": "#b8cac9",
+                        "secondary": "#516161",
+                        "surface-container-high": "#d5ecf8",
+                        "tertiary-container": "#9a6500",
+                        "on-secondary-fixed-variant": "#3a4a49",
+                        "outline": "#6e797a",
+                        "inverse-primary": "#7cd4dd",
+                        "background": "#f3faff",
+                        "error-red": "#D32F2F",
+                        "highlight-blue": "#E3F2FD",
+                        "on-primary-container": "#d9fcff",
+                        "on-surface-variant": "#3e494a",
+                        "surface-dim": "#c7dde9",
+                        "surface-container": "#dbf1fe",
+                        "surface": "#f3faff",
+                        "surface-bright": "#f3faff",
+                        "on-tertiary-container": "#fff3e8",
+                        "surface-container-highest": "#cfe6f2",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed": "#98f1f9",
+                        "primary-container": "#0d7c84",
+                        "on-secondary-container": "#576867",
+                        "on-surface": "#071e27",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#7cd4dd",
+                        "tertiary-fixed": "#ffddb4",
+                        "inverse-surface": "#1e333c",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#e6f6ff",
+                        "outline-variant": "#bdc9ca",
+                        "on-error": "#ffffff",
+                        "on-background": "#071e27"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "stack-sm": "8px",
+                        "container-max": "1120px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Noto Sans", "sans-serif"],
+                        "label-md": ["Be Vietnam Pro", "sans-serif"],
+                        "label-sm": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-lg-mobile": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-md": ["Be Vietnam Pro", "sans-serif"],
+                        "display-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "body-lg": ["Noto Sans", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&amp;family=Noto+Sans:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Noto Sans', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .brand-font { font-family: 'Be Vietnam Pro', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .fill-icon { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm docked full-width top-0 z-50 relative">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16">
+<div class="font-headline-md text-headline-md text-primary dark:text-inverse-primary brand-font">
+                ตรวจรู้
+            </div>
+<nav class="hidden md:flex gap-6 items-center">
+<!-- Assuming "ตรวจแผน" is the active tab based on intent -->
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary pb-1 brand-font text-label-md" href="#">ตรวจแผน</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200 brand-font text-label-md" href="#">แผนของฉัน</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200 brand-font text-label-md" href="#">หลักฐาน PA</a>
+</nav>
+<div>
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200 brand-font text-label-md flex items-center gap-2">
+<span class="material-symbols-outlined">help</span>
+<span class="hidden md:inline">ช่วยเหลือ</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-section-gap flex flex-col">
+<!-- Header Section -->
+<div class="mb-stack-lg text-center md:text-left">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-stack-sm brand-font">
+                ตรวจพบจุดที่ควรเสริม
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                เราพบจุดที่ควรพิจารณา 3 จุดในแผนการสอนนี้
+            </p>
+</div>
+<!-- Findings Container -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Findings List (Occupies 8 columns on desktop) -->
+<div class="md:col-span-8 flex flex-col gap-stack-md">
+<!-- Finding Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] border-2 border-primary/20 overflow-hidden relative">
+<!-- Prominent Indicator -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="p-gutter flex flex-col gap-stack-md">
+<!-- Card Header -->
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-stack-sm">
+<div class="flex items-center gap-3">
+<span class="bg-highlight-blue text-primary px-3 py-1 rounded-full font-label-sm text-label-sm brand-font flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+                                    จุดที่ 1
+                                </span>
+<h3 class="font-label-md text-label-md text-on-surface brand-font">สำคัญ</h3>
+</div>
+</div>
+<!-- Misconception Content -->
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant mb-1 brand-font flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-error-red">warning</span>
+                                นักเรียนอาจเข้าใจว่า...
+                            </h4>
+<p class="font-body-md text-body-md text-on-surface bg-error-container/20 p-3 rounded-lg border border-error-container">
+                                แสงเดินทางเป็นเส้นโค้งเมื่อผ่านตัวกลางที่แตกต่างกัน ซึ่งเป็นความเข้าใจคลาดเคลื่อนที่พบบ่อยในเรื่องการหักเหของแสง
+                            </p>
+</div>
+<!-- Diff / Suggestion Content -->
+<div>
+<h4 class="font-label-md text-label-md text-primary mb-1 brand-font flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-success-green">lightbulb</span>
+                                สิ่งที่แนะนำ
+                            </h4>
+<div class="bg-success-green/5 p-4 rounded-lg border border-success-green/20">
+<p class="font-body-md text-body-md text-on-surface">
+<span class="font-bold text-success-green mr-2">+</span>
+                                    เพิ่มกิจกรรมความขัดแย้งทางความคิด ในขั้นนำ ใช้เวลาประมาณ 10 นาที
+                                </p>
+</div>
+</div>
+<!-- Rationale Content -->
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant mb-1 brand-font flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">info</span>
+                                ทำไมจึงแนะนำ
+                            </h4>
+<p class="font-body-md text-body-md text-on-surface-variant pl-6 border-l-2 border-surface-variant ml-2 py-1">
+                                การสร้าง cognitive conflict ก่อนเริ่มเนื้อหาหลัก จะช่วยดึงความสนใจและทำให้นักเรียนตระหนักถึงความเข้าใจเดิมที่ไม่ถูกต้อง ทำให้เปิดรับแนวคิดใหม่เรื่องการหักเหได้ดีขึ้น
+                            </p>
+</div>
+<!-- Actions -->
+<div class="pt-stack-sm flex flex-wrap gap-3 items-center mt-2">
+<button class="bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md py-2 px-4 rounded-lg shadow-sm transition-all duration-200 flex items-center gap-2 brand-font active:scale-95">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+                                เพิ่มลงในแผน
+                            </button>
+<button class="bg-transparent border border-primary text-primary hover:bg-primary/5 font-label-md text-label-md py-2 px-4 rounded-lg transition-all duration-200 brand-font active:scale-95">
+                                ดูตัวเลือกอื่น
+                            </button>
+<button class="bg-transparent text-secondary hover:text-on-surface font-label-md text-label-md py-2 px-4 rounded-lg transition-all duration-200 ml-auto md:ml-0 brand-font active:scale-95 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">close</span>
+                                ไม่ใช้คำแนะนำนี้
+                            </button>
+</div>
+</div>
+</div>
+<!-- Minimal Representation of other findings for context -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-4 flex justify-between items-center opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm brand-font">จุดที่ 2</span>
+<span class="font-body-md text-body-md text-on-surface line-clamp-1">ปรับวิธีการประเมินผล</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-4 flex justify-between items-center opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm brand-font">จุดที่ 3</span>
+<span class="font-body-md text-body-md text-on-surface line-clamp-1">เพิ่มสื่อการสอนประทับใจ</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+<!-- Right Column: Summary/Context (Occupies 4 columns on desktop) -->
+<div class="md:col-span-4 hidden md:flex flex-col gap-stack-md">
+<div class="bg-surface-container-low rounded-xl p-6 sticky top-24">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md brand-font flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">assessment</span>
+                         ภาพรวมการวิเคราะห์
+                     </h3>
+<ul class="space-y-4">
+<li class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<span class="font-body-md text-body-md text-on-surface-variant">แผนการสอน</span>
+<span class="font-label-md text-label-md text-on-surface brand-font">วิทยาศาสตร์ ม.2</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<span class="font-body-md text-body-md text-on-surface-variant">หัวข้อ</span>
+<span class="font-label-md text-label-md text-on-surface brand-font">การหักเหของแสง</span>
+</li>
+<li class="flex justify-between items-center border-b border-outline-variant/20 pb-2">
+<span class="font-body-md text-body-md text-on-surface-variant">จุดที่ควรเสริมทั้งหมด</span>
+<span class="font-label-md text-label-md text-primary brand-font bg-highlight-blue px-2 py-1 rounded-md">3 จุด</span>
+</li>
+</ul>
+<div class="mt-stack-lg">
+<div class="w-full bg-surface-variant rounded-full h-2 mb-2">
+<div class="bg-primary h-2 rounded-full" style="width: 33%"></div>
+</div>
+<p class="text-right font-label-sm text-label-sm text-on-surface-variant brand-font">ตรวจแล้ว 1 จาก 3</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-muted dark:bg-surface-dim py-stack-lg mt-auto border-t border-outline-variant/20">
+<div class="w-full flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-gutter max-w-container-max mx-auto gap-stack-sm">
+<div class="font-label-md text-label-md font-bold text-secondary brand-font">
+                © 2024 ตรวจรู้ (TruatRoo) — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์
+            </div>
+<div class="flex gap-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300 brand-font" href="#">ช่วยเหลือ</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300 brand-font" href="#">ไม่ต้องสร้างบัญชี</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300 brand-font" href="#">นโยบายความเป็นส่วนตัว</a>
+</div>
+</div>
+</footer>
+</body></html>

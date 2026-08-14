@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="th" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ตรวจสอบข้อมูล - ตรวจรู้</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Noto+Sans+Thai:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb954",
+                        "surface-tint": "#006970",
+                        "on-tertiary-fixed": "#291800",
+                        "primary": "#006168",
+                        "on-secondary-fixed": "#0e1e1e",
+                        "inverse-on-surface": "#dff4ff",
+                        "surface-muted": "#F8FAFB",
+                        "secondary-fixed": "#d4e6e5",
+                        "surface-variant": "#cfe6f2",
+                        "surface-container-lowest": "#ffffff",
+                        "success-green": "#2E7D32",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#d4e6e5",
+                        "tertiary": "#7a4f00",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#004f54",
+                        "secondary-fixed-dim": "#b8cac9",
+                        "secondary": "#516161",
+                        "surface-container-high": "#d5ecf8",
+                        "tertiary-container": "#9a6500",
+                        "on-secondary-fixed-variant": "#3a4a49",
+                        "outline": "#6e797a",
+                        "inverse-primary": "#7cd4dd",
+                        "background": "#f3faff",
+                        "error-red": "#D32F2F",
+                        "highlight-blue": "#E3F2FD",
+                        "on-primary-container": "#d9fcff",
+                        "on-surface-variant": "#3e494a",
+                        "surface-dim": "#c7dde9",
+                        "surface-container": "#dbf1fe",
+                        "surface": "#f3faff",
+                        "surface-bright": "#f3faff",
+                        "on-tertiary-container": "#fff3e8",
+                        "surface-container-highest": "#cfe6f2",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed": "#98f1f9",
+                        "primary-container": "#0d7c84",
+                        "on-secondary-container": "#576867",
+                        "on-surface": "#071e27",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#7cd4dd",
+                        "tertiary-fixed": "#ffddb4",
+                        "inverse-surface": "#1e333c",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#e6f6ff",
+                        "outline-variant": "#bdc9ca",
+                        "on-error": "#ffffff",
+                        "on-background": "#071e27"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "stack-sm": "8px",
+                        "container-max": "1120px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Noto Sans Thai", "Noto Sans", "sans-serif"],
+                        "label-md": ["Be Vietnam Pro", "sans-serif"],
+                        "label-sm": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-lg-mobile": ["Be Vietnam Pro", "sans-serif"],
+                        "headline-md": ["Be Vietnam Pro", "sans-serif"],
+                        "display-lg": ["Be Vietnam Pro", "sans-serif"],
+                        "body-lg": ["Noto Sans Thai", "Noto Sans", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Ambient subtle shadow for cards */
+        .ambient-shadow {
+            box-shadow: 0 4px 12px rgba(0, 32, 34, 0.05);
+        }
+        .diffused-shadow {
+            box-shadow: 0 8px 24px rgba(0, 32, 34, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased">
+<!-- Task Header (Suppressed Main Nav for Focused Journey) -->
+<header class="w-full bg-surface-container-lowest border-b border-surface-container px-margin-mobile md:px-gutter h-16 flex items-center justify-between shrink-0">
+<button class="flex items-center gap-2 text-secondary hover:text-primary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-label-md text-label-md">กลับไปหน้านำเข้าข้อมูล</span>
+</button>
+<div class="font-label-md text-label-md font-bold text-primary">
+            ตรวจรู้
+        </div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-3xl mx-auto px-margin-mobile md:px-gutter py-section-gap flex flex-col gap-stack-lg">
+<!-- Header Section -->
+<div class="flex flex-col gap-stack-sm text-center md:text-left">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">
+                ตรวจสอบข้อมูลจากแผนการสอน
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                ระบบได้สกัดข้อมูลสำคัญจากไฟล์แผนการสอนของคุณ โปรดตรวจสอบความถูกต้องเพื่อให้การวิเคราะห์สอดคล้องกับบริบทการสอนของคุณมากที่สุด
+            </p><p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-2">
+                ระบบจะวิเคราะห์แผนการสอนของคุณเพื่อค้นหาจุดที่สามารถเสริมกิจกรรมเพื่อแก้ความเข้าใจคลาดเคลื่อนของนักเรียน โดยอ้างอิงจากข้อมูลที่ระบบตรวจพบด้านล่างนี้
+            </p>
+</div>
+<!-- Extraction Data Container (Bento Layout) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<!-- Standard Field: Grade -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow border border-surface-variant flex flex-col gap-1">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-sm text-label-sm">ชั้น (Grade)</span>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface mt-1">
+                    ม.1
+                </div>
+</div>
+<!-- Standard Field: Subject -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow border border-surface-variant flex flex-col gap-1">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span class="font-label-sm text-label-sm">วิชา (Subject)</span>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface mt-1">
+                    วิทยาศาสตร์
+                </div>
+</div>
+<!-- Standard Field: Duration -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow border border-surface-variant flex flex-col gap-1 md:col-span-2 lg:col-span-1">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-label-sm text-label-sm">เวลา (Duration)</span>
+</div>
+<div class="font-body-lg text-body-lg text-on-surface mt-1">
+                    50 นาที
+                </div>
+</div>
+<!-- Uncertain Field: Topic (Requires Confirmation) -->
+<div class="bg-surface-container rounded-xl p-6 diffused-shadow border-l-4 border-primary-container flex flex-col gap-4 md:col-span-2 relative overflow-hidden group">
+<!-- Subtle background indication -->
+<div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">help_center</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2 text-primary-fixed-variant">
+<span class="material-symbols-outlined text-[18px]">category</span>
+<span class="font-label-sm text-label-sm">เรื่อง (Topic)</span>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-1 rounded font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">psychology</span>
+                            ระบบไม่แน่ใจ
+                        </span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface">
+                        การสังเคราะห์ด้วยแสง
+                    </div>
+</div>
+<!-- Action Area for Uncertain Field -->
+<div class="flex flex-col sm:flex-row gap-3 mt-2 relative z-10 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-outline bg-surface-container-lowest text-secondary hover:bg-surface-variant hover:text-on-surface transition-colors cursor-pointer font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        แก้ไข
+                    </button>
+<button class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors shadow-sm cursor-pointer font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        ยืนยัน
+                    </button>
+</div>
+</div>
+</div>
+<!-- Global Action -->
+<div class="flex justify-end pt-stack-md mt-auto">
+<button class="w-full md:w-auto px-8 py-4 rounded-xl bg-primary text-on-primary hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2 font-label-md text-label-md shadow-sm opacity-50 cursor-not-allowed" title="กรุณายืนยันข้อมูลที่ระบบไม่แน่ใจก่อนดำเนินการต่อ">
+                ดำเนินการวิเคราะห์แผน
+                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</main>
+</body></html>

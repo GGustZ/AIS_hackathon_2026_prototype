@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruatRoo - เลือกวิธีเริ่มต้น</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#cfe6f2",
+                        "highlight-blue": "#E3F2FD",
+                        "outline-variant": "#bdc9ca",
+                        "on-background": "#071e27",
+                        "on-secondary-container": "#576867",
+                        "on-primary-fixed": "#002022",
+                        "surface-container": "#dbf1fe",
+                        "inverse-on-surface": "#dff4ff",
+                        "on-tertiary-container": "#fff3e8",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb954",
+                        "on-surface-variant": "#3e494a",
+                        "surface-dim": "#c7dde9",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#291800",
+                        "primary-fixed-dim": "#7cd4dd",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f3faff",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "surface": "#f3faff",
+                        "primary": "#006168",
+                        "surface-container-low": "#e6f6ff",
+                        "on-primary-fixed-variant": "#004f54",
+                        "error-red": "#D32F2F",
+                        "on-secondary-fixed": "#0e1e1e",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#98f1f9",
+                        "secondary": "#516161",
+                        "inverse-primary": "#7cd4dd",
+                        "on-secondary-fixed-variant": "#3a4a49",
+                        "success-green": "#2E7D32",
+                        "primary-container": "#0d7c84",
+                        "tertiary-fixed": "#ffddb4",
+                        "surface-variant": "#cfe6f2",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#7a4f00",
+                        "on-primary-container": "#d9fcff",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#d4e6e5",
+                        "tertiary-container": "#9a6500",
+                        "secondary-fixed": "#d4e6e5",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#006970",
+                        "secondary-fixed-dim": "#b8cac9",
+                        "surface-bright": "#f3faff",
+                        "on-surface": "#071e27",
+                        "inverse-surface": "#1e333c",
+                        "surface-container-high": "#d5ecf8",
+                        "outline": "#6e797a",
+                        "surface-muted": "#F8FAFB"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "container-max": "1120px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-md": ["Noto Sans"],
+                        "body-lg": ["Noto Sans"],
+                        "label-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Noto Sans', sans-serif; }
+        .font-be-vietnam { font-family: 'Be Vietnam Pro', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface docked full-width top-0 shadow-sm z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16">
+<div class="font-headline-md text-headline-md text-primary dark:text-inverse-primary font-bold">ตรวจรู้</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md cursor-pointer active:scale-95 duration-200" href="#">ตรวจแผน</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors font-label-md text-label-md cursor-pointer active:scale-95 duration-200" href="#">แผนของฉัน</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors font-label-md text-label-md cursor-pointer active:scale-95 duration-200" href="#">หลักฐาน PA</a>
+</nav>
+<button class="text-primary dark:text-inverse-primary font-label-md text-label-md cursor-pointer active:scale-95 duration-200 hover:text-primary-container dark:hover:text-primary-fixed transition-colors">ช่วยเหลือ</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex items-center justify-center py-section-gap px-margin-mobile md:px-gutter">
+<div class="max-w-container-max w-full mx-auto">
+<div class="text-center mb-stack-lg md:mb-section-gap">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-sm">เริ่มต้นจากสิ่งที่คุณมี</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">เลือกวิธีเริ่มต้นที่เหมาะกับสถานการณ์ของคุณ</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col h-full border border-surface-container-highest hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined text-[24px]">upload_file</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">มีแผนการสอนแล้ว</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">อัปโหลดแผนการสอนที่คุณมีอยู่ แล้วตรวจหาจุดที่ควรเสริม</p>
+<button class="w-full py-3 px-6 bg-surface-container text-primary font-label-md text-label-md font-medium rounded-lg hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+                        อัปโหลดแผนการสอน
+                    </button>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_12px_rgba(0,0,0,0.05)] flex flex-col h-full border border-surface-container-highest hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300">
+<div class="w-12 h-12 bg-surface-container rounded-full flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined text-[24px]">note_add</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">ยังไม่มีแผนการสอน</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">เริ่มสร้างแผนการสอนจากชั้น หนังสือเรียน และบทเรียน</p>
+<button class="w-full py-3 px-6 bg-surface-container text-primary font-label-md text-label-md font-medium rounded-lg hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        สร้างแผนการสอน
+                    </button>
+</div>
+<!-- Card 3 (New) -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_8px_24px_rgba(13,124,132,0.15)] flex flex-col h-full border-2 border-primary relative transform md:-translate-y-2 hover:-translate-y-3 transition-transform duration-300">
+<div class="absolute -top-3 right-6 bg-primary text-on-primary font-label-sm text-label-sm px-3 py-1 rounded-full font-bold tracking-wide shadow-sm">แนะนำ</div>
+<div class="w-12 h-12 bg-highlight-blue rounded-full flex items-center justify-center mb-6 text-primary-container">
+<span class="material-symbols-outlined icon-filled text-[24px]">groups</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">มีปัญหาผู้เรียน</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">เริ่มจากปัญหาที่พบในห้องเรียน แล้วค้นหาวิธีรับมือที่เหมาะสม</p>
+<button class="w-full py-3 px-6 bg-primary-container text-on-primary font-label-md text-label-md font-medium rounded-lg hover:bg-primary transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+                        เลือกปัญหาผู้เรียน
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-muted dark:bg-surface-dim full-width py-stack-lg flat no shadows">
+<div class="w-full flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-gutter max-w-container-max mx-auto gap-stack-sm">
+<div class="font-label-md text-label-md font-bold text-secondary">
+                © 2024 ตรวจรู้ (TruatRoo) — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์
+            </div>
+<div class="flex gap-4 md:gap-6">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ช่วยเหลือ</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ไม่ต้องสร้างบัญชี</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">นโยบายความเป็นส่วนตัว</a>
+</div>
+</div>
+</footer>
+</body></html>

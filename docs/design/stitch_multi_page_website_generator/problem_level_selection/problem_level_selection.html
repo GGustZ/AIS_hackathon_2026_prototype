@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>เลือกเนื้อหาและประเมินระดับปัญหาของนักเรียน - TruatRoo</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "outline": "#6e797a",
+                        "on-secondary-fixed": "#0e1e1e",
+                        "highlight-blue": "#E3F2FD",
+                        "tertiary-fixed-dim": "#ffb954",
+                        "primary-fixed": "#98f1f9",
+                        "surface-container-low": "#e6f6ff",
+                        "surface-container": "#dbf1fe",
+                        "on-tertiary-fixed": "#291800",
+                        "primary": "#006168",
+                        "tertiary": "#7a4f00",
+                        "on-primary-fixed": "#002022",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#d4e6e5",
+                        "on-surface-variant": "#3e494a",
+                        "on-primary": "#ffffff",
+                        "error-red": "#D32F2F",
+                        "secondary-container": "#d4e6e5",
+                        "inverse-on-surface": "#dff4ff",
+                        "success-green": "#2E7D32",
+                        "on-error-container": "#93000a",
+                        "background": "#F4F7F9", // Overridden as per request
+                        "tertiary-container": "#9a6500",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#0d7c84",
+                        "on-secondary-container": "#576867",
+                        "on-surface": "#071e27",
+                        "on-tertiary-container": "#fff3e8",
+                        "on-background": "#071e27",
+                        "inverse-surface": "#1e333c",
+                        "surface": "#ffffff", // Overridden for card surface
+                        "primary-fixed-dim": "#7cd4dd",
+                        "secondary-fixed-dim": "#b8cac9",
+                        "secondary": "#516161",
+                        "on-primary-container": "#d9fcff",
+                        "surface-container-highest": "#cfe6f2",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface-bright": "#f3faff",
+                        "on-secondary-fixed-variant": "#3a4a49",
+                        "tertiary-fixed": "#ffddb4",
+                        "surface-tint": "#006970",
+                        "surface-container-high": "#d5ecf8",
+                        "surface-dim": "#c7dde9",
+                        "outline-variant": "#E2E8F0", // Soft border override
+                        "surface-muted": "#F8FAFB",
+                        "surface-variant": "#cfe6f2",
+                        "inverse-primary": "#7cd4dd",
+                        "accent": "#007C89",
+                        "accent-light": "#E6F4F1"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "16px", // Overridden for requested 12-16px
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "stack-sm": "8px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "container-max": "1120px",
+                        "section-gap": "64px"
+                    },
+                    fontFamily: {
+                        "sans": ["Prompt", "Noto Sans", "sans-serif"],
+                        "headline-lg": ["Prompt", "sans-serif"],
+                        "display-lg": ["Prompt", "sans-serif"],
+                        "label-sm": ["Prompt", "sans-serif"],
+                        "label-md": ["Prompt", "sans-serif"],
+                        "body-lg": ["Prompt", "sans-serif"],
+                        "headline-lg-mobile": ["Prompt", "sans-serif"],
+                        "headline-md": ["Prompt", "sans-serif"],
+                        "body-md": ["Prompt", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .custom-checkbox:checked + div {
+            background-color: #E6F4F1;
+            border-color: #007C89;
+            color: #007C89;
+        }
+        .custom-checkbox:checked + div .material-symbols-outlined {
+            color: #007C89;
+            font-variation-settings: 'FILL' 1;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236e797a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-sans antialiased min-h-screen flex flex-col">
+<!-- Header (Shared Component: TopAppBar) -->
+<header class="shadow-sm bg-surface flex justify-between items-center px-gutter h-16 w-full max-w-container-max mx-auto sticky top-0 z-50">
+<div class="flex items-center gap-6 h-full">
+<span class="font-display-lg text-display-lg text-primary">TruatRoo</span>
+<nav class="hidden md:flex gap-4 h-full items-center">
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1 h-full flex items-center pt-1" href="#">ตรวจแผน</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low px-3 rounded-md py-2" href="#">แผนของฉัน</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low px-3 rounded-md py-2" href="#">หลักฐาน PA</a>
+</nav>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:bg-surface-container-low p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-stack-lg">
+<!-- Breadcrumb & Header -->
+<div class="mb-stack-lg">
+<nav aria-label="Breadcrumb" class="flex text-sm text-secondary mb-2">
+<ol class="inline-flex items-center space-x-1 md:space-x-3">
+<li class="inline-flex items-center">
+<a class="inline-flex items-center hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px] mr-1">home</span>
+                            หน้าแรก
+                        </a>
+</li>
+<li>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[18px] mx-1">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">เครื่องมือสร้างแผน</a>
+</div>
+</li>
+<li aria-current="page">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[18px] mx-1">chevron_right</span>
+<span class="text-on-surface">ระบุปัญหา</span>
+</div>
+</li>
+</ol>
+</nav>
+<h1 class="font-headline-lg text-headline-lg md:text-[32px] text-on-background">ขั้นตอนที่ 1: เลือกเนื้อหาและประเมินระดับปัญหาของนักเรียน</h1>
+<p class="text-body-md text-secondary mt-1">ระบุบริบทของห้องเรียนเพื่อวิเคราะห์และหาแนวทางการสอนที่เหมาะสม</p>
+</div>
+<!-- Section 1: Topic Selection -->
+<section class="bg-surface rounded-xl shadow-soft border border-outline-variant p-6 mb-stack-lg">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-accent">book</span>
+<h2 class="font-headline-md text-body-lg text-on-surface font-semibold">เลือกเนื้อหาและรายวิชา</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Dropdown 1 -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="grade">ระดับชั้น</label>
+<div class="relative">
+<select class="w-full bg-surface-muted border border-outline-variant text-on-surface rounded-lg px-4 py-3 min-h-[44px] focus:ring-2 focus:ring-accent focus:border-accent transition-colors outline-none cursor-pointer" id="grade">
+<option selected="" value="m1">ม.1</option>
+<option value="m2">ม.2</option>
+<option value="m3">ม.3</option>
+<option value="m4">ม.4</option>
+</select>
+</div>
+</div>
+<!-- Dropdown 2 -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="subject">หนังสือเรียน/รายวิชา</label>
+<div class="relative">
+<select class="w-full bg-surface-muted border border-outline-variant text-on-surface rounded-lg px-4 py-3 min-h-[44px] focus:ring-2 focus:ring-accent focus:border-accent transition-colors outline-none cursor-pointer" id="subject">
+<option selected="" value="sci-basic">วิทยาศาสตร์พื้นฐาน</option>
+<option value="sci-add">วิทยาศาสตร์เพิ่มเติม</option>
+<option value="bio">ชีววิทยา</option>
+</select>
+</div>
+</div>
+<!-- Dropdown 3 -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="topic">บทเรียน/หน่วยการเรียนรู้</label>
+<div class="relative">
+<select class="w-full bg-surface-muted border border-outline-variant text-on-surface rounded-lg px-4 py-3 min-h-[44px] focus:ring-2 focus:ring-accent focus:border-accent transition-colors outline-none cursor-pointer text-ellipsis whitespace-nowrap overflow-hidden" id="topic">
+<option selected="" value="photosynthesis">การสังเคราะห์ด้วยแสง - ว 1.2 ม.1/6-8</option>
+<option value="cell">เซลล์ของสิ่งมีชีวิต</option>
+<option value="ecosystem">ระบบนิเวศ</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Framework Checkboxes -->
+<section class="bg-surface rounded-xl shadow-soft border border-outline-variant p-6 mb-stack-lg">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-accent">psychology</span>
+<h2 class="font-headline-md text-body-lg text-on-surface font-semibold">ระบุระดับพัฒนาการและสมรรถนะที่นักเรียนยังทำไม่ได้</h2>
+<span class="bg-surface-container-low text-secondary text-xs px-2 py-1 rounded-full ml-2">เลือกได้มากกว่า 1 ข้อ</span>
+</div>
+<div class="space-y-8">
+<!-- Block A: Bloom's Taxonomy -->
+<div>
+<h3 class="font-label-md text-on-surface-variant mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+                        Bloom's Taxonomy (ระดับการคิด)
+                    </h3>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="bloom_1" type="checkbox"/>
+<div class="flex flex-col items-center justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] text-center h-full bg-surface-muted">
+<span class="text-sm font-medium">1. จำ (Remember)</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only custom-checkbox" name="bloom_2" type="checkbox"/>
+<div class="flex flex-col items-center justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] text-center h-full bg-surface-muted">
+<span class="text-sm font-medium">2. เข้าใจ (Understand)</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only custom-checkbox" name="bloom_3" type="checkbox"/>
+<div class="flex flex-col items-center justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] text-center h-full bg-surface-muted">
+<span class="text-sm font-medium">3. ประยุกต์ใช้ (Apply)</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="bloom_4" type="checkbox"/>
+<div class="flex flex-col items-center justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] text-center h-full bg-surface-muted">
+<span class="text-sm font-medium">4. วิเคราะห์ (Analyze)</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="bloom_5" type="checkbox"/>
+<div class="flex flex-col items-center justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] text-center h-full bg-surface-muted">
+<span class="text-sm font-medium">5. ประเมิน (Evaluate)</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="bloom_6" type="checkbox"/>
+<div class="flex flex-col items-center justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] text-center h-full bg-surface-muted">
+<span class="text-sm font-medium">6. สร้างสรรค์ (Create)</span>
+</div>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-outline-variant pt-6">
+<!-- Block B: DOK -->
+<div>
+<h3 class="font-label-md text-on-surface-variant mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">layers</span>
+                            Depth of Knowledge (DOK)
+                        </h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="dok_1" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">DOK 1: Recall &amp; Reproduction</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only custom-checkbox" name="dok_2" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">DOK 2: Skills &amp; Concepts</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="dok_3" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">DOK 3: Strategic Thinking</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="dok_4" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">DOK 4: Extended Thinking</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Block C: PISA/OECD -->
+<div>
+<h3 class="font-label-md text-on-surface-variant mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">science</span>
+                            PISA/OECD Science Skills
+                        </h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="pisa_1" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">A1. Explain Phenomena</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only custom-checkbox" name="pisa_2" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">A2. Apply scientific knowledge</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only custom-checkbox" name="pisa_3" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">A3. Explain scientifically</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only custom-checkbox" name="pisa_4" type="checkbox"/>
+<div class="flex flex-col justify-center p-3 border border-outline-variant rounded-lg transition-all duration-200 group-hover:border-accent min-h-[44px] bg-surface-muted">
+<span class="text-sm font-medium">A4. Data &amp; Evidence / Enquiry</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Short Description Typing Area -->
+<section class="bg-surface rounded-xl shadow-soft border border-outline-variant p-6 mb-stack-lg">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-accent">edit_note</span>
+<h2 class="font-headline-md text-body-lg text-on-surface font-semibold">อธิบายรายละเอียดปัญหาหรือพฤติกรรมที่พบเพิ่มเติม <span class="text-sm font-normal text-secondary">(Short Description)</span></h2>
+</div>
+<textarea class="w-full bg-surface-muted border border-outline-variant text-on-surface rounded-lg p-4 min-h-[44px] focus:ring-2 focus:ring-accent focus:border-accent transition-colors outline-none resize-none" placeholder="พิมพ์ระบุพฤติกรรมเฉพาะในห้องเรียนเพิ่มเติม... (เช่น นักเรียนสับสนระหว่างกระบวนการหายใจระดับเซลล์กับการสังเคราะห์ด้วยแสง)" rows="3"></textarea>
+</section>
+<!-- Section 4: Recommendation Banner & CTA -->
+<section class="mb-section-gap">
+<div class="bg-accent-light border border-accent rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 mb-6 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="bg-white p-2 rounded-full shadow-sm text-accent flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">auto_awesome</span>
+</div>
+<div>
+<p class="font-medium text-on-surface">วิเคราะห์จากสมรรถนะที่เลือก: แนะนำวิธีสอนจากคลังที่ตรงกับระดับพัฒนาการของนักเรียน</p>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="text-xs font-medium bg-white text-accent px-2 py-1 rounded-md border border-accent/20 shadow-sm">[Cognitive Conflict]</span>
+<span class="text-xs font-medium bg-white text-accent px-2 py-1 rounded-md border border-accent/20 shadow-sm">[Concept Mapping]</span>
+<span class="text-xs font-medium bg-white text-accent px-2 py-1 rounded-md border border-accent/20 shadow-sm">[Explicit Instruction]</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col-reverse md:flex-row justify-between items-center gap-4">
+<a class="text-secondary hover:text-accent font-medium flex items-center transition-colors min-h-[44px] px-2 w-full md:w-auto justify-center md:justify-start" href="#">
+<span class="material-symbols-outlined text-[20px] mr-1">arrow_back</span>
+                    กลับไปเลือกวิธีอัปโหลดไฟล์แผน
+                </a>
+<button class="w-full md:w-auto bg-accent hover:bg-[#006670] text-white font-medium text-lg px-8 py-3 rounded-lg min-h-[44px] transition-colors shadow-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">search</span>
+                    ค้นหาวิธีรับมือ &amp; สร้างร่างแผนการสอน
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-stack-lg px-gutter flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto bg-surface-container-low border-t border-outline-variant mt-auto">
+<div class="font-headline-md text-headline-md text-primary mb-4 md:mb-0">TruatRoo</div>
+<div class="font-label-sm text-label-sm text-secondary mb-4 md:mb-0">© 2024 TruatRoo. All rights reserved.</div>
+<div class="flex gap-4 font-label-sm text-label-sm text-on-surface-variant">
+<a class="hover:underline hover:text-primary cursor-pointer transition-colors" href="#">Support</a>
+<a class="hover:underline hover:text-primary cursor-pointer transition-colors" href="#">Privacy Policy</a>
+<a class="hover:underline hover:text-primary cursor-pointer transition-colors" href="#">Terms of Service</a>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruatRoo - Analysis Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#c7dde9",
+                        "surface-bright": "#f3faff",
+                        "on-tertiary-container": "#fff3e8",
+                        "on-primary-fixed": "#002022",
+                        "primary-container": "#0d7c84",
+                        "on-surface": "#071e27",
+                        "on-tertiary-fixed": "#291800",
+                        "primary-fixed-dim": "#7cd4dd",
+                        "inverse-surface": "#1e333c",
+                        "surface-container-low": "#e6f6ff",
+                        "surface-tint": "#006970",
+                        "surface-muted": "#F8FAFB",
+                        "on-background": "#071e27",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3a4a49",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "on-secondary-fixed": "#0e1e1e",
+                        "on-tertiary": "#ffffff",
+                        "error-red": "#D32F2F",
+                        "success-green": "#2E7D32",
+                        "secondary-container": "#d4e6e5",
+                        "outline-variant": "#bdc9ca",
+                        "primary-fixed": "#98f1f9",
+                        "outline": "#6e797a",
+                        "inverse-primary": "#7cd4dd",
+                        "background": "#f3faff",
+                        "surface-variant": "#cfe6f2",
+                        "inverse-on-surface": "#dff4ff",
+                        "tertiary-fixed-dim": "#ffb954",
+                        "highlight-blue": "#E3F2FD",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#cfe6f2",
+                        "secondary-fixed-dim": "#b8cac9",
+                        "primary": "#006168",
+                        "error": "#ba1a1a",
+                        "surface-container": "#dbf1fe",
+                        "tertiary-fixed": "#ffddb4",
+                        "on-surface-variant": "#3e494a",
+                        "secondary-fixed": "#d4e6e5",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#d9fcff",
+                        "surface": "#f3faff",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#7a4f00",
+                        "secondary": "#516161",
+                        "on-primary-fixed-variant": "#004f54",
+                        "tertiary-container": "#9a6500",
+                        "on-secondary-container": "#576867",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#d5ecf8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "section-gap": "64px",
+                        "container-max": "1120px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Noto Sans"],
+                        "body-lg": ["Noto Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Noto Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .shadow-ambient {
+            box-shadow: 0 4px 12px rgba(7, 30, 39, 0.05), 0 1px 3px rgba(7, 30, 39, 0.1);
+        }
+        .shadow-elevated {
+            box-shadow: 0 8px 24px rgba(7, 30, 39, 0.08), 0 2px 6px rgba(7, 30, 39, 0.12);
+        }
+        
+        .diff-added {
+            background-color: rgba(46, 125, 50, 0.05);
+            border-left: 3px solid #2E7D32;
+        }
+        
+        /* Modal transitions */
+        .modal-overlay { opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+        .modal-content { transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
+        .modal-active .modal-overlay { opacity: 1; pointer-events: auto; }
+        .modal-active .modal-content { transform: scale(1); opacity: 1; pointer-events: auto; }
+    </style>
+</head>
+<body class="bg-[#F4F7F9] text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm docked full-width top-0 z-40 sticky">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-6">
+<div class="font-headline-md text-headline-md text-primary dark:text-inverse-primary tracking-tight">
+                    ตรวจรู้
+                </div>
+<!-- Desktop Nav -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-primary pb-1 cursor-pointer active:scale-95 duration-200" href="#">
+                        ตรวจแผน
+                    </a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200 font-label-md text-label-md" href="#">
+                        แผนของฉัน
+                    </a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200 font-label-md text-label-md" href="#">
+                        หลักฐาน PA
+                    </a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<a class="font-label-md text-label-md text-primary dark:text-inverse-primary hover:text-primary-container transition-colors hidden md:block" href="#">
+                    ช่วยเหลือ
+                </a>
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-stack-lg flex flex-col gap-stack-lg">
+<!-- Top Section: Header & View Switcher -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-stack-md">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-on-surface mb-2">ผลการวิเคราะห์แผนการสอน</h1>
+<p class="font-body-md text-on-surface-variant">พบจุดที่สามารถปรับปรุงได้เพื่อลดความเข้าใจผิดของนักเรียน</p>
+</div>
+<!-- View Mode Switcher -->
+<div class="inline-flex bg-surface-container-high rounded-lg p-1 border border-outline-variant/30">
+<button class="px-4 py-2 rounded-md bg-white shadow-sm font-label-md text-primary font-medium transition-all">
+                    มุมมองครู
+                </button>
+<button class="px-4 py-2 rounded-md text-on-surface-variant hover:text-on-surface font-label-md transition-all">
+                    มุมมองเทคนิค
+                </button>
+</div>
+</div>
+<!-- Metadata Summary Banner -->
+<div class="bg-[#E6F4F1] rounded-xl p-stack-md border border-primary-container/20 flex flex-col gap-stack-md shadow-ambient">
+<div class="flex flex-wrap items-center gap-3 font-label-md text-on-surface">
+<span class="bg-white px-3 py-1 rounded-full border border-outline-variant/40 flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[16px]">school</span> ชั้น ม.1
+                </span>
+<span class="bg-white px-3 py-1 rounded-full border border-outline-variant/40 flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[16px]">science</span> วิทยาศาสตร์
+                </span>
+<span class="bg-white px-3 py-1 rounded-full border border-outline-variant/40 flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[16px]">menu_book</span> เรื่อง: การสังเคราะห์ด้วยแสง
+                </span>
+<span class="bg-white px-3 py-1 rounded-full border border-outline-variant/40 flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[16px]">flag</span> ตัวชี้วัด: ว 1.2 ม.1/6
+                </span>
+</div>
+<div class="bg-white rounded-lg p-4 border-l-4 border-error-red shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-error-red filled-icon mt-0.5">warning</span>
+<p class="font-body-md text-on-surface font-medium">หน่วยนี้นักเรียนมักติดความเข้าใจผิด 3 เรื่อง และแผนการสอนนี้ยังไม่มีกิจกรรมที่ดักไว้</p>
+</div>
+</div>
+<!-- Ranked Findings Layout -->
+<div class="flex flex-col gap-stack-md">
+<!-- Card 1: High Severity -->
+<article class="bg-white rounded-xl border border-[#E2E8F0] shadow-elevated overflow-hidden transition-all duration-300 relative">
+<!-- Highlight border top -->
+<div class="absolute top-0 left-0 right-0 h-1 bg-error-red"></div>
+<div class="p-stack-md md:p-gutter flex flex-col gap-stack-md">
+<!-- Card Header -->
+<div class="flex flex-col md:flex-row justify-between items-start gap-4">
+<div class="flex-grow">
+<div class="flex flex-wrap items-center gap-2 mb-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-error-container text-on-error-container font-label-sm font-bold">
+<span class="w-2 h-2 rounded-full bg-error-red"></span> ความเสี่ยงสูง
+                                </span>
+<span class="font-label-sm text-outline px-2 py-1 bg-surface-muted rounded-md border border-outline-variant/30">
+                                    [ตัวเปรียบเทียบ 2: ความเข้าใจผิด]
+                                </span>
+</div>
+<h3 class="font-headline-md text-on-surface leading-tight">นักเรียนมีความเข้าใจผิดว่า "พืชสังเคราะห์ด้วยแสงเฉพาะเวลากลางวันเท่านั้น" (M-PHOTO-01)</h3>
+</div>
+</div>
+<!-- Proposed Solution -->
+<div class="bg-surface-bright rounded-lg p-4 border border-primary-container/10">
+<h4 class="font-label-md text-secondary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">lightbulb</span> ข้อเสนอแนะ
+                        </h4>
+<p class="font-body-md text-on-surface font-medium">กิจกรรมการทดลองจำลองแสงในสภาวะมืด (Predict-Observe-Explain)</p>
+</div>
+<!-- Actions -->
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<button class="bg-[#0D7C84] hover:bg-surface-tint text-white font-label-md px-5 py-2.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span> แทรกในแผน
+                        </button>
+<button class="bg-transparent border border-[#0D7C84] text-[#0D7C84] hover:bg-surface-container-low font-label-md px-5 py-2.5 rounded-lg transition-colors">
+                            ขอแบบอื่น
+                        </button>
+<button class="bg-transparent text-outline hover:text-on-surface hover:bg-surface-muted font-label-md px-4 py-2.5 rounded-lg transition-colors ml-auto" onclick="document.getElementById('reject-modal').classList.add('modal-active')">
+                            ไม่เอา
+                        </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Medium Severity -->
+<article class="bg-white rounded-xl border border-[#E2E8F0] shadow-ambient hover:shadow-elevated overflow-hidden transition-all duration-300">
+<div class="absolute top-0 left-0 right-0 h-1 bg-tertiary-fixed-dim hidden"></div>
+<div class="p-stack-md md:p-gutter flex flex-col gap-stack-md border-t-[3px] border-tertiary-fixed-dim">
+<div class="flex flex-col md:flex-row justify-between items-start gap-4">
+<div class="flex-grow">
+<div class="flex flex-wrap items-center gap-2 mb-3">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-tertiary-container/10 text-tertiary-container font-label-sm font-bold">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span> ความเสี่ยงปานกลาง
+                                </span>
+<span class="font-label-sm text-outline px-2 py-1 bg-surface-muted rounded-md border border-outline-variant/30">
+                                    [ตัวเปรียบเทียบ 2: ความเข้าใจผิด]
+                                </span>
+</div>
+<h3 class="font-body-lg font-semibold text-on-surface leading-tight">นักเรียนคิดว่าพืชได้อาหารจากดินเท่านั้น</h3>
+</div>
+</div>
+<div class="bg-surface-bright rounded-lg p-4 border border-primary-container/10">
+<p class="font-body-md text-on-surface">เพิ่มคำถามชวนคิดเรื่องการปลูกพืชไร้ดิน (Hydroponics) ก่อนเริ่มทดลอง</p>
+</div>
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<button class="bg-[#0D7C84] hover:bg-surface-tint text-white font-label-md px-5 py-2 rounded-lg flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span> แทรกในแผน
+                        </button>
+<button class="bg-transparent border border-[#0D7C84] text-[#0D7C84] hover:bg-surface-container-low font-label-md px-5 py-2 rounded-lg transition-colors">
+                            ขอแบบอื่น
+                        </button>
+<button class="bg-transparent text-outline hover:text-on-surface hover:bg-surface-muted font-label-md px-4 py-2 rounded-lg transition-colors ml-auto">
+                            ไม่เอา
+                        </button>
+</div>
+</div>
+</article>
+<!-- Bottom Action -->
+<div class="flex justify-center mt-4">
+<button class="text-secondary hover:text-primary-container font-label-md flex items-center gap-2 py-2 px-4 rounded-full hover:bg-surface-container-low transition-colors">
+                    ดูข้อค้นพบทั้งหมด (รวมความต่างเชิงรูปแบบ)
+                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-muted dark:bg-surface-dim full-width py-stack-lg border-t border-outline-variant/20 mt-auto">
+<div class="w-full flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-gutter max-w-container-max mx-auto gap-stack-sm">
+<div class="font-label-md text-label-md font-bold text-secondary">
+                © 2024 ตรวจรู้ (TruatRoo) — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์
+            </div>
+<div class="flex gap-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ช่วยเหลือ</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ไม่ต้องสร้างบัญชี</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">นโยบายความเป็นส่วนตัว</a>
+</div>
+</div>
+</footer>
+<!-- Rejection Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4" id="reject-modal">
+<div class="modal-overlay absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="document.getElementById('reject-modal').classList.remove('modal-active')"></div>
+<div class="modal-content bg-white rounded-xl shadow-elevated w-full max-w-md relative z-10 flex flex-col overflow-hidden">
+<div class="p-6 pb-4 border-b border-outline-variant/20">
+<h3 class="font-headline-md text-on-surface">ระบุเหตุผลที่ไม่รับข้อเสนอนี้</h3>
+<p class="font-body-sm text-secondary mt-1">เพื่อให้ระบบแนะนำได้ดีขึ้นในครั้งต่อไป</p>
+</div>
+<div class="p-6 flex flex-col gap-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-[#0D7C84] focus:ring-[#0D7C84] border-outline-variant" name="reject_reason" type="radio"/>
+<span class="font-body-md text-on-surface group-hover:text-primary-container transition-colors">ไม่มีเวลา</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-[#0D7C84] focus:ring-[#0D7C84] border-outline-variant" name="reject_reason" type="radio"/>
+<span class="font-body-md text-on-surface group-hover:text-primary-container transition-colors">ไม่มีอุปกรณ์</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-[#0D7C84] focus:ring-[#0D7C84] border-outline-variant" name="reject_reason" type="radio"/>
+<span class="font-body-md text-on-surface group-hover:text-primary-container transition-colors">ไม่เหมาะกับห้องนี้</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-[#0D7C84] focus:ring-[#0D7C84] border-outline-variant" name="reject_reason" type="radio"/>
+<span class="font-body-md text-on-surface group-hover:text-primary-container transition-colors">ไม่เห็นด้วยกับวิธีนี้</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-[#0D7C84] focus:ring-[#0D7C84] border-outline-variant" name="reject_reason" type="radio"/>
+<span class="font-body-md text-on-surface group-hover:text-primary-container transition-colors">อื่นๆ</span>
+</label>
+</div>
+<div class="p-6 pt-4 bg-surface-muted border-t border-outline-variant/20 flex justify-end gap-3">
+<button class="px-5 py-2.5 rounded-lg font-label-md text-secondary hover:bg-surface-variant transition-colors" onclick="document.getElementById('reject-modal').classList.remove('modal-active')">
+                    ยกเลิก
+                </button>
+<button class="px-5 py-2.5 rounded-lg font-label-md bg-[#0D7C84] hover:bg-surface-tint text-white shadow-sm transition-colors" onclick="document.getElementById('reject-modal').classList.remove('modal-active')">
+                    ยืนยัน
+                </button>
+</div>
+</div>
+</div>
+</body></html>

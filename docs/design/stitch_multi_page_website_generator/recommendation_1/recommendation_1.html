@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TruatRoo - วิธีที่เหมาะกับปัญหานี้</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Noto+Sans+Thai:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#cfe6f2",
+                      "highlight-blue": "#E3F2FD",
+                      "outline-variant": "#bdc9ca",
+                      "on-background": "#071e27",
+                      "on-secondary-container": "#576867",
+                      "on-primary-fixed": "#002022",
+                      "surface-container": "#dbf1fe",
+                      "inverse-on-surface": "#dff4ff",
+                      "on-tertiary-container": "#fff3e8",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#ffb954",
+                      "on-surface-variant": "#3e494a",
+                      "surface-dim": "#c7dde9",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#291800",
+                      "primary-fixed-dim": "#7cd4dd",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "background": "#f3faff",
+                      "on-tertiary-fixed-variant": "#633f00",
+                      "surface": "#f3faff",
+                      "primary": "#006168",
+                      "surface-container-low": "#e6f6ff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "error-red": "#D32F2F",
+                      "on-secondary-fixed": "#0e1e1e",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#98f1f9",
+                      "secondary": "#516161",
+                      "inverse-primary": "#7cd4dd",
+                      "on-secondary-fixed-variant": "#3a4a49",
+                      "success-green": "#2E7D32",
+                      "primary-container": "#0d7c84",
+                      "tertiary-fixed": "#ffddb4",
+                      "surface-variant": "#cfe6f2",
+                      "on-error-container": "#93000a",
+                      "tertiary": "#7a4f00",
+                      "on-primary-container": "#d9fcff",
+                      "on-error": "#ffffff",
+                      "secondary-container": "#d4e6e5",
+                      "tertiary-container": "#9a6500",
+                      "secondary-fixed": "#d4e6e5",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#006970",
+                      "secondary-fixed-dim": "#b8cac9",
+                      "surface-bright": "#f3faff",
+                      "on-surface": "#071e27",
+                      "inverse-surface": "#1e333c",
+                      "surface-container-high": "#d5ecf8",
+                      "outline": "#6e797a",
+                      "surface-muted": "#F8FAFB"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-gap": "64px",
+                      "container-max": "1120px",
+                      "stack-md": "16px",
+                      "stack-sm": "8px",
+                      "stack-lg": "32px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Be Vietnam Pro", "Noto Sans Thai", "sans-serif"
+                      ],
+                      "label-sm": [
+                              "Be Vietnam Pro", "Noto Sans Thai", "sans-serif"
+                      ],
+                      "headline-lg": [
+                              "Be Vietnam Pro", "Noto Sans Thai", "sans-serif"
+                      ],
+                      "headline-lg-mobile": [
+                              "Be Vietnam Pro", "Noto Sans Thai", "sans-serif"
+                      ],
+                      "headline-md": [
+                              "Be Vietnam Pro", "Noto Sans Thai", "sans-serif"
+                      ],
+                      "body-md": [
+                              "Noto Sans Thai", "sans-serif"
+                      ],
+                      "body-lg": [
+                              "Noto Sans Thai", "sans-serif"
+                      ],
+                      "label-md": [
+                              "Be Vietnam Pro", "Noto Sans Thai", "sans-serif"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "52px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .card-shadow-active {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(13, 124, 132, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md text-primary dark:text-inverse-primary cursor-pointer">ตรวจรู้</span>
+<nav class="hidden md:flex gap-6 ml-8 h-full items-center">
+<a class="h-full flex items-center text-primary dark:text-inverse-primary font-bold border-b-2 border-primary pb-1" href="#">ตรวจแผน</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors" href="#">แผนของฉัน</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors" href="#">หลักฐาน PA</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200">
+<span class="font-label-md text-label-md">ช่วยเหลือ</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-stack-lg flex flex-col items-center">
+<div class="w-full max-w-3xl mb-stack-lg">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-stack-sm text-center">วิธีที่เหมาะกับปัญหานี้</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center max-w-2xl mx-auto">
+                ระบบได้วิเคราะห์แผนการสอนของคุณและพบว่ามีแนวคิดคลาดเคลื่อนเรื่อง "พืชกินดิน" นี่คือวิธีการสอนที่แนะนำเพื่อแก้ไขปัญหานี้อย่างมีประสิทธิภาพ
+            </p>
+</div>
+<div class="w-full max-w-4xl grid grid-cols-1 gap-stack-lg">
+<!-- Primary Method Card -->
+<div class="bg-surface-container-lowest rounded-xl p-stack-md md:p-gutter card-shadow-active relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+<span class="material-symbols-outlined filled text-[120px] text-primary">psychology</span>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-start gap-stack-md mb-stack-md relative z-10">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-highlight-blue text-primary font-label-sm text-label-sm mb-3">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>วิธีแนะนำอันดับ 1</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-background mb-2">การสร้างความขัดแย้งทางความคิด <span class="text-on-surface-variant font-body-md text-body-md ml-2">(Cognitive Conflict)</span></h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                            ใช้สถานการณ์ที่ขัดกับความเชื่อเดิมของนักเรียนเพื่อกระตุ้นให้เกิดการปรับเปลี่ยนแนวคิด
+                        </p>
+</div>
+</div>
+<hr class="border-outline-variant/30 my-stack-md"/>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md md:gap-gutter relative z-10">
+<div class="flex flex-col gap-3">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[18px]">lightbulb</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-background mb-1">ทำไมจึงแนะนำ</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                    นักเรียนมักมีความเชื่อฝังใจว่าพืช "กิน" ดินเป็นอาหาร การให้ข้อมูลตรงๆ อาจไม่เพียงพอ การสร้างสถานการณ์ให้เห็นว่าพืชสามารถเติบโตได้โดยไม่ต้องใช้ดิน จะทำให้เด็กเกิดความสงสัยและพร้อมจะเรียนรู้เรื่องการสังเคราะห์ด้วยแสงมากขึ้น
+                                </p>
+</div>
+</div>
+<div class="flex items-start gap-3 mt-4">
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error-red text-[18px]">warning</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-background mb-1">ข้อจำกัด</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                    ต้องมีเวลาเพียงพอสำหรับการอภิปรายร่วมกัน และครูต้องเตรียมคำถามกระตุ้นความคิดล่วงหน้าเพื่อนำทางนักเรียน
+                                </p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 flex flex-col gap-4">
+<h3 class="font-label-md text-label-md text-on-background">เหมาะกับ</h3>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px]">menu_book</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">หัวข้อ</span>
+<span class="font-body-md text-body-md text-on-background font-medium">การสังเคราะห์ด้วยแสง</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px]">stairs</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ขั้นตอนการสอน</span>
+<span class="font-body-md text-body-md text-on-background font-medium">ขั้นนำ (Introduction)</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px]">schedule</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">เวลาที่ใช้</span>
+<span class="font-body-md text-body-md text-on-background font-medium">10-15 นาที</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-stack-lg flex flex-col sm:flex-row gap-3 sm:justify-end border-t border-outline-variant/30 pt-stack-md">
+<button class="px-6 py-2.5 rounded-full text-secondary font-label-md text-label-md hover:bg-surface-variant transition-colors order-3 sm:order-1 self-center sm:self-auto w-full sm:w-auto">
+                        ไม่ใช้วิธีนี้
+                    </button>
+<button class="px-6 py-2.5 rounded-full border border-primary text-primary font-label-md text-label-md hover:bg-surface-container transition-colors order-2 w-full sm:w-auto">
+                        ขอแบบอื่น
+                    </button>
+<button class="px-6 py-2.5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md hover:bg-surface-tint transition-colors shadow-sm order-1 sm:order-3 w-full sm:w-auto">
+                        นำไปใช้
+                    </button>
+</div>
+</div>
+<!-- Alternative Methods Note -->
+<div class="text-center mt-4">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    ต้องการดูวิธีการสอนแบบอื่นสำหรับปัญหานี้? <a class="text-primary font-medium hover:underline" href="#">คลิกเพื่อดูตัวเลือกเพิ่มเติม</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-muted dark:bg-surface-dim full-width py-stack-lg mt-auto">
+<div class="w-full flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-gutter max-w-container-max mx-auto gap-stack-sm">
+<div class="font-label-md text-label-md font-bold text-secondary">
+                © 2024 ตรวจรู้ (TruatRoo) — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์
+            </div>
+<nav class="flex gap-4">
+<a class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ช่วยเหลือ</a>
+<a class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ไม่ต้องสร้างบัญชี</a>
+<a class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">นโยบายความเป็นส่วนตัว</a>
+</nav>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตรวจรู้ — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์</title>
+<meta name="description" content="ครูเอาแผนการสอนที่เขียนไว้แล้วมาให้ระบบตรวจ ระบบบอกว่าหน่วยนี้นักเรียนมักติดตรงไหน แล้วเสนอสิ่งที่เติมได้">
+<meta property="og:title" content="ตรวจรู้ — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์">
+<meta property="og:description" content="AIS JumpThailand Hackathon 2026 · แทร็ก Empowering Teachers">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans Thai','Be Vietnam Pro',sans-serif;background:#f4f5f7;color:#16191d;line-height:1.7;font-size:16px}
+.wrap{max-width:780px;margin:0 auto;padding:56px 20px 80px}
+.tag{display:inline-block;font-size:13px;color:#0f766e;background:#e6f5f2;padding:4px 12px;border-radius:20px;font-weight:500}
+h1{font-size:38px;font-weight:600;letter-spacing:-.6px;margin-top:16px}
+.sub{font-size:19px;color:#3b424b;margin-top:12px;line-height:1.65}
+.sub b{font-weight:600;color:#16191d}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+a.btn{display:inline-block;background:#0f766e;color:#fff;text-decoration:none;padding:14px 28px;border-radius:9px;font-size:16px;font-weight:500}
+a.btn:hover{background:#0c5f58}
+a.btn.g{background:#fff;color:#3b424b;border:1px solid #d3d8de}
+a.btn.g:hover{border-color:#0f766e;color:#0f766e}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:44px}
+.c{background:#fff;border:1px solid #e2e5ea;border-radius:12px;padding:20px}
+.c b{display:block;font-size:15px;margin-bottom:5px}
+.c span{font-size:14px;color:#69707a}
+h2{font-size:20px;font-weight:600;margin-top:48px}
+p{margin-top:10px;color:#3b424b}
+ul{margin-top:12px;padding-left:20px;color:#3b424b}
+li{margin-top:6px}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+a.doc{display:block;background:#fff;border:1px solid #e2e5ea;border-radius:10px;padding:14px 16px;text-decoration:none;color:#16191d}
+a.doc:hover{border-color:#0f766e}
+a.doc b{display:block;font-size:15px}
+a.doc span{font-size:13.5px;color:#69707a}
+.note{background:#fdf6ec;border:1px solid #f0d9b0;border-radius:10px;padding:16px 18px;margin-top:20px;font-size:14.5px;color:#7a4c08}
+footer{margin-top:56px;padding-top:24px;border-top:1px solid #e2e5ea;font-size:14px;color:#8b929c}
+footer a{color:#0f766e}
+@media(max-width:640px){.grid,.links{grid-template-columns:1fr}h1{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="tag">AIS JumpThailand Hackathon 2026 · แทร็ก Empowering Teachers</span>
+  <h1>ตรวจรู้</h1>
+  <div class="sub">
+    ครูเอาแผนการสอนที่เขียนไว้แล้วมาให้ระบบดู ระบบบอกว่าแผนยังขาดอะไร แล้วเสนอสิ่งที่เติมได้ พร้อมเหตุผล<br><br>
+    <b>ระบบไม่ได้เขียนแผนแทนครู</b> สิ่งที่ลดคือเวลาที่ครูต้องไปค้นเองว่าเด็กมักติดตรงไหน และวิธีไหนใช้ได้จริง
+  </div>
+
+  <div class="cta">
+    <a class="btn" href="prototype/">เปิดเดโม</a>
+    <a class="btn g" href="docs/design/input-output-spec.md">อ่านสเปก</a>
+  </div>
+
+  <div class="grid">
+    <div class="c"><b>ไม่ต้องพิมพ์</b><span>อัปโหลดแผนที่มีอยู่ หรือเลือกเรื่องที่จะสอน แล้วแตะรับหรือไม่รับ</span></div>
+    <div class="c"><b>บอกว่าเด็กติดตรงไหน</b><span>เทียบกับคลังความเข้าใจผิดที่คัดจากงานวิจัย ไม่ใช่คำแนะนำทั่วไป</span></div>
+    <div class="c"><b>ใช้เป็นหลักฐาน ว.PA ได้</b><span>สิ่งที่ทำในระบบกลายเป็นเอกสารที่ครูต้องส่งอยู่แล้ว</span></div>
+  </div>
+
+  <h2>เดโมมีอะไรให้ดู</h2>
+  <p>ตัวอย่างใช้แผนการสอนจริงระดับ ม.1 เรื่องการสังเคราะห์ด้วยแสง ตัวชี้วัด ว 1.2 ม.1/6-8 โครงสร้าง 5E</p>
+  <ul>
+    <li>สวิตช์ <b>มุมมองครู / มุมมองเทคนิค</b> ที่มุมขวาบน มุมมองครูซ่อนศัพท์ระบบทั้งหมด มุมมองเทคนิคเปิดให้เห็นว่าคำแนะนำแต่ละข้อมาจากตารางไหน</li>
+    <li>สองเส้นทาง คือมีแผนอยู่แล้ว กับยังไม่มีแผน</li>
+    <li>คำแนะนำในเดโมมาจากเนื้อหาจริงในแผน ไม่ได้แต่งขึ้น</li>
+  </ul>
+
+  <h2>เอกสาร</h2>
+  <div class="links">
+    <a class="doc" href="docs/design/input-output-spec.md"><b>สเปกอินพุตและเอาต์พุต</b><span>ครูกรอกอะไร ระบบแสดงอะไร</span></a>
+    <a class="doc" href="docs/design/database-schema.md"><b>โครงฐานข้อมูล</b><span>DB1 ถึง DB8 รายฟิลด์</span></a>
+    <a class="doc" href="docs/evidence/statistics-and-sources.md"><b>ตัวเลขและแหล่งอ้างอิง</b><span>สถิติที่อ้างได้ และตัวที่เคยผิด</span></a>
+    <a class="doc" href="docs/evidence/pa-documents-explained.md"><b>เอกสาร ว.PA</b><span>ครูต้องกรอกอะไร ระบบช่วยส่วนไหน</span></a>
+  </div>
+
+  <h2>ข้อจำกัดที่ระบุไว้ตรงไปตรงมา</h2>
+  <div class="note">
+    ระบบช่วย ว.PA ได้ 6 จาก 9 ส่วน ส่วนที่ต้องมีผลการวัดจริงยังทำไม่ได้ ·
+    คลังความเข้าใจผิดมี 6 รายการ ครอบ 1 ตัวชี้วัด ยังไม่ใช่ทั้งหลักสูตร ·
+    เดโมใช้ไฟล์ตัวอย่างที่เตรียมไว้ ยังไม่รองรับแผนทุกรูปแบบ ·
+    ยังไม่ได้สัมภาษณ์ครูจริง หลักฐานทั้งหมดเป็นข้อมูลทุติยภูมิ
+  </div>
+
+  <footer>
+    ต้นแบบสำหรับการนำเสนอ ไม่ใช่ระบบที่เปิดใช้งานจริง ·
+    <a href="README.md">README</a> ·
+    <a href="LICENSE">CC BY 4.0</a>
+  </footer>
+
+</div>
+</body>
+</html>

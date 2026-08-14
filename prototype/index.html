@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตรวจรู้ - ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์</title>
+<meta name="description" content="ครูเอาแผนการสอนที่เขียนไว้แล้วมาให้ระบบตรวจ ระบบบอกว่าหน่วยนี้นักเรียนมักติดตรงไหน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">ตรวจรู้</div>
+    <span class="tagline">ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์</span>
+    <div class="spacer"></div>
+    <nav class="main">
+      <a id="navCheck" class="on">ตรวจแผน</a>
+      <a id="navPlans">แผนของฉัน</a>
+      <a id="navPa" aria-disabled="true">หลักฐาน PA</a>
+    </nav>
+  </div>
+  <div class="progress"><div class="pbar" id="steps"></div></div>
+</header>
+
+<div class="wrap">
+
+<!-- ============================================= 0. start -->
+<section id="s0">
+  <div class="hero">
+    <h1>เริ่มต้นจากแผนการสอนของคุณ</h1>
+    <p>เลือกวิธีเริ่มต้นที่เหมาะกับคุณ</p>
+  </div>
+
+  <div class="three-cards">
+    <div class="entry lead-card">
+      <span class="badge rec" id="recBadge">แนะนำ</span>
+      <div class="ico" id="icoUpload"></div>
+      <h3>มีแผนการสอนแล้ว</h3>
+      <p class="why">อัปโหลดแผนการสอนที่คุณมีอยู่ แล้วตรวจหาจุดที่ควรเสริม
+        ระบบไม่ได้เขียนแผนแทนคุณ</p>
+      <div class="drop" id="drop">
+        <div id="dropmsg"></div>
+      </div>
+      <input type="file" id="file" accept=".docx,.pdf" class="hide">
+      <div class="row" style="margin-top:12px">
+        <button class="btn ghost" id="trySample" style="font-size:14px">
+          ยังไม่มีไฟล์ ลองด้วยแผนตัวอย่าง</button>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="ico" id="icoNew"></div>
+      <h3>ยังไม่มีแผนการสอน</h3>
+      <p class="why">เริ่มสร้างแผนการสอนจากชั้น หนังสือเรียน และบทเรียน</p>
+      <div class="row"><button class="btn secondary" id="toBlank">สร้างแผนการสอน</button></div>
+    </div>
+
+    <div class="entry">
+      <div class="ico" id="icoProblem"></div>
+      <h3>มีปัญหาผู้เรียน</h3>
+      <p class="why">เริ่มจากปัญหาที่พบในห้องเรียน แล้วค้นหาวิธีรับมือที่เหมาะสม</p>
+      <div class="row"><button class="btn secondary" id="toPick">เลือกปัญหาผู้เรียน</button></div>
+    </div>
+  </div>
+
+  <p class="muted" id="uploadcount" style="margin-top:24px"></p>
+
+  <div id="fallback" class="card hide">
+    <b>อ่านไฟล์นี้ไม่ได้</b>
+    <p class="muted">เลือกตัวชี้วัดของหน่วยที่จะสอน แล้วเริ่มจากตรงนั้นได้เลย</p>
+    <div class="row">
+      <select id="fallbackCode"></select>
+      <button class="btn primary" id="useFallback">เริ่มจากตัวชี้วัดนี้</button>
+    </div>
+  </div>
+
+  <div class="notice info" style="margin-top:32px">
+    ไฟล์ของคุณถูกอ่านในเบราว์เซอร์เครื่องนี้เท่านั้น ไม่ได้ถูกส่งไปที่ใด
+    ประวัติการใช้งานเก็บอยู่ในเครื่องนี้ และลบได้ตลอดเวลาที่หน้าแผนของฉัน
+  </div>
+  <p class="tiny" id="libstat"></p>
+</section>
+
+<!-- ============================================= 0b. problem-first, step 1 -->
+<section id="s0b" class="hide">
+  <div class="crumb">
+    <a id="cr1">หน้าแรก</a><span>›</span><span>เครื่องมือสร้างแผน</span><span>›</span><b>ระบุปัญหา</b>
+  </div>
+  <div class="step-title">
+    <h1>ขั้นตอนที่ 1: เลือกเนื้อหาและประเมินระดับปัญหาของนักเรียน</h1>
+    <p>ระบุบริบทของห้องเรียนเพื่อวิเคราะห์และหาแนวทางการสอนที่เหมาะสม</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="ttContent">เลือกเนื้อหาและรายวิชา</div>
+    <div class="field-grid">
+      <div><label for="pkGrade">ระดับชั้น</label><select id="pkGrade"></select></div>
+      <div><label for="pkSubject">หนังสือเรียน/รายวิชา</label><select id="pkSubject"></select></div>
+      <div><label for="pkStd">บทเรียน/หน่วยการเรียนรู้</label><select id="pkStd"></select></div>
+    </div>
+    <div id="pkCoverage" class="muted" style="margin-top:16px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="ttComp">ระบุระดับพัฒนาการและสมรรถนะที่นักเรียนยังทำไม่ได้
+      <span class="hint">เลือกได้มากกว่า 1 ข้อ</span></div>
+
+    <div class="sub-title" id="ttBloom">Bloom's Taxonomy (ระดับการคิด)</div>
+    <div class="chipgrid" id="pkBloom"></div>
+
+    <hr class="sep">
+    <div class="two-cards">
+      <div>
+        <div class="sub-title" id="ttDok">Depth of Knowledge (DOK)</div>
+        <div class="chipgrid left" id="pkDok"></div>
+      </div>
+      <div>
+        <div class="sub-title" id="ttPisa">PISA/OECD Science Skills</div>
+        <div class="chipgrid left" id="pkPisa"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="ttProblem">ปัญหาที่พบในห้องเรียน
+      <span class="hint">ตัวที่ผูกกับวิธีสอนโดยตรง</span></div>
+    <div id="pkProblems" class="checks"></div>
+  </div>
+
+  <details class="card">
+    <summary>อธิบายรายละเอียดปัญหาหรือพฤติกรรมที่พบเพิ่มเติม (ไม่บังคับ)</summary>
+    <p class="muted" style="margin-top:12px">ช่องนี้ไม่บังคับ และระบบไม่ได้ใช้ข้อความนี้ในการเลือกวิธีสอน
+      เพราะข้อความอิสระนับรวมข้ามครูไม่ได้ ที่เก็บไว้คือให้คุณคัดลอกไปใช้กับ ว.PA ได้</p>
+    <textarea id="pkNote" placeholder="เช่น นักเรียนสับสนระหว่างกระบวนการหายใจระดับเซลล์กับการสังเคราะห์ด้วยแสง"></textarea>
+  </details>
+
+  <div class="summary-bar" id="pkSummary"></div>
+
+  <div class="step-nav">
+    <button class="btn ghost" id="pkBack">← กลับไปเลือกวิธีอัปโหลดไฟล์แผน</button>
+    <button class="btn primary" id="pkGo">ค้นหาวิธีรับมือ และสร้างร่างแผนการสอน →</button>
+  </div>
+</section>
+
+<!-- ============================================= 0c. blank template -->
+<section id="s0c" class="hide">
+  <div class="crumb">
+    <a id="cr2">หน้าแรก</a><span>›</span><span>เครื่องมือสร้างแผน</span><span>›</span><b>สร้างแผนการสอน</b>
+  </div>
+  <div class="step-title">
+    <h1>สร้างแผนการสอนจากบทเรียน</h1>
+    <p>เลือกชั้น รายวิชา และบทเรียน ระบบจะแสดงสิ่งที่นักเรียนมักติดในหน่วยนั้นก่อนเป็นอันดับแรก</p>
+  </div>
+  <div class="card">
+    <div class="card-title" id="ttContent2">เลือกเนื้อหาและรายวิชา</div>
+    <div class="field-grid">
+      <div><label for="bkGrade">ระดับชั้น</label><select id="bkGrade"></select></div>
+      <div><label for="bkSubject">หนังสือเรียน/รายวิชา</label><select id="bkSubject"></select></div>
+      <div><label for="bkStd">บทเรียน/หน่วยการเรียนรู้</label><select id="bkStd"></select></div>
+    </div>
+    <div id="bkCoverage" class="muted" style="margin-top:16px"></div>
+  </div>
+  <div class="step-nav">
+    <button class="btn ghost" id="bkBack">← ย้อนกลับ</button>
+    <button class="btn primary" id="bkGo">สร้างร่างแผนการสอน →</button>
+  </div>
+</section>
+
+<!-- ============================================= 1. confirm -->
+<section id="s1" class="hide">
+  <div class="hero">
+    <h1>ขอเช็กก่อนว่าอ่านถูก</h1>
+    <p>ช่องที่อ่านไม่ชัดอยู่บนสุด ตรวจเฉพาะช่องเหล่านั้นก็พอ</p>
+  </div>
+  <div id="confirmBody"></div>
+  <div class="row" style="margin-top:24px">
+    <button class="btn primary" id="confirmGo">ถูกแล้ว ตรวจแผนให้เลย</button>
+    <button class="btn ghost" id="confirmBack">ใช้ไฟล์อื่น</button>
+  </div>
+</section>
+
+<!-- ============================================= 2. findings -->
+<section id="s2" class="hide">
+  <div class="hero">
+    <h1>สิ่งที่ควรเสริม</h1>
+    <p>แสดงไม่เกิน 3 รายการ เรียงตามความสำคัญ ไม่ใช่ตามหมวด</p>
+  </div>
+  <div id="findings"></div>
+</section>
+
+<!-- ============================================= 2d. detail -->
+<section id="s2d" class="hide"><div id="detailBody"></div></section>
+
+<!-- ============================================= 3. adjusted plan -->
+<section id="s3" class="hide">
+  <div class="hero">
+    <h1>แผนการสอนที่ปรับปรุงแล้ว</h1>
+    <p>เปรียบเทียบเนื้อหาเดิมกับข้อเสนอแนะเพื่อเสริมความเข้าใจของผู้เรียน</p>
+  </div>
+  <div id="planBody"></div>
+</section>
+
+<!-- ============================================= 4. PA -->
+<section id="s4" class="hide">
+  <div class="hero">
+    <h1>หลักฐานสำหรับประเด็นท้าทาย (PA)</h1>
+    <p>ร่างจากสิ่งที่คุณเลือกไว้จริง ไม่ได้แต่งขึ้นใหม่</p>
+  </div>
+  <div id="paBody"></div>
+</section>
+
+<!-- ============================================= 5. history -->
+<section id="s5" class="hide">
+  <div class="hero">
+    <h1>แผนของฉัน</h1>
+    <p>ระบบเรียนจากปุ่มที่คุณกด ไม่ได้ขอให้กรอกข้อมูลเพิ่ม</p>
+  </div>
+  <div id="histBody"></div>
+</section>
+
+</div>
+
+<footer>
+  ตรวจรู้ TruatRoo · ต้นแบบสำหรับ AIS JumpThailand Hackathon 2026 · แทร็ก Empowering Teachers<br>
+  คลังความเข้าใจผิดและวิธีสอนยังเป็นสถานะร่าง ครอบ 1 ตัวชี้วัด ยังไม่ใช่ทั้งหลักสูตร<br>
+  ระบบไม่รายงานผลเชิงเหตุและผลกับผลการเรียน
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

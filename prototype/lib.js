@@ -46,7 +46,7 @@ export async function loadLibraries(base = '../data/') {
     if (!r.ok) throw new Error(`โหลด ${f} ไม่ได้ (${r.status})`)
     return toObjects(await r.text())
   }
-  const [c, m, mp, me, it, pb, form] = await Promise.all([
+  const [c, m, mp, me, it, pb, form, tx] = await Promise.all([
     get('DB1_curriculum_slice.csv'),
     get('DB2_misconceptions_draft.csv'),
     get('DB3_indicator_map_draft.csv'),
@@ -54,6 +54,7 @@ export async function loadLibraries(base = '../data/') {
     get('DB6_assessment_items_draft.csv'),
     get('FORM_problem_method_map.csv'),
     fetch(base + 'FORM_frontend_options.csv').then(r => r.text()),
+    get('TAXONOMY_reference.csv'),
   ])
   return {
     curr: c.map(r => ({
@@ -90,7 +91,26 @@ export async function loadLibraries(base = '../data/') {
       methodId: r.method_id || null,
     })),
     form: parseFormOptions(form),
+    taxonomy: tx.map(r => ({
+      kind: r.kind, code: r.code, labelTh: r.label_th, labelEn: r.label_en,
+      description: r.description, keywords: r.keywords, group: r.group,
+    })),
   }
+}
+
+// Which methods the chosen Bloom levels point at, via the problem table's
+// existing Bloom match columns. Derived, not a second mapping to maintain.
+export function methodsForBloom(DB, bloomLabels) {
+  if (!bloomLabels.length) return []
+  const hit = DB.problem.filter(p =>
+    bloomLabels.some(b => (p.bloomMain || '').includes(b) || (p.bloomSub || '').includes(b)))
+  const seen = new Set(), out = []
+  for (const p of hit) {
+    if (seen.has(p.strategy)) continue
+    seen.add(p.strategy)
+    out.push({ strategy: p.strategy, methodId: p.methodId, problemId: p.id })
+  }
+  return out
 }
 
 // FORM_frontend_options.csv is a spreadsheet export: blank rows separate the
@@ -653,7 +673,9 @@ export function parsePlan(doc) {
   const activities = parseActivities(paras, dropped)
 
   const plan = {
-    unit: f.unit?.text?.split('\n')[0] || '',
+    // "หน่วยการเรียนรู้ที่ 4 การดำรงชีวิตของพืช" loses its label during
+    // slicing, which leaves a dangling ordinal. Drop that as well.
+    unit: (f.unit?.text?.split('\n')[0] || '').replace(/^ที่\s*[\d๐-๙]+\s*/, '').trim(),
     subject: f.subject?.text?.split('\n')[0] || '',
     grade: gm ? `${gm[1]}.${gm[2]}` : '',
     periods: pm ? +pm[1] : null,
@@ -680,7 +702,6 @@ export function parsePlan(doc) {
   }
   score('unit', plan.unit)
   score('subject', plan.subject)
-  score('grade', plan.grade)
   score('keyConcept', plan.keyConcept)
   score('objectives', plan.objectives)
   score('content', plan.content)
@@ -689,8 +710,12 @@ export function parsePlan(doc) {
   score('assessment', plan.assessment)
   // Indicator codes are digits and Latin letters, so damage scoring does not
   // apply. Either the pattern matched or it did not.
+  // Structured tokens, not prose. "ม.1" is mostly a digit and a full stop, so
+  // scoring it for Thai-character damage reports a false alarm on a field that
+  // was read perfectly. Either the pattern matched or it did not.
   conf.currCodes = { level: codesAnywhere.length ? 'high' : 'none', damage: codesAnywhere.length ? 0 : 1 }
   conf.periods = { level: plan.periods ? 'high' : 'none', damage: plan.periods ? 0 : 1 }
+  conf.grade = { level: plan.grade ? 'high' : 'none', damage: plan.grade ? 0 : 1 }
 
   plan.confidence = conf
   plan.overallDamage = damageRatio(whole)

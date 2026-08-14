@@ -1,0 +1,207 @@
+<!DOCTYPE html><html class="light" lang="th"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ตรวจรู้ - ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb954",
+                        "surface-tint": "#006970",
+                        "on-tertiary-fixed": "#291800",
+                        "primary": "#006168",
+                        "on-secondary-fixed": "#0e1e1e",
+                        "inverse-on-surface": "#dff4ff",
+                        "surface-muted": "#F8FAFB",
+                        "secondary-fixed": "#d4e6e5",
+                        "surface-variant": "#cfe6f2",
+                        "surface-container-lowest": "#ffffff",
+                        "success-green": "#2E7D32",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#d4e6e5",
+                        "tertiary": "#7a4f00",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#004f54",
+                        "secondary-fixed-dim": "#b8cac9",
+                        "secondary": "#516161",
+                        "surface-container-high": "#d5ecf8",
+                        "tertiary-container": "#9a6500",
+                        "on-secondary-fixed-variant": "#3a4a49",
+                        "outline": "#6e797a",
+                        "inverse-primary": "#7cd4dd",
+                        "background": "#f3faff",
+                        "error-red": "#D32F2F",
+                        "highlight-blue": "#E3F2FD",
+                        "on-primary-container": "#d9fcff",
+                        "on-surface-variant": "#3e494a",
+                        "surface-dim": "#c7dde9",
+                        "surface-container": "#dbf1fe",
+                        "surface": "#f3faff",
+                        "surface-bright": "#f3faff",
+                        "on-tertiary-container": "#fff3e8",
+                        "surface-container-highest": "#cfe6f2",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed": "#98f1f9",
+                        "primary-container": "#0d7c84",
+                        "on-secondary-container": "#576867",
+                        "on-surface": "#071e27",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#7cd4dd",
+                        "tertiary-fixed": "#ffddb4",
+                        "inverse-surface": "#1e333c",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#e6f6ff",
+                        "outline-variant": "#bdc9ca",
+                        "on-error": "#ffffff",
+                        "on-background": "#071e27"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "64px",
+                        "stack-sm": "8px",
+                        "container-max": "1120px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Noto Sans"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "body-lg": ["Noto Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-inverse-surface docked full-width top-0 shadow-sm z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md text-primary dark:text-inverse-primary">ตรวจรู้</span>
+<span class="hidden md:inline text-on-surface-variant dark:text-outline-variant font-label-sm text-label-sm ml-2 px-2 py-1 bg-surface-container-high rounded-full">ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center h-full">
+<a class="h-full flex items-center text-primary dark:text-inverse-primary font-bold border-b-2 border-primary cursor-pointer active:scale-95 duration-200" href="#">
+<span class="font-label-md text-label-md">ตรวจแผน</span>
+</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200" href="#">
+<span class="font-label-md text-label-md">แผนของฉัน</span>
+</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-outline-variant hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200" href="#">
+<span class="font-label-md text-label-md">หลักฐาน PA</span>
+</a>
+</nav>
+<div>
+<button class="font-label-md text-label-md text-primary dark:text-inverse-primary hover:text-primary-container dark:hover:text-primary-fixed transition-colors cursor-pointer active:scale-95 duration-200">
+                    ช่วยเหลือ
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter py-section-gap flex flex-col items-center justify-center">
+<div class="text-center mb-stack-lg w-full max-w-3xl mx-auto">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-stack-sm md:font-headline-lg text-headline-lg-mobile md:text-headline-lg">เริ่มต้นจากแผนการสอนของคุณ</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">เลือกวิธีเริ่มต้นที่เหมาะกับคุณ</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter w-full max-w-4xl mx-auto">
+<!-- Card 1: Recommended -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.15)] border-2 border-primary/20 p-8 flex flex-col items-start relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+<div class="absolute top-4 right-4 bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-sm text-label-sm shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                    แนะนำ
+                </div>
+<div class="w-12 h-12 bg-primary-container/10 rounded-lg flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl">upload_file</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-3">มีแผนการสอนแล้ว</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">
+                    อัปโหลดแผนการสอนที่คุณมีอยู่ ให้ตรวจว่ามีจุดไหนที่ควรเสริม
+                </p><div class="w-full border-2 border-dashed border-primary/30 rounded-xl p-8 flex flex-col items-center justify-center gap-2 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer group/dropzone">
+    <span class="material-symbols-outlined text-4xl text-primary mb-2">cloud_upload</span>
+    <p class="font-label-md text-on-surface">ลากไฟล์มาวางที่นี่</p>
+    <p class="font-label-sm text-on-surface-variant">หรือ <span class="text-primary underline">เลือกไฟล์จากอุปกรณ์</span></p>
+    <p class="mt-4 font-label-sm text-on-surface-variant/70">รองรับ PDF, DOCX (สูงสุด 10MB)</p>
+</div>
+
+
+</div>
+<!-- Card 2: Empty State -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-outline-variant/20 p-8 flex flex-col items-start hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-300">
+<div class="w-12 h-12 bg-surface-variant rounded-lg flex items-center justify-center text-on-surface-variant mb-6">
+<span class="material-symbols-outlined text-3xl">note_add</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-3">ยังไม่มีแผนการสอน</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">
+                    เริ่มสร้างแผนการสอนจากแบบฟอร์มเปล่า แล้วให้ตรวจจุดสำคัญไปพร้อมกัน
+                </p>
+<div class="flex items-center gap-2 mb-8 text-on-surface-variant/70 font-label-sm text-label-sm px-3 py-1.5 opacity-0">
+<!-- Spacer to align buttons vertically if descriptions vary slightly -->
+<span class="">spacer</span>
+</div>
+<button class="w-full bg-transparent border-2 border-primary text-primary font-label-md text-label-md py-[10px] px-6 rounded-lg hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    สร้างแผนการสอน
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-muted dark:bg-surface-dim full-width py-stack-lg flat no shadows">
+<div class="w-full flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-gutter max-w-container-max mx-auto gap-stack-sm">
+<div class="font-label-md text-label-md font-bold text-secondary">
+                © 2024 ตรวจรู้ (TruatRoo) — ผู้ช่วยตรวจแผนการสอนวิทยาศาสตร์
+            </div>
+<nav class="flex gap-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ช่วยเหลือ</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">ไม่ต้องสร้างบัญชี</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all duration-300" href="#">นโยบายความเป็นส่วนตัว</a>
+</nav>
+</div>
+</footer>
+
+
+</body></html>
