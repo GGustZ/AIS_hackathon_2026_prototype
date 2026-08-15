@@ -1,0 +1,77 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font-size",
+        "value": "13.5px",
+        "createdAt": "2026-08-15T13:47:31.086Z",
+        "reason": "documented DESIGN.md extended size scale: small labels/meta captions"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "14.5px",
+        "createdAt": "2026-08-15T13:47:31.142Z",
+        "reason": "documented DESIGN.md extended size scale: compact UI text"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "15px",
+        "createdAt": "2026-08-15T13:47:31.199Z",
+        "reason": "documented DESIGN.md extended size scale: base UI text"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "17.5px",
+        "createdAt": "2026-08-15T13:47:31.254Z",
+        "reason": "documented DESIGN.md extended size scale: hero paragraph"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "18px",
+        "createdAt": "2026-08-15T13:47:31.314Z",
+        "reason": "documented DESIGN.md extended size scale: .lead"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "21px",
+        "createdAt": "2026-08-15T13:47:31.371Z",
+        "reason": "documented DESIGN.md extended size scale: finding card title"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "22px",
+        "createdAt": "2026-08-15T13:47:31.429Z",
+        "reason": "documented DESIGN.md extended size scale: detail-screen method name"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "23px",
+        "createdAt": "2026-08-15T13:47:31.488Z",
+        "reason": "documented DESIGN.md extended size scale: brand wordmark"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "26px",
+        "createdAt": "2026-08-15T13:47:31.546Z",
+        "reason": "documented DESIGN.md extended size scale: entry-card title"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "32px",
+        "createdAt": "2026-08-15T13:47:31.610Z",
+        "reason": "documented DESIGN.md extended size scale: decorative quote-mark glyph, not a text role"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "prototype/style.css"
+        ],
+        "createdAt": "2026-08-15T13:47:36.950Z",
+        "reason": "the bound-spine bar is the named, load-bearing motif of the ledger direction (see prototype/index.html direction contract); not a stray card accent"
+      }
+    ]
+  }
+}

@@ -49,6 +49,10 @@ const state = {
 
 function go(id) {
   SCREENS.forEach(s => $('#' + s).classList.toggle('hide', s !== id))
+  const el = $('#' + id)
+  // Restart the one authored screen-entry moment even when returning to a
+  // screen that was already mounted.
+  el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter')
   state.screen = id
   state.seen[id] = true
   renderSteps(id)
@@ -627,11 +631,13 @@ function renderFindings() {
   if (selectedCount) $('#navPa').removeAttribute('aria-disabled')
   else $('#navPa').setAttribute('aria-disabled', 'true')
 
-  let head = `<div class="card flat"><b>${esc(p.unit || p.fileName || 'แผนของคุณ')}</b>
-    <div class="muted">${esc(p.subject || '')} ${esc(p.grade || '')}
-      ${p.periods ? `· ${p.periods} คาบ คาบละ ${p.minutesPerPeriod} นาที` : ''}</div>
-    <div class="muted">ผูกกับตัวชี้วัด ${p.currCodes.map(esc).join(', ') || 'ยังไม่ระบุ'}</div>
-    ${state.learningEvidence.length ? `<div class="muted">แนบหลักฐานการเรียนรู้ ${state.learningEvidence.length} ไฟล์ ระบบเก็บและจัดประเภทไว้กับแผนนี้</div>` : ''}</div>`
+  let head = `<div class="card flat"><b style="font-size:19px">${esc(p.unit || p.fileName || 'แผนของคุณ')}</b>
+    <div class="meta-chips">
+      ${(p.subject || p.grade) ? `<span class="meta-chip">${ico('book', 15)} ${esc(p.subject || '')} ${esc(p.grade || '')}</span>` : ''}
+      ${p.periods ? `<span class="meta-chip">${ico('clock', 15)} ${p.periods} คาบ คาบละ ${p.minutesPerPeriod} นาที</span>` : ''}
+      <span class="meta-chip">${ico('steps', 15)} ตัวชี้วัด ${p.currCodes.map(esc).join(', ') || 'ยังไม่ระบุ'}</span>
+      ${state.learningEvidence.length ? `<span class="meta-chip">${ico('doc', 15)} หลักฐาน ${state.learningEvidence.length} ไฟล์</span>` : ''}
+    </div></div>`
 
   if (r.unknownCodes.length) {
     head += `<div class="notice info">ตัวชี้วัด ${r.unknownCodes.map(esc).join(', ')}
@@ -678,7 +684,6 @@ function card(f, i) {
         : 'จุดที่ระบบตรวจพบในแผน'
 
   let body = `<div class="fhead">
-      <span class="badge rank">คำแนะนำ ${(i ?? 0) + 1}</span>
       <span class="badge ${f.severity}">${SEV_TH[f.severity] || ''}</span>
     </div>
     <span class="problem-label">${problemLabel}</span>
@@ -699,7 +704,8 @@ function card(f, i) {
     body += `<div class="chosen rej">ไม่ใช้วิธีนี้ (${esc(REASON_TH[d.reason] || d.reason)})</div>
       <div class="row"><button class="btn ghost" data-undo="${f.id}">เปลี่ยนใจ</button></div>`
   } else if (m) {
-    body += `<div class="propose"><b>วิธีที่แนะนำ</b> ${esc(m.nameTh)}
+    body += `<div class="propose"><div class="propose-label">${ico('bulb', 17)} วิธีที่แนะนำ</div>
+      <b>${esc(m.nameTh)}</b>
       ${m.duration ? `· ${m.duration} นาที` : ''} · แทรกที่${esc(m.stage)}
       <div class="muted" style="margin-top:6px">${esc(m.whenToUse)}</div></div>
       <div class="evidence-line"><span class="badge ${m.status === 'draft' ? 'warn' : 'ok'}">
@@ -732,7 +738,11 @@ function card(f, i) {
 | severity=${esc(f.severity)}${f.miscId ? ` | misc=${esc(f.miscId)}` : ''}${m ? ` | method=${esc(m.id)}` : ''}
 | rule: ${esc(f.rule || '')}</div>`
 
-  return `<div class="card finding">${body}</div>`
+  const delay = Math.min(i ?? 0, 3) * 70
+  return `<div class="card finding sev-${esc(f.severity)}" style="animation-delay:${delay}ms">
+    <div class="fmargin"><span class="fnum">${String((i ?? 0) + 1).padStart(2, '0')}</span></div>
+    <div class="fbody">${body}</div>
+  </div>`
 }
 
 function wireFindings() {
@@ -937,7 +947,8 @@ function renderPlan() {
         <div class="body">${oldText ? esc(oldText) : '<span class="muted">ยังไม่มีเนื้อหาในขั้นนี้</span>'}</div>
       </div>
       <div>${ins.length ? ins.map(a => `<div class="diff-new">
-        <div class="dh">${ico('plus', 16)} ข้อเสนอแนะเพิ่มเติม</div>
+        <div class="dh"><span class="plus-ico">${ico('plus')}</span> ข้อเสนอแนะเพิ่มเติม
+          <span class="badge add">แนะนำ</span></div>
         <div class="body">${esc(a.method.nameTh)} (${a.method.duration} นาที)<br>
           ${esc(a.method.steps.join(' จากนั้น '))}</div>
       </div>`).join('') : '<div class="muted" style="padding:18px">ไม่มีการเพิ่มในขั้นนี้</div>'}</div>

@@ -1,0 +1,7 @@
+{
+  "files": ["index.html", "prototype/index.html"],
+  "exclude": ["prototype/mock.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
