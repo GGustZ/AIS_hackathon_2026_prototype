@@ -2,6 +2,9 @@
 .claude/settings.local.json
 .claude/projects/
 .claude/todos/
+# เครื่องมือช่วยเขียนโค้ดฝั่งผู้พัฒนา ไม่ใช่ส่วนหนึ่งของโปรดักต์
+# และหน้าเว็บเสิร์ฟจาก root จึงไม่ควรเผยแพร่ไปด้วย
+.claude/skills/
 
 # ข้อมูลบุคคล ห้าม commit
 data/samples/
