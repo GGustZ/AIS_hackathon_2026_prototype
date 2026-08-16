@@ -660,6 +660,7 @@ function renderFindings() {
       <div class="row">
         <button class="btn primary" id="toPlan" ${selectedCount ? '' : 'disabled'}>${ico('doc', 18)} ดูส่วนที่เลือกเสริม</button>
         <button class="btn secondary" id="toPa" ${selectedCount ? '' : 'disabled'}>หลักฐาน PA</button>
+        <button class="btn ghost" id="backFindings">ย้อนกลับ</button>
       </div></div>`
 
   shown.forEach(f => { if (!state.shownAt.has(f.id)) state.shownAt.set(f.id, Date.now()) })
@@ -778,6 +779,12 @@ function wireFindings() {
   }
   $('#toPlan').onclick = () => { renderPlan(); go('s3') }
   $('#toPa').onclick = () => { renderPa(); go('s4') }
+  $('#backFindings').onclick = () => {
+    const src = state.plan.source
+    if (src === 'problem_first') go('s0b')
+    else if (src === 'blank_template') go('s0c')
+    else go('s1')
+  }
 }
 
 async function decide(findingId, action, methodId, reason) {
@@ -1250,6 +1257,7 @@ $('#useFallback').onclick = () => {
   go('s1')
 }
 
+$('#brandHome').onclick = () => go('s0')
 $('#navCheck').onclick = () => go('s0')
 $('#navPlans').onclick = async () => { await renderHistory(); go('s5') }
 $('#navPa').onclick = () => {

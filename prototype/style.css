@@ -50,7 +50,6 @@
   --lvl1: 0 1px 0 rgba(36, 33, 26, .07), 0 8px 18px -6px rgba(36, 33, 26, .16);
   --lvl2: 0 1px 0 rgba(36, 33, 26, .09), 0 14px 30px -8px rgba(36, 33, 26, .22);
 
-  --container: 1120px;
   --gutter: 24px;
   --margin-col: 52px;
 
@@ -109,7 +108,9 @@ table.tbl td, .fnum, .lnum { font-variant-numeric: tabular-nums; }
   * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
 
-.wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter) 96px 34px; }
+/* Full-bleed, matching the header bar: the ledger page runs edge to edge
+   rather than sitting in a centered fixed-width column. */
+.wrap { padding: 0 76px 96px 81px; }
 
 /* =========================================================== motion */
 @keyframes screen-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -138,7 +139,11 @@ header {
   font-family: var(--font-head);
   font-weight: 700; font-size: 23px; letter-spacing: -.01em;
   color: var(--red-deep); white-space: nowrap;
+  background: transparent; border: 0; padding: 2px 0; margin: 0; cursor: pointer;
+  border-bottom: 2px solid transparent;
 }
+.brand:hover { border-bottom-color: var(--red-deep); }
+.brand-th { font-weight: 600; }
 .tagline {
   background: transparent; color: var(--ink-soft);
   border: 1px solid var(--rule-strong); border-radius: var(--r-full); padding: 3px 13px;
@@ -302,7 +307,7 @@ h3 {
 .btn svg { width: 18px; height: 18px; }
 
 .btn:focus-visible, .nav-link:focus-visible, .drop:focus-visible,
-summary:focus-visible, .crumb-link:focus-visible {
+summary:focus-visible, .crumb-link:focus-visible, .brand:focus-visible {
   outline: 3px solid rgba(171, 51, 45, .38); outline-offset: 3px;
 }
 
@@ -701,7 +706,7 @@ body:not(.devmode) .devline { display: none; }
 
 footer {
   color: var(--ink-soft); font-size: 13.5px; text-align: center;
-  padding: 40px var(--gutter) 40px 34px; border-top: 3px double var(--ink-line);
+  padding: 40px 76px 40px 81px; border-top: 3px double var(--ink-line);
   background: var(--paper);
 }
 
@@ -713,15 +718,17 @@ footer {
   .hero p { font-size: 16px; }
   h2 { font-size: 23px; }
   .tagline { display: none; }
-  .bar { gap: 12px; padding-left: 18px; padding-right: 16px; }
-  .brand { font-size: 19px; }
+  .bar { gap: 12px 20px; padding-left: 18px; padding-right: 16px; flex-wrap: wrap; }
+  .brand { font-size: 17.5px; }
+  .spacer { flex-basis: 100%; height: 0; }
   nav.main { gap: 14px; }
   nav.main .nav-link { font-size: 13.5px; }
   .fld { grid-template-columns: 1fr; }
   .fld .badge { justify-self: start; }
   .card, .entry { padding: 18px; }
-  .wrap { padding: 0 16px 64px 24px; }
+  .wrap { padding: 0 16px 64px 18px; }
   .progress { padding: 0 16px 10px 18px; }
+  footer { padding: 32px 16px 32px 18px; }
   .card.finding { grid-template-columns: 36px 1fr; padding: 18px 16px 18px 12px; gap: 12px; }
   .fnum { font-size: 15px; }
 }

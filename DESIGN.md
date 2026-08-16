@@ -65,7 +65,8 @@ rounded:
   xl: "5px"
   full: "9999px"
 spacing:
-  container-max: "1120px"
+  edge-left: "81px"
+  edge-right: "76px"
   gutter: "24px"
   margin-col: "52px"
   spine: "9px"
@@ -175,7 +176,7 @@ The frontmatter's five roles (display/headline/title/body/label) are the canonic
 
 ## Layout
 
-Single centered column, `max-width: 1120px`, `24px` gutter — unchanged from the prior system's grid math, since the product's information architecture (9 screens, spec'd in `docs/design/input-output-spec.md`) was not reopened by this redesign.
+Full-bleed, edge to edge, matching the header bar. The centered `1120px` column from the first cut of this redesign read as a narrow ledger floating in empty margins once the header's own full-bleed bar sat above it; the body now shares the header's edge padding (`81px` left, clearing the spine, `76px` right) instead of capping at a fixed width. Every screen (9 total, spec'd in `docs/design/input-output-spec.md`) inherits this from `.wrap`; grids inside it are already `fr`-based so they gain breathing room on wide viewports rather than breaking.
 
 **The margin column.** Findings render as ledger lines: a fixed `52px` margin column (`.fmargin`) holds the row number, separated from the entry body by a vertical rule. This collapses to `36px` under `860px`.
 
